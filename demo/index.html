@@ -33,7 +33,6 @@
         <button class="menu-trigger" data-menu="config" type="button">配置(C)</button>
         <div class="menu-popup" id="configMenu">
           <button id="menuProjectPageBtn" type="button">打开项目管理</button>
-          <button id="menuOpenConfigBtn" type="button">打开分析配置</button>
           <button id="menuSourceListBtn" type="button">源文件列表管理</button>
         </div>
       </div>
@@ -78,10 +77,6 @@
         <button class="tool-action" id="toolSaveProjectBtn" type="button">
           <span class="tool-glyph save"></span>
           <span>保存项目</span>
-        </button>
-        <button class="tool-action" id="toolOpenConfigBtn" type="button">
-          <span class="tool-glyph config"></span>
-          <span>打开配置</span>
         </button>
         <button class="tool-action" id="toolSourceListBtn" type="button">
           <span class="tool-glyph list"></span>
@@ -279,8 +274,6 @@
               </div>
               <div class="management-toolbar">
                 <button id="saveProjectBtn" type="button">保存工程</button>
-                <button id="browsePathBtn" type="button">打开分析配置</button>
-                <button id="uploadSourceBtn" type="button">导入源文件</button>
               </div>
               <div class="management-grid">
                 <article class="manager-card">
@@ -295,11 +288,8 @@
                       <input id="analystInput" type="text">
                     </label>
                     <label class="path-field wide-field">
-                      <span>项目位置</span>
-                      <div class="input-with-button">
-                        <input id="projectPathInput" type="text">
-                        <button id="selectPathBtn" type="button">选择...</button>
-                      </div>
+                      <span>源码目录</span>
+                      <input id="projectPathInput" type="text" readonly>
                     </label>
                     <label>
                       <span>创建方式</span>
@@ -699,7 +689,7 @@
           <path d="M466 238 C518 238 530 170 580 170"></path>
         </svg>
         <div class="modal-note">
-          <p>这里对应你备注里的“右键查看电路图弹窗”。当前 demo 只做前端弹窗，不模拟 jar 和 json 调用。</p>
+          <p>后端模式下会优先读取同名电路图 JSON；没有生成文件时显示当前静态预览。</p>
         </div>
       </div>
     </div>

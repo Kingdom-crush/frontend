@@ -262,7 +262,7 @@ function resolveFile(pathLike){
 
 function openFile(pathLike,line,message){
   const file=resolveFile(pathLike);
-  if(!file){status("当前 demo 未准备该源文件快照");return;}
+  if(!file){status("当前工程未加载该源文件内容");return;}
   if(!S.openFiles.includes(file.key))S.openFiles.push(file.key);
   if(line)S.fileFocus[file.key]=line;
   S.page=`file:${file.key}`;
@@ -551,7 +551,6 @@ function addRuleset(){
 }
 
 function openProjectPage(message){switchPage("project",message||"已打开项目管理");}
-function openConfig(message){openFile("analysis.cfg",1,message||"已打开分析配置");}
 function openSourceList(message){switchPage("project",message||"已打开源文件列表管理");}
 function openRuleset(message){switchPage("rules",message||"请选择规则集后运行检查");}
 function openReport(message){switchPage("report",message||"已打开分析报告");}
@@ -578,8 +577,8 @@ function removeProject(id){
   renderAll(`已删除工程 ${removed}`);
 }
 
-function exportReport(kind){S.format=kind||E.reportFormatSelect.value;status(`已模拟导出 ${S.format} 报告，模板: ${S.tpl}`);}
-function quickStartHint(){status("快速流程: 新建工程 -> 指定工程位置和源文件目录 -> 打开分析配置/源文件列表 -> 选择规则集并运行检查 -> 查看结果与导出报告");}
+function exportReport(kind){S.format=kind||E.reportFormatSelect.value;status(`已准备导出 ${S.format} 报告，模板: ${S.tpl}`);}
+function quickStartHint(){status("快速流程: 新建工程 -> 选择服务器源码目录 -> 选择规则集并运行检查 -> 审查结果 -> 生成 HTML 报告");}
 
 function runCheck(){
   const run=projectRun();
@@ -714,9 +713,6 @@ E.templateSelect.addEventListener("change",event=>{S.tpl=event.target.value;stat
 E.reportFormatSelect.addEventListener("change",event=>{S.format=event.target.value;status(`已选择导出格式 ${S.format}`);});
 
 $("saveProjectBtn").addEventListener("click",saveProject);
-$("browsePathBtn").addEventListener("click",()=>openConfig(`已打开分析配置，当前工程目录: ${CP().path}`));
-$("uploadSourceBtn").addEventListener("click",()=>openSourceList("已打开源文件列表管理，演示中用表格模拟增删源文件"));
-$("selectPathBtn").addEventListener("click",()=>{E.projectPathInput.value=`${CP().path}\\src`;status("已模拟选择项目路径");});
 $("createRulesetBtn").addEventListener("click",addRuleset);
 $("saveRulesetBtn").addEventListener("click",()=>status(CR().type==="custom"?`已保存自定义规则集 ${CR().name}`:`当前是原厂规则集 ${CR().name}，演示中不直接修改`));
 $("runCheckBtn").addEventListener("click",runCheck);
@@ -746,7 +742,6 @@ $("menuCreateProjectBtn").addEventListener("click",addProject);
 $("menuLoadProjectBtn").addEventListener("click",loadNextProject);
 $("menuSaveProjectBtn").addEventListener("click",saveProject);
 $("menuProjectPageBtn").addEventListener("click",()=>openProjectPage());
-$("menuOpenConfigBtn").addEventListener("click",()=>openConfig());
 $("menuSourceListBtn").addEventListener("click",()=>openSourceList());
 $("menuRulesetBtn").addEventListener("click",()=>openRuleset());
 $("menuRunCheckBtn").addEventListener("click",runCheck);
@@ -762,7 +757,6 @@ $("menuQuickStartBtn").addEventListener("click",quickStartHint);
 $("toolCreateProjectBtn").addEventListener("click",addProject);
 $("toolLoadProjectBtn").addEventListener("click",loadNextProject);
 $("toolSaveProjectBtn").addEventListener("click",saveProject);
-$("toolOpenConfigBtn").addEventListener("click",()=>openConfig());
 $("toolSourceListBtn").addEventListener("click",()=>openSourceList());
 $("toolRunCheckBtn").addEventListener("click",runCheck);
 $("toolReportBtn").addEventListener("click",()=>openReport("已打开分析报告"));

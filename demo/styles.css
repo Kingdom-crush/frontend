@@ -311,9 +311,7 @@ button {
 .tool-glyph.report::before,
 .tool-glyph.report::after,
 .tool-glyph.open::before,
-.tool-glyph.open::after,
-.tool-glyph.config::before,
-.tool-glyph.config::after {
+.tool-glyph.open::after {
   content: "";
   position: absolute;
 }
@@ -366,20 +364,6 @@ button {
   top: 4px;
   width: 6px;
   height: 2px;
-  background: #4f79b8;
-}
-
-.tool-glyph.config::before {
-  inset: 2px;
-  border: 1px solid #4f79b8;
-  border-radius: 50%;
-}
-
-.tool-glyph.config::after {
-  top: 1px;
-  left: 6px;
-  width: 2px;
-  height: 12px;
   background: #4f79b8;
 }
 
@@ -1764,6 +1748,11 @@ button {
 }
 
 .backend-form-grid input[readonly] {
+  background: #f6f9ff;
+  color: #4f6683;
+}
+
+.form-grid input[readonly] {
   background: #f6f9ff;
   color: #4f6683;
 }
