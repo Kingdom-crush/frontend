@@ -1,0 +1,144 @@
+[2026-04-02 10:29:05][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-02 10:29:09][ERROR][3200] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-02 11:58:03][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-02 11:58:04][ERROR][647] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-02 11:58:18][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-02 11:58:19][ERROR][648] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 11:32:52][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 11:32:54][ERROR][1354] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 11:40:46][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 11:40:46][ERROR][676] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]org.sqlite.SQLiteException: [SQLITE_BUSY]  The database file is locked (cannot commit transaction - SQL statements in progress)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at org.sqlite.core.DB.newSQLException(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at org.sqlite.core.DB.newSQLException(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at org.sqlite.core.DB.throwex(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at org.sqlite.core.DB.ensureAutoCommit(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at org.sqlite.core.DB.execute(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at org.sqlite.core.CoreStatement.exec(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at org.sqlite.jdbc3.JDBC3Statement.executeQuery(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at cn.spac.specchecker.toif.dao.ToolQuery.searchTool(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at cn.spac.specchecker.toif.dao.ToolQuery.<unknown>(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at com.kdmanalytics.toif.adaptors.AdaptorPublicInstancePool.getTool(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at com.kdmanalytics.toif.adaptors.VHDLAdaptor.<unknown>(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.DataMerger.getAdaptorByToolName(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.DataMerger.createAdapterThread(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.DataMerger.merge2DB(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.SpecCheckerCMDManager.findingsMerge(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.SpecCheckerCMDManager.end(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.SpecCheckerCMD.run(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1681] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.SpecCheckerCMD.main(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1794] [CommonLog$1.println#-1]org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (cannot start a transaction within a transaction)
+[2026-04-15 11:40:47][ERROR][1794] [CommonLog$1.println#-1]	at org.sqlite.core.DB.newSQLException(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1794] [CommonLog$1.println#-1]	at org.sqlite.core.DB.newSQLException(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1794] [CommonLog$1.println#-1]	at org.sqlite.core.DB.throwex(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1794] [CommonLog$1.println#-1]	at org.sqlite.core.DB.exec(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1794] [CommonLog$1.println#-1]	at org.sqlite.SQLiteConnection.setAutoCommit(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1794] [CommonLog$1.println#-1]	at cn.spac.specchecker.toif.dao.Saver.addFindingsAndTracesAndNoteWithOneStatement(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1794] [CommonLog$1.println#-1]	at com.kdmanalytics.toif.adaptors.ExternalToolResultSaveThread.<unknown>(Unknown Source)
+[2026-04-15 11:40:47][ERROR][1794] [CommonLog$1.println#-1]	at com.kdmanalytics.toif.adaptors.ExternalToolResultSaveThread.run(Unknown Source)
+[2026-04-15 11:41:23][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 11:41:24][ERROR][622] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 11:41:51][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 11:41:51][ERROR][540] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 11:42:04][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 11:42:04][ERROR][490] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 12:03:25][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 12:03:26][ERROR][558] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:28:20][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:28:20][ERROR][508] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:30:47][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:30:48][ERROR][587] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:31:56][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:31:57][ERROR][920] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:37:56][ERROR][2] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:37:56][ERROR][601] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:38:15][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:38:16][ERROR][684] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]org.sqlite.SQLiteException: [SQLITE_BUSY]  The database file is locked (cannot commit transaction - SQL statements in progress)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at org.sqlite.core.DB.newSQLException(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at org.sqlite.core.DB.newSQLException(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at org.sqlite.core.DB.throwex(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at org.sqlite.core.DB.ensureAutoCommit(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at org.sqlite.core.DB.execute(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at org.sqlite.core.CoreStatement.exec(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at org.sqlite.jdbc3.JDBC3Statement.executeQuery(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at cn.spac.specchecker.toif.dao.ToolQuery.searchTool(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at cn.spac.specchecker.toif.dao.ToolQuery.<unknown>(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at com.kdmanalytics.toif.adaptors.AdaptorPublicInstancePool.getTool(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at com.kdmanalytics.toif.adaptors.VHDLAdaptor.<unknown>(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.DataMerger.getAdaptorByToolName(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.DataMerger.createAdapterThread(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.DataMerger.merge2DB(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.SpecCheckerCMDManager.findingsMerge(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.SpecCheckerCMDManager.end(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.SpecCheckerCMD.run(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5066] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.SpecCheckerCMD.main(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5177] [CommonLog$1.println#-1]org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (cannot start a transaction within a transaction)
+[2026-04-15 13:38:20][ERROR][5177] [CommonLog$1.println#-1]	at org.sqlite.core.DB.newSQLException(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5177] [CommonLog$1.println#-1]	at org.sqlite.core.DB.newSQLException(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5177] [CommonLog$1.println#-1]	at org.sqlite.core.DB.throwex(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5177] [CommonLog$1.println#-1]	at org.sqlite.core.DB.exec(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5177] [CommonLog$1.println#-1]	at org.sqlite.SQLiteConnection.setAutoCommit(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5177] [CommonLog$1.println#-1]	at cn.spac.specchecker.toif.dao.Saver.addFindingsAndTracesAndNoteWithOneStatement(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5177] [CommonLog$1.println#-1]	at com.kdmanalytics.toif.adaptors.ExternalToolResultSaveThread.<unknown>(Unknown Source)
+[2026-04-15 13:38:20][ERROR][5177] [CommonLog$1.println#-1]	at com.kdmanalytics.toif.adaptors.ExternalToolResultSaveThread.run(Unknown Source)
+[2026-04-15 13:38:28][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:38:29][ERROR][520] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:38:45][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:38:45][ERROR][488] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:40:15][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:40:16][ERROR][605] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:40:57][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:40:58][ERROR][587] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:41:56][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:41:57][ERROR][586] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:42:02][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:42:03][ERROR][608] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:53:20][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:53:21][ERROR][679] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:53:47][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:53:48][ERROR][575] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]org.sqlite.SQLiteException: [SQLITE_BUSY]  The database file is locked (cannot commit transaction - SQL statements in progress)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at org.sqlite.core.DB.newSQLException(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at org.sqlite.core.DB.newSQLException(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at org.sqlite.core.DB.throwex(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at org.sqlite.core.DB.ensureAutoCommit(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at org.sqlite.core.DB.execute(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at org.sqlite.core.CoreStatement.exec(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at org.sqlite.jdbc3.JDBC3Statement.executeQuery(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at cn.spac.specchecker.toif.dao.ToolQuery.searchTool(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at cn.spac.specchecker.toif.dao.ToolQuery.<unknown>(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at com.kdmanalytics.toif.adaptors.AdaptorPublicInstancePool.getTool(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at com.kdmanalytics.toif.adaptors.VHDLAdaptor.<unknown>(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.DataMerger.getAdaptorByToolName(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.DataMerger.createAdapterThread(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.DataMerger.merge2DB(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.SpecCheckerCMDManager.findingsMerge(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.SpecCheckerCMDManager.end(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.SpecCheckerCMD.run(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1337] [CommonLog$1.println#-1]	at cn.spac.specchecker.cmd.SpecCheckerCMD.main(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1433] [CommonLog$1.println#-1]org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (cannot start a transaction within a transaction)
+[2026-04-15 13:53:49][ERROR][1433] [CommonLog$1.println#-1]	at org.sqlite.core.DB.newSQLException(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1433] [CommonLog$1.println#-1]	at org.sqlite.core.DB.newSQLException(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1433] [CommonLog$1.println#-1]	at org.sqlite.core.DB.throwex(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1433] [CommonLog$1.println#-1]	at org.sqlite.core.DB.exec(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1433] [CommonLog$1.println#-1]	at org.sqlite.SQLiteConnection.setAutoCommit(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1433] [CommonLog$1.println#-1]	at cn.spac.specchecker.toif.dao.Saver.addFindingsAndTracesAndNoteWithOneStatement(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1433] [CommonLog$1.println#-1]	at com.kdmanalytics.toif.adaptors.ExternalToolResultSaveThread.<unknown>(Unknown Source)
+[2026-04-15 13:53:49][ERROR][1433] [CommonLog$1.println#-1]	at com.kdmanalytics.toif.adaptors.ExternalToolResultSaveThread.run(Unknown Source)
+[2026-04-15 13:54:01][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:54:02][ERROR][588] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:54:28][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:54:29][ERROR][686] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:54:52][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:54:52][ERROR][507] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:55:02][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:55:02][ERROR][496] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:55:50][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 13:55:50][ERROR][536] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 14:27:29][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 14:27:30][ERROR][575] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 14:57:43][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-15 14:57:44][ERROR][586] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-17 11:45:05][ERROR][0] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败
+[2026-04-17 11:45:06][ERROR][1055] [ToolCheckersConfigXMLHelper.loadConfig#-1]工具配置xml解析失败

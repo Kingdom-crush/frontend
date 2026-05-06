@@ -1,0 +1,2337 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ruleset description="" id="" name="GJB_Verilog规则集" type="1">
+   <categories>
+      <category id="C003" name="03 复位" parent=""/>
+      <category id="C009" name="09 三态缓冲器" parent=""/>
+      <category id="C013" name="013 循环语句描述" parent=""/>
+      <category id="C011" name="011 IF语句描述" parent=""/>
+      <category id="C007" name="07 组合逻辑" parent=""/>
+      <category id="C002" name="02 基本设计单元" parent=""/>
+      <category id="C016" name="016 可测试设计" parent=""/>
+      <category id="C014" name="014 操作符" parent=""/>
+      <category id="C005" name="05 异步电路处理" parent=""/>
+      <category id="C018" name="018 编译错误" parent=""/>
+      <category id="C008" name="08 时序逻辑" parent=""/>
+      <category id="C010" name="010 进程" parent=""/>
+      <category id="C001" name="01 命名" parent=""/>
+      <category id="C015" name="015 有限状态机" parent=""/>
+      <category id="C017" name="017 版面书写" parent=""/>
+      <category id="C012" name="012 CASE语句描述" parent=""/>
+      <category id="C004" name="04 时钟" parent=""/>
+      <category id="C006" name="06 语法约束" parent=""/>
+   </categories>
+   <conLevels>
+      <conLevel id="L001" name="严重错误"/>
+      <conLevel id="L002" name="一般性错误"/>
+   </conLevels>
+   <priorities>
+      <priority id="P002" name="中" value="3"/>
+      <priority id="P001" name="高" value="1"/>
+   </priorities>
+   <rule category="C014" conLevel="L001" enable="true" id="CID10902" name="关系操作符左边与右边的数据位宽必须一致。" priority="P001">
+      <description>Verilog_R_9_1关系操作符左边与右边的数据位宽必须一致。</description>
+      <message>关系操作符左边与右边的数据位宽必须一致。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+		...
+		
+	wire ce;
+	wire [31:0]d_2;
+		
+	always@(posedge clk)
+		begin
+			if(clr)
+				begin
+				q_1 &lt;= 32'h00000000;
+				end	 
+			else 
+				if(ce &lt;= d_2 )//违反
+					begin
+						q_1 &lt;= d_1 ;
+					end
+				else 
+					q_1 &lt;= 32'hffffffff;
+		end 
+		...
+  </specification>
+   </rule>
+   <rule category="C017" conLevel="L002" enable="true" id="CID10949" name="建议在一行中仅对一个 1/O 端口进行说明。" priority="P002">
+      <description>Verilog_A_1_7建议在一行中仅对一个 1/O 端口进行说明。</description>
+      <message>建议在一行中仅对一个 1/O 端口进行说明。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+	module fd11(
+			input wire d_1,
+			input wire clk_1,
+			input wire clk_2,
+			input wire clr,  output reg q_1 //违反
+	);
+   
+    ...
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10909" name="模块端口的数据位宽与实例化信号的数据位宽必须一致" priority="P001">
+      <description>Verilog_R_10_1模块端口的数据位宽与实例化信号的数据位宽必须一致</description>
+      <message>模块端口的数据位宽与实例化信号的数据位宽必须一致</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码:
+	module top  (
+		input wire clk,
+		input wire rst,
+		input wire w_en,
+		input wire [31:0] d_1,            
+		output reg [31:0] q_1
+	);
+	fd32 inst_fd32(
+		.d_1(d_1),//违反
+		.ce (w_en),
+		.clk(clk),
+		.clr(rst),
+		.q_1(q_1) //违反
+	);
+	endmodule
+	module fd32(
+		input wire [15:0] d_1,
+		input wire ce,
+		input wire clk,
+		input wire clr,
+		output reg [15:0] q_1 
+	);
+	endmodule
+
+  </specification>
+   </rule>
+   <rule category="C008" conLevel="L002" enable="true" id="CID10971" name="建议将锁存器与其他组合逻辑电路分开描述。" priority="P002">
+      <description>Verilog_A_7_1建议将锁存器与其他组合逻辑电路分开描述。</description>
+      <message>建议将锁存器与其他组合逻辑电路分开描述。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码:
+	...
+	always@(data or  start  or en)
+	  begin
+		if(en == 1'b1)      
+			dout1_1 &lt;=data;
+		else 
+		   dout1_1 &lt;=dout1_1;
+		   
+		 dout1_2 &lt;=start &amp; data;   //违反
+	  end
+	...
+	
+  </specification>
+   </rule>
+   <rule category="C015" conLevel="L001" enable="true" id="CID10936" name="状态机在 default 状态时，必须把状态机中所有寄存器重置为确定状态(复位状态或者空闲状态)。" priority="P001">
+      <description>Verilog_R_14_2状态机在 default 状态时，必须把状态机中所有寄存器重置为确定状态(复位状态或者空闲状态)。</description>
+      <message>状态机在 default 状态时，必须把状态机中所有寄存器重置为确定状态(复位状态或者空闲状态)。</message>
+      <language>Verilog</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C008" conLevel="L001" enable="true" id="CID10895" name="禁止在同一个 always 语句中混合使用有复位和无复位的触发器" priority="P001">
+      <description>Verilog_R_6_1禁止在同一个 always 语句中混合使用有复位和无复位的触发器</description>
+      <message>禁止在同一个 always 语句中混合使用有复位和无复位的触发器</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码:
+	module top (); 
+		.....
+		always@(posedge clk or negedge rst_n)
+			begin
+				if(rst_n == 1'b0)      
+				begin
+						q_2 &lt;=  32'h00000000;
+				end	 
+				else 
+					begin
+						q_1 &lt;= d_1; //违反
+						q_2 &lt;= d_2;
+					end
+			end  
+			
+		endmodule
+		
+  </specification>
+   </rule>
+   <rule category="C001" conLevel="L002" enable="true" id="CID10955" name="建议常量的命名中字母全部采用大写，变量的命名中字母全部采用小写或者仅首字母大写" priority="P002">
+      <description>Verilog_A_2_5建议常量的命名中字母全部采用大写，变量的命名中字母全部采用小写或者仅首字母大写</description>
+      <message>建议常量的命名中字母全部采用大写，变量的命名中字母全部采用小写或者仅首字母大写</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+    ...
+    parameter data_With =8'h01;    //违反
+	wire  WIRE1;  				  //违反
+	reg   REG2;   				 //违反
+    ...		
+
+  </specification>
+   </rule>
+   <rule category="C002" conLevel="L001" enable="true" id="CID10932" name="禁止在组合逻辑电路中使用反馈" priority="P001">
+      <description>Verilog_R_13_7禁止在组合逻辑电路中使用反馈</description>
+      <message>禁止在组合逻辑电路中使用反馈</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码:
+	module fd32(
+		input wire [1:0] data,
+		input wire sel,
+		output reg Q 	
+	);
+	 reg temp_1,temp_2,temp_3;
+
+	always @(data or sel)
+	 begin
+			temp_1 = data(0) &amp; temp_3;    //违反
+			temp_2 =  temp_1 ^ data(1);
+			
+			if(sel == 1'b0)
+				temp_3 = data(0);
+			else
+				temp_3 =  temp_2;
+				Q = temp_3;	
+	 end 	
+	endmodule  
+
+  </specification>
+   </rule>
+   <rule category="C013" conLevel="L001" enable="true" id="CID10924" name="循环语句必须至少满足一次循环条件。" priority="P001">
+      <description>Verilog_R_12_4循环语句必须至少满足一次循环条件。</description>
+      <message>循环语句必须至少满足一次循环条件。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+	...
+	for(i=9;i&lt;=8;i=i+1) //违反
+	 begin
+		...
+	  end 
+	...
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10930" name="在 function 语句中，返回值的位宽与输入信号的位宽必须一致。" priority="P001">
+      <description>Verilog_R_13_5在 function 语句中，返回值的位宽与输入信号的位宽必须一致。</description>
+      <message>在 function 语句中，返回值的位宽与输入信号的位宽必须一致。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+	...
+     function sum; 
+	   input [3:0]a,b;
+		begin
+		
+			sum=a+b //违反
+		
+		end 
+	 endfunction		
+	...
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10929" name="在 function 和 task 语句中，禁止对全局信号进行赋值。" priority="P001">
+      <description>Verilog_R_13_4在 function 和 task 语句中，禁止对全局信号进行赋值。</description>
+      <message>在 function 和 task 语句中，禁止对全局信号进行赋值。</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码：
+   
+	...
+	reg glb1;
+	
+    function integer fun1(input integer num); 
+		if(num &lt;= 9)
+		
+			fun1 = num; 
+		else
+			begin
+				glb1 =num +1;  //违反
+				fun1 = glb1 ;
+			end 
+			
+	...
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L002" enable="true" id="CID10959" name="顶层模块建议仅包含时钟产生模块、复位产生模块、RAM、ROM、I/O 单元及其他例化的子模块，避免使用胶合逻辑。" priority="P002">
+      <description>Verilog_A_3_1顶层模块建议仅包含时钟产生模块、复位产生模块、RAM、ROM、I/O 单元及其他例化的子模块，避免使用胶合逻辑。</description>
+      <message>顶层模块建议仅包含时钟产生模块、复位产生模块、RAM、ROM、I/O 单元及其他例化的子模块，避免使用胶合逻辑。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+  
+	module top(
+	input wire d_1,
+	input wire clk,
+	input wire rst_p,
+	output reg q_1 
+   );
+ 
+	always@(posedge clk)   //违反
+	begin
+		...	
+		
+	end 
+	
+	endmodule
+
+
+  </specification>
+   </rule>
+   <rule category="C005" conLevel="L001" enable="true" id="CID10940" name="异步时钟内第一级同步寄存器之后禁止出现反馈环路" priority="P001">
+      <description>Verilog_R_15_3异步时钟内第一级同步寄存器之后禁止出现反馈环路</description>
+      <message>异步时钟内第一级同步寄存器之后禁止出现反馈环路</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+	module fd11(
+	input wire d_1,
+	input wire clk_1,
+	input wire clk_2,
+	input wire clr,
+	output reg q_1 
+   );
+
+	reg in_1,in_2,in_3,in_4;
+	
+	always@(posedge clk_1)
+	begin
+		if(clr)
+			begin
+			in_1 &lt;=  1'b0;
+			end	 
+		else 
+			in_1 &lt;=  d_1;
+	end 
+	
+	assign in_4=in_2 &amp; in_1;
+		
+	always@(posedge clk_2)
+	begin
+		if(clr)
+			begin
+				in_2 &lt;=  1'b0;
+				in_3 &lt;=  1'b0;
+				q_1 &lt;= 1'b0;
+			end	 
+		else
+		   begin
+				in_2 &lt;=  in_4; //违反
+				in_3 &lt;=  in_2;
+				q_1 &lt;=  in_3;
+			end	 
+	end 
+	
+	endmodule
+
+  </specification>
+   </rule>
+   <rule category="C003" conLevel="L001" enable="true" id="CID10890" name="禁止将异步的置位/复位信号连接到非置位/复位端" priority="P001">
+      <description>Verilog_R_5_1禁止将异步的置位/复位信号连接到非置位/复位端</description>
+      <message>禁止将异步的置位/复位信号连接到非置位/复位端</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码:
+	......
+	always@(posedge clk or negedge rst_n)
+	 begin
+		if(rst_n == 1'b0)
+			
+			q_2 &lt;=  32'h00000000;
+			
+		else 
+			q_2 &lt;= d_2;
+	 end  
+	 
+	always@(posedge clk)
+	 begin
+		q_1 &lt;= rst_n &amp; d_1;//违反
+	 end  
+	......
+  </specification>
+   </rule>
+   <rule category="C008" conLevel="L002" enable="true" id="CID10970" name="建议在同一个 always 语句中只使用同一个复位信号。" priority="P002">
+      <description>Verilog_A_5_5建议在同一个 always 语句中只使用同一个复位信号。</description>
+      <message>建议在同一个 always 语句中只使用同一个复位信号。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码:
+	module fd32(
+		input wire d_1,
+		input wire d_2,
+		input wire rst_p,
+		input wire clk,
+		input wire rst_n,
+		output reg  q_1 
+	);
+
+	always@(posedge clk)
+	  begin
+		if(rst_p == 1'b1)       //违反
+		   begin
+				q_1 &lt;= 1'b0;
+		   end
+		else 
+		   ...
+		   
+		if(rst_n == 1'b0)       //违反
+		   begin
+				q_2 &lt;= 1'b0;
+		   end
+		else 
+		   ...
+	  end
+	...
+	endmodule
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10910" name="赋值表达式左值与右值的位宽必须一致" priority="P001">
+      <description>Verilog_R_10_2赋值表达式左值与右值的位宽必须一致</description>
+      <message>赋值表达式左值与右值的位宽必须一致</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码：
+		...
+	wire [8:0]tmp;
+	reg [7:0]tmp1;
+	
+	assign tmp = tmp1 ; //违反
+
+  </specification>
+   </rule>
+   <rule category="C009" conLevel="L002" enable="true" id="CID10972" name="避免将双向端口直接连接输入端口或输出端口。" priority="P002">
+      <description>Verilog_A_8_1避免将双向端口直接连接输入端口或输出端口。</description>
+      <message>避免将双向端口直接连接输入端口或输出端口。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+
+	module top  (
+		input wire clk,
+		input wire rst,
+		input wire w_en,
+		input wire [31:0] d_1,
+		inout reg [31:0] q_1
+
+	);
+	fd32 inst_fd32(
+		.d_1(d_1),
+		.ce (w_en),
+		.clk(clk),
+		.clr(rst),
+		.q_1(q_1) //违反
+	);
+	module fd32(
+		input wire [31:0] d_1,
+		input wire ce,
+		input wire clk,
+		input wire clr,
+		output reg [31:0] q_1 
+	);
+  </specification>
+   </rule>
+   <rule category="C014" conLevel="L001" enable="true" id="CID10907" name="在数值 位宽  进制  数字 表示中，数值位宽必须与数值的实际位宽一致" priority="P001">
+      <description>Verilog_R_9_6在数值 位宽  进制  数字 表示中，数值位宽必须与数值的实际位宽一致</description>
+      <message>在数值 位宽  进制  数字 表示中，数值位宽必须与数值的实际位宽一致</message>
+      <language>Verilog</language>
+      <specification>
+    案例代码：
+		...
+	
+		assign dout=2'd12;  ;    //违反
+  </specification>
+   </rule>
+   <rule category="C009" conLevel="L001" enable="true" id="CID10901" name="禁止使用内部三态" priority="P001">
+      <description>Verilog_R_8_2禁止使用内部三态</description>
+      <message>禁止使用内部三态</message>
+      <language>Verilog</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C008" conLevel="L002" enable="true" id="CID10969" name="避免同时使用异步置位和异步复位信号。" priority="P002">
+      <description>Verilog_A_5_4避免同时使用异步置位和异步复位信号。</description>
+      <message>避免同时使用异步置位和异步复位信号。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码:
+	module fd32(
+		input wire d_1,
+		input wire d_2,
+		input wire ce,
+		input wire clk,
+		input wire rst_n,
+		output reg  q_1 
+	);
+
+	always@(posedge clk)
+	  begin
+		if(ce == 1'b0)       //违反
+		   begin
+				q_1 &lt;= 1'b1;
+		   end
+		else 
+		   ...
+	  end
+
+	always@(posedge clk or negedge rst_n)
+	  begin
+		if(rst_n == 1'b0)      
+		   begin
+				q_1 &lt;= 1'b0;   //违反
+		   end	 
+		else 
+		   ... 
+	  end  
+	endmodule
+
+  </specification>
+   </rule>
+   <rule category="C012" conLevel="L001" enable="true" id="CID10917" name="case 语句的所有分支表达式必须在控制表达式的范围之内。并且数据位宽一致。" priority="P001">
+      <description>Verilog_R_11_3case 语句的所有分支表达式必须在控制表达式的范围之内。并且数据位宽一致。</description>
+      <message>case 语句的所有分支表达式必须在控制表达式的范围之内。并且数据位宽一致。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+	......
+	wire [1:0] state;
+	...
+	case(state)//违反
+		2'b00: 
+			z_out &lt;=3'b001;
+		2'b01: 
+			z_out &lt;=3'b010;
+		4'b1011:                 //违反
+			z_out &lt;=3'b100;
+		default:
+			z_out &lt;=3'b000;
+	endcase
+	......
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L002" enable="true" id="CID10981" name="建议数组索引为简单的信号，避免使用表达式。" priority="P002">
+      <description>Verilog_A_13_1建议数组索引为简单的信号，避免使用表达式。</description>
+      <message>建议数组索引为简单的信号，避免使用表达式。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码:
+	...
+	reg [2:0] sel;
+	reg [31:0] rest [20:0];
+	reg [31:0] out1;
+	assign out1 = rest[sel*2+1];//违反
+	...
+  </specification>
+   </rule>
+   <rule category="C005" conLevel="L001" enable="true" id="CID10939" name="禁止在第一级同步寄存器和第二级同步寄存器间插入组合逻辑电路" priority="P001">
+      <description>Verilog_R_15_2禁止在第一级同步寄存器和第二级同步寄存器间插入组合逻辑电路</description>
+      <message>禁止在第一级同步寄存器和第二级同步寄存器间插入组合逻辑电路</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码：
+	    module fd19(
+				input wire d_1,
+				input wire ce,
+				input wire clk,
+				input wire clr,
+				output reg  q_1 
+			);			
+
+
+			reg q;
+	
+			always@(posedge clk)
+			begin
+				if(clr)
+					begin
+						q  &lt;=1'b0;
+						q_1  &lt;= 1'b0;
+					end	 
+				else 
+				   begin
+						q &lt;= d_1;
+						q_1  &lt;= q &amp; ce ;//违反
+					end	 
+			end 
+				
+			endmodule
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10912" name="时序电路必须使用非阻塞赋值，禁止使用阳塞赋值" priority="P001">
+      <description>Verilog_R_10_4时序电路必须使用非阻塞赋值，禁止使用阻塞赋值</description>
+      <message>时序电路必须使用非阻塞赋值，禁止使用阻塞赋值</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码:
+	...
+	always@(posedge clk)
+	  begin
+		rega = datain; 			//综合前数据datain 在时钟上升沿赋值给regb，但是上述代码会综合成一个移位寄存器
+		regb = rega;            //综合后数据datain 不会在同样的上升沿赋值给regb
+	  end 
+	  ...
+
+  </specification>
+   </rule>
+   <rule category="C015" conLevel="L002" enable="true" id="CID10982" name="建议单个状态机的状态数不超过 40 个。" priority="P002">
+      <description>Verilog_A_14_1建议单个状态机的状态数不超过 40 个。</description>
+      <message>建议单个状态机的状态数不超过 40 个。</message>
+      <language>Verilog</language>
+      <specification>
+案例代码:
+	  ...
+	reg [5:0] current_state;
+	reg [5:0] next_state;
+	parameter STATE_0=6'd1,   //违反
+			STATE_1=6'd2,
+			STATE_2=6'd3,
+			...
+			STATE_64=6'd64;
+	
+	
+	always @( current_state)//组合逻辑模块定义输出逻辑
+		begin
+			case(current_state)
+				STATE_0: result &lt;= 6'd1;
+				  ...
+				STATE_64: result &lt;= 6'd64;
+				default: result  &lt;= 6'd0;
+			endcase
+		end
+	
+	always @(posedge clk or negedge rst)//时序逻辑模块定义现态寄存器
+		begin
+			if(rst==1'b0)
+				current_state &lt;= STATE_0;
+			else
+				current_state  &lt;= next_state;
+		end
+	
+	always @ (current_state or condition)//组合逻辑模块定义次态逻辑
+		begin
+			case(current_state)
+				STATE_0:
+					begin
+						next_state = STATE_1;
+					end
+				
+				...
+				
+				STATE_63:
+					begin
+						next_state = STATE_64;
+					end
+				STATE_64:
+					begin
+						next_state = STATE_0;
+					end
+				...
+			endcase
+		end
+
+	  ...
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10918" name="if 语句的条件表达式与 case 语句的控制表达式中禁止出现 “x” 或者 “z”。" priority="P001">
+      <description>Verilog_R_11_4 if 语句的条件表达式与 case 语句的控制表达式中禁止出现 “x” 或者 “z”。</description>
+      <message>if 语句的条件表达式与 case 语句的控制表达式中禁止出现 “x” 或者 “z”。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+	...
+	wire [1:0] state;
+	...
+	case(state==2'b1x)  //违反
+	
+		...
+		
+	endcase
+	...
+
+  </specification>
+   </rule>
+   <rule category="C012" conLevel="L002" enable="true" id="CID10975" name="case语句中的分支语句避免重叠。" priority="P002">
+      <description>Verilog_A_11_1case语句中的分支语句避免重叠。</description>
+      <message>case语句中的分支语句避免重叠。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	always@(posedge clk)
+		if(rst)
+			z_out &lt;= 3'b000;
+		else
+		  begin
+			case(state)
+				2'b00: 
+					z_out &lt;=3'b001;
+				2'b01: 
+					z_out &lt;=3'b010;
+				2'b10:
+					z_out &lt;=3'b100;
+				2'b10:                        //违反
+					z_out &lt;=3'b110;
+				default:
+					z_out &lt;=3'b000;
+				
+			endcase
+		  end 
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10931" name="在 task 语句中，输入信号的位宽与输出信号的位宽必须一致。" priority="P001">
+      <description>Verilog_R_13_6在 task 语句中，输入信号的位宽与输出信号的位宽必须一致。</description>
+      <message>在 task 语句中，输入信号的位宽与输出信号的位宽必须一致。</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码：
+	 ...
+	 reg  data2;
+	 wire[1:0] data1;
+	 always@(posedge clk )
+	 begin
+	   light(data1,data2);//违反
+	 end
+	 
+	 
+     task light; 
+	   input  data1;
+	   output data2;
+	   
+		begin
+		
+			data2=data1 
+		
+		end 
+	 endtask		
+	...
+
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10883" name="在模块例化时，必须采用端口名称映射，禁止位置映射" priority="P001">
+      <description>Verilog_R_2_9在模块例化时，必须采用端口名称映射，禁止位置映射</description>
+      <message>在模块例化时，必须采用端口名称映射，禁止位置映射</message>
+      <language>Verilog</language>
+      <specification>
+  	案例代码:
+	module top  (
+		input wire clk,
+		input wire rst,
+		input wire w_en,
+		input wire [31:0] d_1,
+		output reg [31:0] q_1 
+	);
+	fd32 inst_fd32(d_1,w_en,clk,rst,q_1);  //违反
+	endmodule
+
+  </specification>
+   </rule>
+   <rule category="C015" conLevel="L001" enable="true" id="CID10935" name="状态机禁止出现死锁状态和不可达状态。" priority="P001">
+      <description>Verilog_R_14_1状态机禁止出现死锁状态和不可达状态。</description>
+      <message>状态机禁止出现死锁状态和不可达状态。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+	  ...
+	reg [1:0]current_state;
+	reg [1:0] next_state;
+	parameter STATE_0=2'b00,STATE_1=2'b01, STATE_2=2'b10,STATE_3=2'b11;
+	
+	
+	always @( current_state)
+		begin
+			case(current_state)
+				STATE_0: result &lt;= 1'b0;
+				STATE_1: result  &lt;= 1'b1;
+				default: result  &lt;= 1'b0;
+			endcase
+		end
+	
+	always @(posedge clk or negedge rst)
+		begin
+			if(rst==1'b0)
+				current_state &lt;= STATE_0;
+			else
+				current_state  &lt;= next_state;
+		end
+	
+	always @ (current_state or condition)
+		begin
+			case(current_state)
+				STATE_0:
+					begin
+						if(condition)
+							next_state = STATE_1;
+						else
+							next_state =STATE_0;
+					end
+				STATE_1:
+					begin
+						if(condition)
+							next_state =STATE_0;
+						else
+							next_state =STATE_1;
+					end
+			endcase  //状态机应处理所有状态 STATE_0,STATE_1,STATE_2,STATE_3
+		end
+
+	  ...
+
+  </specification>
+   </rule>
+   <rule category="C003" conLevel="L002" enable="true" id="CID10967" name="避免在异步复位线路中插入逻辑操作运算。" priority="P002">
+      <description>Verilog_A_5_2避免在异步复位线路中插入逻辑操作运算。</description>
+      <message>避免在异步复位线路中插入逻辑操作运算。</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码:
+	   ......
+	  assign  clr = rst &amp; temp;  //违反
+	 
+	  always@(posedge clk or posedge clr )
+	  begin 
+	  if(clr==1'b1)  //违反
+			...... 
+	  end 
+
+  </specification>
+   </rule>
+   <rule category="C001" conLevel="L001" enable="true" id="CID10875" name="命名必须以字母开始，应采用字母，数字、下划线或者其组合。" priority="P001">
+      <description>Verilog_R_2_1命名必须以字母开始，应采用字母，数字、下划线或者其组合。</description>
+      <message>命名必须以字母开始，应采用字母，数字、下划线或者其组合。</message>
+      <language>Verilog</language>
+      <specification>
+  	案例代码：
+	module fd32(
+		input [31:0] d,
+		input 1ce,        //首字符应是字母
+		input clk,
+		input clr,
+		output reg [31:0] q
+	);
+		......
+	endmodule
+
+  </specification>
+   </rule>
+   <rule category="C001" conLevel="L002" enable="true" id="CID10954" name="建议复位信号命名采用 “Rst_X”、“Reset_X”、“rst_x” 或者 “reset_x”，其中 “x” 为 “p” 时代表高电平复位，“x” 为 “n” 时代表低电平复位。" priority="P002">
+      <description>Verilog_A_2_4建议复位信号命名采用 “Rst_X”、“Reset_X”、“rst_x” 或者 “reset_x”，其中 “x” 为 “p” 时代表高电平复位，“x” 为 “n” 时代表低电平复位。</description>
+      <message>建议复位信号命名采用 “Rst_X”、“Reset_X”、“rst_x” 或者 “reset_x”，其中 “x” 为 “p” 时代表高电平复位，“x” 为 “n” 时代表低电平复位。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+  
+	module fd11(
+	input wire d_1,
+	input wire clk,
+	input wire rst,
+	output reg q_1 
+   );
+
+	always@(posedge clk)  
+	begin
+		if(rst) //违反
+			begin
+				q_1 &lt;= 1'b0;
+			
+			end	 
+		else
+			begin
+				q_1 &lt;=  d_1; 
+			end	
+		
+	end 
+	
+	endmodule
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10926" name="禁止在 task 语句中使用时序控制语句。" priority="P001">
+      <description>Verilog_R_13_1禁止在 task 语句中使用时序控制语句。</description>
+      <message>禁止在 task 语句中使用时序控制语句。</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码：
+   ...
+   task swap;
+   ...
+	always@(posedge clk ) //违反
+		begin
+		...
+		end
+		
+   endtask
+   ...
+   
+
+  </specification>
+   </rule>
+   <rule category="C014" conLevel="L001" enable="true" id="CID10906" name="禁止在算术操作时使用包含 “x” 或者 “z” 的值" priority="P001">
+      <description>Verilog_R_9_5禁止在算术操作时使用包含 “x” 或者 “z” 的值</description>
+      <message>禁止在算术操作时使用包含 “x” 或者 “z” 的值</message>
+      <language>Verilog</language>
+      <specification>
+		案例代码：
+		...
+	
+		assign dout=din1 + 2'b1z  ;    //违反
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L002" enable="true" id="CID10961" name="建议模块使用组合逻辑输入，寄存器输出。" priority="P002">
+      <description>Verilog_A_3_3建议模块使用组合逻辑输入，寄存器输出。</description>
+      <message>建议模块使用组合逻辑输入，寄存器输出。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+  
+  module dff(clk_40m, data, qout1, qout2); 
+	input clk_40m; 
+	input data; 
+	output  reg qout1;
+	output  reg qout2;    //遵循
+	
+	always@(posedge clk_40m) begin 
+		
+		qout1 &lt;=  data; 
+		
+	end 
+	always@(posedge clk_40m) begin  
+		
+		qout2 &lt;= qout1; 
+		
+	end 
+
+  </specification>
+   </rule>
+   <rule category="C011" conLevel="L002" enable="true" id="CID10978" name="if 语句和条件运算符的条件表达式避免为向量，建议由单位宽信号组成" priority="P002">
+      <description>Verilog_A_11_4 if 语句和条件运算符的条件表达式避免为向量，建议由单位宽信号组成</description>
+      <message>if 语句和条件运算符的条件表达式避免为向量，建议由单位宽信号组成</message>
+      <language>Verilog</language>
+      <specification>
+    案例代码：
+	...
+	wire [7:0] sel;
+	reg [2:0] z_out;
+	
+	always@(posedge clk) 
+	begin
+		if(sel)               //违反
+			z_out &lt;= 3'b000;
+		else
+			z_out &lt;=3'b110;
+		 
+	end 
+	...
+
+  </specification>
+   </rule>
+   <rule category="C008" conLevel="L001" enable="true" id="CID10896" name="在复位或者初始化时，必须对触发器赋初值" priority="P001">
+      <description>Verilog_R_6_2在复位或者初始化时，必须对触发器赋初值</description>
+      <message>在复位或者初始化时，必须对触发器赋初值</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码:
+	module top (); 
+		.....
+		always@(posedge clk )
+			begin
+				q_1 &lt;= d_1; //违反
+			end  
+		
+	endmodule
+	
+  </specification>
+   </rule>
+   <rule category="C008" conLevel="L002" enable="true" id="CID10965" name="建议仅使用一个时钟域" priority="P002">
+      <description>Verilog_A_4_4建议仅使用一个时钟域</description>
+      <message>建议仅使用一个时钟域</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+  
+  module dff(clk_40m, clk_80m,data, qout2); 
+	input clk_40m; 
+	input clk_80m; 
+	input data; 
+	output  reg qout2;    
+	
+	reg qout1;
+	
+	always@(posedge clk_40m) begin 
+		
+		qout1 &lt;=  data; 
+		
+	end 
+	always@(negedge clk_80m) begin   //违反
+		
+		qout2 &lt;= qout1; 
+		
+	end 
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10886" name="顶层模块的输入输出端口必须只使用 reg 型和 wire 型数据" priority="P001">
+      <description>Verilog_R_3_2顶层模块的输入输出端口必须只使用 reg 型和 wire 型数据</description>
+      <message>顶层模块的输入输出端口必须只使用 reg 型和 wire 型数据</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码:
+  module top(
+    input integer  d,//违反
+	input wire [31:0] d_1,
+	input wire [31:0] d_2,
+	output reg [31:0] q_1 
+	);
+	......
+  endmodule
+  </specification>
+   </rule>
+   <rule category="C017" conLevel="L001" enable="true" id="CID10881" name="文件引用时，必须使用相对路径而不是绝对路径" priority="P001">
+      <description>Verilog_R_2_7文件引用时，必须使用相对路径而不是绝对路径</description>
+      <message>文件引用时，必须使用相对路径而不是绝对路径</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+  `include "D:\gjb_test\R_2_7_0.v"   //违反
+   ......
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L002" enable="true" id="CID10974" name="建议为 parameter 数据和常数指定进制 ('d,'b,'h,'o) 和位宽。" priority="P002">
+      <description>Verilog_A_9_2建议为 parameter 数据和常数指定进制 ('d,'b,'h,'o) 和位宽。</description>
+      <message>建议为 parameter 数据和常数指定进制 ('d,'b,'h,'o) 和位宽。</message>
+      <language>Verilog</language>
+      <specification>
+    案例代码：
+    ...
+	parameter DATA= 'b10100; //违反
+
+  </specification>
+   </rule>
+   <rule category="C013" conLevel="L002" enable="true" id="CID10980" name="避免在 repeat 语句表达式中使用变量。" priority="P002">
+      <description>Verilog_A_12_1避免在 repeat 语句表达式中使用变量。</description>
+      <message>避免在 repeat 语句表达式中使用变量。</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码:
+	...
+    input [7:0) data_in; 
+	repeat (data_in) data_out = data_out + 1'd1; //违反
+	...
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10933" name="禁止数组索引越界。" priority="P001">
+      <description>Verilog_R_13_8禁止数组索引越界。</description>
+      <message>禁止数组索引越界。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码:
+   ...
+   reg [31:0] ml [10:0];
+   reg [31:0] data;
+   
+   assign data=m1[12];  //违反
+   ...
+
+  </specification>
+   </rule>
+   <rule category="C013" conLevel="L001" enable="true" id="CID10922" name="禁止在 for 语句中对循环变量之外的变量进行算术运算。" priority="P001">
+      <description>Verilog_R_12_2禁止在 for 语句中对循环变量之外的变量进行算术运算。</description>
+      <message>禁止在 for 语句中对循环变量之外的变量进行算术运算。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+		...
+		reg [8:0] reg_s;
+			...
+		for(i=0;i &lt; 8;i=i+1) 
+		 begin
+			if(i &lt; someb-1)//违反
+				reg_s[i] = i + 1; 
+		  end 
+  
+  </specification>
+   </rule>
+   <rule category="C002" conLevel="L001" enable="true" id="CID10899" name="禁止使用基本逻辑门来描述锁存器。" priority="P001">
+      <description>Verilog_R_7_2禁止使用基本逻辑门来描述锁存器。</description>
+      <message>禁止使用基本逻辑门来描述锁存器。</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码：
+	......
+	//违反
+	nand and1(tem1,d,c);
+	nand and2(tem2,tem1,c);
+	nand and3(q,tem1,tem3);
+	nand and4(tem3,tem2,q);
+	......
+  </specification>
+   </rule>
+   <rule category="C017" conLevel="L002" enable="true" id="CID10944" name="建议同一层次的所有语句左端对齐。Case 和 if_else 等嵌套语句应逐层缩进对齐" priority="P002">
+      <description>Verilog_A_1_2建议同一层次的所有语句左端对齐。Case 和 if_else 等嵌套语句应逐层缩进对齐</description>
+      <message>建议同一层次的所有语句左端对齐。Case 和 if_else 等嵌套语句应逐层缩进对齐</message>
+      <language>Verilog</language>
+      <specification>
+    案例代码:
+	
+	//违反
+	  always@(posedge clk)
+	  begin 
+	  if(clr==1'b1)
+	  begin
+	  q_1 &lt;= 32'h00000000;
+							q_2 &lt;= 32'h00000000;
+	  end	 
+	  else 
+	  ...
+	  end 
+
+  </specification>
+   </rule>
+   <rule category="C016" conLevel="L001" enable="true" id="CID10887" name="禁止将寄存器的输出直接连接到其他寄存器的时钟管脚" priority="P001">
+      <description>Verilog_R_4_1禁止将寄存器的输出直接连接到其他寄存器的时钟管脚</description>
+      <message>禁止将寄存器的输出直接连接到其他寄存器的时钟管脚</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码:
+	
+	......
+	
+	always@(posedge clk)
+		tem1 &lt;= in1;
+	
+	
+	always@(posedge tem1)//违反
+		tem2 &lt;= in2;
+	.......
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10914" name="禁止使用延时语句" priority="P001">
+      <description>Verilog_R_10_6禁止使用延时语句</description>
+      <message>禁止使用延时语句</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码:
+	...
+	always@(posedge clk)
+	  begin
+		 #10 out1 &lt;= datain; //违反	      
+	  end 
+	  
+	 ...
+
+  </specification>
+   </rule>
+   <rule category="C013" conLevel="L001" enable="true" id="CID10921" name="for 语句的初始值和条件必须为常数，且禁止改变循环变量。" priority="P001">
+      <description>Verilog_R_12_1 for 语句的初始值和条件必须为常数，且禁止改变循环变量。</description>
+      <message>for 语句的初始值和条件必须为常数，且禁止改变循环变量。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+	...
+  reg reg_i;
+  ...
+  for(i=reg_i;i &lt; 8;i=i+1) //违反1
+  ...
+  
+  
+  ...
+  for(i=0;i &lt; 8;jj=i+1) //违反2
+	begin
+		...
+	end
+  
+  
+  ...
+  for(i=0;i &lt; reg_i;i=i+1) //违反3
+  ...
+
+  </specification>
+   </rule>
+   <rule category="C015" conLevel="L001" enable="true" id="CID10942" name="状态机编译模式必须选择 safe 模式" priority="P001">
+      <description>Verilog_R_16_2状态机编译模式必须选择 safe 模式</description>
+      <message>状态机编译模式必须选择 safe 模式</message>
+      <language>Verilog</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C004" conLevel="L001" enable="true" id="CID10888" name="禁止将时钟信号连接在除寄存器时钟管脚之外的其他信号管脚" priority="P001">
+      <description>Verilog_R_4_2禁止将时钟信号连接在除寄存器时钟管脚之外的其他信号管脚</description>
+      <message>禁止将时钟信号连接在除寄存器时钟管脚之外的其他信号管脚</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码:
+	
+	......
+	
+	always@(posedge clk1)
+		tem1 &lt;= in1;
+	
+	
+	always@(posedge clk2)
+		tem2 &lt;= clk1; //违反
+	.......
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10941" name="禁止使用综合工具改变代码的复位属性" priority="P001">
+      <description>Verilog_R_16_1禁止使用综合工具改变代码的复位属性</description>
+      <message>禁止使用综合工具改变代码的复位属性</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码：
+   
+  //synthesis async_set_reset "set"  //违反
+  
+   always@(posedge elk_ 40m) 
+		if(set)
+			q_1 &lt;=  1'b0;
+		else 
+			q_1 &lt;=  data;
+			
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10925" name="禁止调用递归函数" priority="P001">
+      <description>Verilog_R_12_5禁止调用递归函数</description>
+      <message>禁止调用递归函数</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+	...
+    function integer fun1(input integer num); 
+		if(num &lt;= 1)
+			fun1=num;
+		else
+			fun1=num *fun1(num-1); //违反
+			
+	...
+		
+  </specification>
+   </rule>
+   <rule category="C014" conLevel="L002" enable="true" id="CID10973" name="避免在向量运算中使用逻辑运算符。" priority="P002">
+      <description>Verilog_A_9_1避免在向量运算中使用逻辑运算符。</description>
+      <message>避免在向量运算中使用逻辑运算符。</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码：
+    ...
+	reg [1:0] datal;
+	reg [1:0] data2;
+	wire [1:0] out_reg; 
+	assign out_reg = data1 &amp;&amp; data2; //违反
+    ...
+  </specification>
+   </rule>
+   <rule category="C012" conLevel="L002" enable="true" id="CID10984" name="避免使用 “full_case” 属性。" priority="P002">
+      <description>Verilog_A_16_1避免使用 “full_case” 属性。</description>
+      <message>避免使用 “full_case” 属性。</message>
+      <language>Verilog</language>
+      <specification>
+案例代码：
+	always@(posedge clk)
+		if(rst)
+			z_out &lt;= 3'b000;
+		else
+		  begin
+			case(state) //synthesis full_case //违反
+				2'b00: 
+					z_out &lt;=3'b001;
+				2'b01: 
+					z_out &lt;=3'b010;
+				2'b10:
+					z_out &lt;=3'b100;
+			endcase
+		  end 
+  </specification>
+   </rule>
+   <rule category="C004" conLevel="L002" enable="true" id="CID10962" name="避免同时使用时钟的上升沿和下降沿" priority="P002">
+      <description>Verilog_A_4_1避免同时使用时钟的上升沿和下降沿</description>
+      <message>避免同时使用时钟的上升沿和下降沿</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+  
+  module dff(clk_40m, data, qout2); 
+	input clk_40m; 
+	input data; 
+	output  reg qout2;    
+	
+	reg qout1;
+	
+	always@(posedge clk_40m) begin 
+		
+		qout1 &lt;=  data; 
+		
+	end 
+	always@(negedge clk_40m) begin   //违反
+		
+		qout2 &lt;= qout1; 
+		
+	end 
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L002" enable="true" id="CID10958" name="避免出现冗余的端口或内部信号。" priority="P002">
+      <description>Verilog_A_2_8避免出现冗余的端口或内部信号。</description>
+      <message>避免出现冗余的端口或内部信号。</message>
+      <language>Verilog</language>
+      <specification>
+    案例代码：
+  
+	module fd11(
+	input wire d_1,
+	input wire clk,
+	input wire rst,        //违反
+	input wire rst_p,
+	output reg q_1 
+   );
+   
+    reg reg1;             //违反
+	
+	always@(posedge clk)  
+	begin
+		if(rst_p) 
+			begin
+				q_1 &lt;= 1'b0;
+			
+			end	 
+		else
+			begin
+				q_1 &lt;=  d_1; 
+			end	
+		
+	end 
+	
+	endmodule
+
+  </specification>
+   </rule>
+   <rule category="C003" conLevel="L001" enable="true" id="CID10897" name="复位信号的触发条件与进入条件必须一致。" priority="P001">
+      <description>Verilog_R_6_3复位信号的触发条件与进入条件必须一致。</description>
+      <message>复位信号的触发条件与进入条件必须一致。</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码:
+	module top (); 
+		.....
+		always@(posedge clk or negedge rst_n)
+			begin
+				if(rst_n == 1'b1)   //违反   
+					begin
+						...
+					end	 
+				else 
+					 ...
+			end  
+			
+	endmodule
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10923" name="复位部分和逻辑部分禁止出现在同一个for循环中。" priority="P001">
+      <description>Verilog_R_12_3复位部分和逻辑部分禁止出现在同一个for循环中。</description>
+      <message>复位部分和逻辑部分禁止出现在同一个for循环中。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	...
+	always@(posedge clk or posedge rst ) 
+	
+	  for(i=0;i&lt;=8;i=i+1) 
+		 begin
+			if(rst == 1'b1)
+				reg_s[i] = 1'b0; //违反
+			else 
+			    reg_s[i] = data[i]; //违反
+		  end 
+	...
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10913" name="禁止在同一条件下对同一个信号进行重复赋值。" priority="P001">
+      <description>Verilog_R_10_5禁止在同一条件下对同一个信号进行重复赋值。</description>
+      <message>禁止在同一条件下对同一个信号进行重复赋值。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码:
+	...
+	always@(sl_1 or a_1 or b_1)
+			begin
+				if(!sl_1) 
+				   begin
+						q_1 = a_1;        
+						q_1 = b_1;  //违反
+				   end
+			end 
+  </specification>
+   </rule>
+   <rule category="C001" conLevel="L001" enable="true" id="CID10877" name="命名禁止与 Verilog、System Verilog、VHDL、SDF 和 EDIF 的关键字同名" priority="P001">
+      <description>Verilog_R_2_3命名禁止与 Verilog、System Verilog、VHDL、SDF 和 EDIF 的关键字同名</description>
+      <message>命名禁止与 Verilog、System Verilog、VHDL、SDF 和 EDIF 的关键字同名</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码：
+	module test (d, test_en, out);
+	  input d,test_en; 
+	  output  out;//违反
+	  ......
+	endmodule
+  </specification>
+   </rule>
+   <rule category="C017" conLevel="L002" enable="true" id="CID10948" name="避免在同一行中描述多个赋值语句。" priority="P002">
+      <description>Verilog_A_1_6避免在同一行中描述多个赋值语句。</description>
+      <message>避免在同一行中描述多个赋值语句。</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码：
+	module fd11(
+	input wire d_1,
+	input wire clk_1,
+	input wire clk_2,
+	input wire clr,
+	output reg q_1 
+   );
+
+	reg in_1,in_2,in_3,in_4;
+	
+	always@(posedge clk_1)
+	begin
+		if(clr)
+			begin
+				in_1 &lt;=  1'b0;
+			end	 
+		else 
+			in_1 &lt;=  d_1;
+	end 
+	
+	
+	always@(posedge clk_2)
+	begin
+		if(clr)
+			begin
+				in_2 &lt;=  1'b0;
+				in_3 &lt;=  1'b0;
+			end	 
+		else
+		    begin
+				in_2 &lt;=  in_1;	in_3 &lt;=  in_2; q_1 &lt;=  in_3; //违反
+			end
+		
+	end 
+	
+	endmodule
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L002" enable="true" id="CID10956" name="避免使用 defparam 语句。" priority="P002">
+      <description>Verilog_A_2_6避免使用 defparam 语句。</description>
+      <message>避免使用 defparam 语句。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码 ：
+		defparam inst_fd32.z_1 = 32'0000ffff;//违反
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10911" name="组合电路必须使用阻塞赋值，禁止使用非阻塞凰值。" priority="P001">
+      <description>Verilog_R_10_3组合电路必须使用阻塞赋值，禁止使用非阻塞赋值。</description>
+      <message>组合电路必须使用阻塞赋值，禁止使用非阻塞赋值。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码:
+	module fd31(
+		input wire  a_1,
+		input wire  b_1,
+		input wire  sl_1,
+		output reg  q_1 
+	);
+
+	always@(sl_1 or a_1 or b_1)
+		begin
+			if(!sl_1) 
+			     q_1 &lt;= a_1;         //应采用阻塞赋值语句
+			else 
+			    q_1 = b_1;
+		end 
+	endmodule
+
+  </specification>
+   </rule>
+   <rule category="C004" conLevel="L002" enable="true" id="CID10963" name="建议为时钟产生电路创建独立的模块。" priority="P002">
+      <description>Verilog_A_4_2建议为时钟产生电路创建独立的模块。</description>
+      <message>建议为时钟产生电路创建独立的模块。</message>
+      <language>Verilog</language>
+      <specification>
+    
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10893" name="在资源未受限制时，必须使用专用时钟单元驱动内部产生时钟、高扇出控制信号或内部产生复位信号" priority="P001">
+      <description>Verilog_R_5_4在资源未受限制时，必须使用专用时钟单元驱动内部产生时钟、高扇出控制信号或内部产生复位信号</description>
+      <message>在资源未受限制时，必须使用专用时钟单元驱动内部产生时钟、高扇出控制信号或内部产生复位信号</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码:
+   module design ( .....); 
+		LKINT u2 (.V (int_clk)，.A(nrta))://遵循
+   endmodule
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10928" name="禁止在 function 语句中使用非阻塞赋值。" priority="P001">
+      <description>Verilog_R_13_3禁止在 function 语句中使用非阻塞赋值。</description>
+      <message>禁止在 function 语句中使用非阻塞赋值。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+	...
+    function integer fun1(input integer num); 
+		if(num &lt;= 9)
+		
+			fun1&lt;= num; //违反
+		else
+			fun1 &lt;= 9; //违反
+			
+	...
+
+  </specification>
+   </rule>
+   <rule category="C017" conLevel="L002" enable="true" id="CID10947" name="建议端口列表按照“时钟、复位、输入、输出、双向端口”的顺序描述" priority="P002">
+      <description>Verilog_A_1_5建议端口列表按照“时钟、复位、输入、输出、双向端口”的顺序描述</description>
+      <message>建议端口列表按照“时钟、复位、输入、输出、双向端口”的顺序描述</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+	module fd11(
+	input wire data, //违反
+	input wire clk_1,
+	input wire clk_2,
+	input wire rst,
+	output reg out1 
+   );
+
+  </specification>
+   </rule>
+   <rule category="C001" conLevel="L001" enable="true" id="CID10880" name="禁止仅使用字母的大小写来区分命名" priority="P001">
+      <description>Verilog_R_2_6禁止仅使用字母的大小写来区分命名</description>
+      <message>禁止仅使用字母的大小写来区分命名</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	module fd32(
+		input [31:0] d,
+		input ce,
+		input clk,
+		input clr,
+		output reg [31:0] D  //输入信号"d"和输出信号"D"应避免使用相同字母
+	);    
+		......
+	endmodule
+  </specification>
+   </rule>
+   <rule category="C003" conLevel="L001" enable="true" id="CID10892" name="禁止使用有竞争冒险情况的组合逻辑输出作为复位信号" priority="P001">
+      <description>Verilog_R_5_3禁止使用有竞争冒险情况的组合逻辑输出作为复位信号</description>
+      <message>禁止使用有竞争冒险情况的组合逻辑输出作为复位信号</message>
+      <language>Verilog</language>
+      <specification>
+    案例代码:
+	module fd32(
+		input wire [31:0] d_1,
+		input wire [31:0] d_2,
+		input wire ce,
+		input wire clk,
+		input wire rst,
+		output reg [31:0] q_1 
+	);
+
+	wire rst_n;
+	assign rst_n=rst &amp; ce ;
+
+	always@(posedge clk or negedge rst_n)
+	  begin
+		if(rst_n == 1'b0)       //违反
+		   begin
+		   ...
+		   end	 
+		else 
+		   ... 
+	  end  
+	endmodule
+
+  </specification>
+   </rule>
+   <rule category="C002" conLevel="L001" enable="true" id="CID10898" name="禁止出现含有锁存器的组合逻辑环路。" priority="P001">
+      <description>Verilog_R_7_1禁止出现含有锁存器的组合逻辑环路。</description>
+      <message>禁止出现含有锁存器的组合逻辑环路。</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码:
+	module top (); 
+		.....
+		assign temp= ! (inl &amp; in2 &amp; outl);//违反  
+		
+		always@(posedge clk or negedge rst_n)
+			begin
+				if(rst_n == 1'b0)    
+					begin
+						outl &lt;=1'b0 ;
+					end	 
+				else 
+					 outl &lt;=temp;//违反  
+			end  
+    endmodule
+  </specification>
+   </rule>
+   <rule category="C004" conLevel="L001" enable="true" id="CID10889" name="禁止将组合逻辑的输出作为时钟信号。" priority="P001">
+      <description>Verilog_R_4_3禁止将组合逻辑的输出作为时钟信号。</description>
+      <message>禁止将组合逻辑的输出作为时钟信号。</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码:
+	......
+	assign assign clk = in1 &amp; tem1;
+	
+	always@(posedge clk)//违反
+		tem2 &lt;= in2; 
+	.......
+  </specification>
+   </rule>
+   <rule category="C004" conLevel="L002" enable="true" id="CID10964" name="避免使用门控时钟。" priority="P002">
+      <description>Verilog_A_4_3避免使用门控时钟。</description>
+      <message>避免使用门控时钟。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码:	
+	module fd32(
+		input wire [31:0] d_1,
+		input wire ce,
+		input wire clk,
+		input wire ctrl,
+		input wire clr,
+		output reg [31:0] q_1 
+	);
+	wire clk_g;
+	
+	assign clk_g = clk &amp; ctrl;          //违反
+	
+	always@(posedge clk_g)
+	  begin
+	  ......
+	  end 
+	endmodule	
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L002" enable="true" id="CID10960" name="除顶层模块外。上层模块建议仅包含子模块的例化。" priority="P002">
+      <description>Verilog_A_3_2除顶层模块外。上层模块建议仅包含子模块的例化。</description>
+      <message>除顶层模块外。上层模块建议仅包含子模块的例化。</message>
+      <language>Verilog</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C012" conLevel="L001" enable="true" id="CID10920" name="case 语句的分支语句必须使用常量，禁止使用变量或者逻辑运算。" priority="P001">
+      <description>Verilog_R_11_6case 语句的分支语句必须使用常量，禁止使用变量或者逻辑运算。</description>
+      <message>case 语句的分支语句必须使用常量，禁止使用变量或者逻辑运算。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+	....
+	wire [1:0] state;
+	wire [1:0] sig;
+	...
+	case(state)  
+		2'b00: 
+			out1 &lt;= 3'b001;
+		2'b01: 
+			out1 &lt;= 3'b010;
+		sig :                 //违反
+			out1 &lt;= 3'b100;
+		...
+	endcase
+	....
+  </specification>
+   </rule>
+   <rule category="C015" conLevel="L001" enable="true" id="CID10937" name="状态机必须设置初始状态。" priority="P001">
+      <description>Verilog_R_14_3状态机必须设置初始状态。</description>
+      <message>状态机必须设置初始状态。</message>
+      <language>Verilog</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10884" name="禁止顶层的输入管脚悬空" priority="P001">
+      <description>Verilog_R_2_10禁止顶层的输入管脚悬空</description>
+      <message>禁止顶层的输入管脚悬空</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码:
+	module top  (
+		input wire clk,
+		input wire rst,
+		input wire w_en,
+		input wire [31:0] d_1,//违反
+		input wire [31:0] d_2,
+		output reg [31:0] q_1 
+	);
+	fd32 inst_fd32(.d_1(d_2),
+	.w_en(w_en),
+	.clk(clk),
+	.rst(rst),
+	.q_1(q_1));  
+	endmodule
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10919" name="禁止使用 “|” 和 “||” 连接敏感信号。" priority="P001">
+      <description>Verilog_R_11_5禁止使用 “|” 和 “||” 连接敏感信号。</description>
+      <message>禁止使用 “|” 和 “||” 连接敏感信号。</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码:
+	...
+	always@(posedge clk || posedge rst ) //违反	
+	  
+	...
+
+
+  </specification>
+   </rule>
+   <rule category="C003" conLevel="L001" enable="true" id="CID10891" name="禁止在同一条复位线路中同时使用异步复位和同步复位" priority="P001">
+      <description>Verilog_R_5_2禁止在同一条复位线路中同时使用异步复位和同步复位</description>
+      <message>禁止在同一条复位线路中同时使用异步复位和同步复位</message>
+      <language>Verilog</language>
+      <specification>
+  	案例代码:
+	module fd32(
+		input wire [31:0] d_1,
+		input wire [31:0] d_2,
+		input wire ce,
+		input wire clk,
+		input wire rst_n,
+		output reg [31:0] q_1 
+	);
+
+	always@(posedge clk)
+	  begin
+		if(rst_n == 1'b0)       //不应将同一个复位信号同时作为同步复位和异步复位使用
+		   begin
+		   ...
+		   end
+		else 
+		   ...
+	  end
+
+	always@(posedge clk or negedge rst_n)
+	  begin
+		if(rst_n == 1'b0)       //不应将同一个复位信号同时作为同步复位和异步复位使用
+		   begin
+		   ...
+		   end	 
+		else 
+		   ... 
+	  end  
+	endmodule
+
+  </specification>
+   </rule>
+   <rule category="C012" conLevel="L001" enable="true" id="CID10915" name="在 case 语句中必须使用 default 分支。" priority="P001">
+      <description>Verilog_R_11_1在 case 语句中必须使用 default 分支。</description>
+      <message>在 case 语句中必须使用 default 分支。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+	case(state)//违反
+		2'b00: 
+			z_out &lt;=3'b001;
+		2'b01: 
+			z_out &lt;=3'b010;
+		2'b10:
+			z_out &lt;=3'b100;
+	endcase
+  
+
+  </specification>
+   </rule>
+   <rule category="C001" conLevel="L001" enable="true" id="CID10878" name="禁止使用 “VDD”、“VSS”、“VCC”、“GND” 或者 “VREF” 命名" priority="P001">
+      <description>Verilog_R_2_4禁止使用 “VDD”、“VSS”、“VCC”、“GND” 或者 “VREF” 命名</description>
+      <message>禁止使用 “VDD”、“VSS”、“VCC”、“GND” 或者 “VREF” 命名</message>
+      <language>Verilog</language>
+      <specification>
+案例代码：
+	module test (VCC, test_en,q); //违反
+	  input VCC,test_en; 
+	  ......
+	endmodule
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10927" name="禁止使用 initial 语句。" priority="P001">
+      <description>Verilog_R_13_2禁止使用 initial 语句。</description>
+      <message>禁止使用 initial 语句。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码:
+	module fd32(
+		input wire  d_1,
+		input wire ce,
+		input wire clk,
+		output reg  q_1 
+	);
+
+	initial          //违反
+	  begin
+	  ...
+	  end
+
+	always@(posedge clk)
+	  begin 
+	  ...
+	  end 
+	endmodule
+
+  </specification>
+   </rule>
+   <rule category="C005" conLevel="L001" enable="true" id="CID10938" name="禁止在异步时钟区域内放置组合逻辑电路" priority="P001">
+      <description>Verilog_R_15_1禁止在异步时钟区域内放置组合逻辑电路</description>
+      <message>禁止在异步时钟区域内放置组合逻辑电路</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码：
+	    module fd19(
+				input wire d_1,
+				input wire ce,
+				input wire clk1,
+				input wire clk2,
+				input wire clr,
+				output reg  q_1 
+			);			
+
+
+			wire m;
+			reg q;
+			
+		  always@(posedge clk1)
+			begin
+				if(clr)
+					begin
+					q  &lt;= 1'b0;
+					end	 
+				else 
+					q &lt;= d_1;
+			end 
+			
+			assign m= q &amp; ce;//违反
+			
+			always@(posedge clk2)
+			begin
+				if(clr)
+					begin
+					q_1  &lt;= 1'b0;
+					end	 
+				else 
+					q_1  &lt;= m ;//违反
+			end 
+				
+			endmodule
+				
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10882" name="禁止使用除 reg、wire、integer、tri 和 parameter 之外的数据类型" priority="P001">
+      <description>Verilog_R_2_8禁止使用除 reg、wire、integer、tri 和 parameter 之外的数据类型</description>
+      <message>禁止使用除 reg、wire、integer、tri 和 parameter 之外的数据类型</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	real rx,ry,x2y2;//违反
+  </specification>
+   </rule>
+   <rule category="C014" conLevel="L001" enable="true" id="CID10905" name="禁止关系运算表达式中使用包含 “X” 或者 “Z” 的值" priority="P001">
+      <description>Verilog_R_9_4禁止关系运算表达式中使用包含 “X” 或者 “Z” 的值</description>
+      <message>禁止关系运算表达式中使用包含 “X” 或者 “Z” 的值</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+   ...
+   if(tmp &lt;= 2'b1z )//违反
+   ...
+  </specification>
+   </rule>
+   <rule category="C017" conLevel="L002" enable="true" id="CID10946" name="建议每行字符数小于 80 个。" priority="P002">
+      <description>Verilog_A_1_4建议每行字符数小于 80 个。</description>
+      <message>建议每行字符数小于 80 个。</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码：
+	module fd11(input wire d_1,input wire clk_1,input wire clk_2,input wire clr,output reg q_1,output reg q_2,output reg q_3,output reg q_4);//违反
+   
+    ...
+	
+	endmodule
+  </specification>
+   </rule>
+   <rule category="C012" conLevel="L001" enable="true" id="CID10916" name="禁止在 case 语句的控制表达式中使用固定值。" priority="P001">
+      <description>Verilog_R_11_2禁止在 case 语句的控制表达式中使用固定值。</description>
+      <message>禁止在 case 语句的控制表达式中使用固定值。</message>
+      <language>Verilog</language>
+      <specification>
+案例代码：
+	case(2'b01)//违反
+		2'b00: 
+			z_out &lt;=3'b001;
+		2'b01: 
+			z_out &lt;=3'b010;
+		default:
+			z_out &lt;=3'b100;
+	endcase
+  
+  </specification>
+   </rule>
+   <rule category="C001" conLevel="L001" enable="true" id="CID10876" name="禁止使用连续的 “_” 命名，且禁止在末尾使用 “_”" priority="P001">
+      <description>Verilog_R_2_2禁止使用连续的 “_” 命名，且禁止在末尾使用 “_”</description>
+      <message>禁止使用连续的 “_” 命名，且禁止在末尾使用 “_”</message>
+      <language>Verilog</language>
+      <specification>
+  	案例代码：
+	module fd33(
+		input [31:0] d,
+		input ce_,        //违反
+		input clk,
+		input clr,
+		output reg [31:0] q
+	);
+		......
+	endmodule
+  </specification>
+   </rule>
+   <rule category="C009" conLevel="L001" enable="true" id="CID10900" name="禁止组合逻辑电路的输出作为三态缓冲器的使能端" priority="P001">
+      <description>Verilog_R_8_1禁止组合逻辑电路的输出作为三态缓冲器的使能端</description>
+      <message>禁止组合逻辑电路的输出作为三态缓冲器的使能端</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码:
+	module top (); 
+		.....
+        always@(enl or en2 or din) 
+			begin
+				if(enl &amp; en2) //违反  
+					dout &lt;= din;
+				else 
+					dout &lt;= 1'bz;
+			end 
+		.....
+  </specification>
+   </rule>
+   <rule category="C017" conLevel="L002" enable="true" id="CID10945" name="建议端口、信号和变量的定义左端对齐" priority="P002">
+      <description>Verilog_A_1_3建议端口、信号和变量的定义左端对齐</description>
+      <message>建议端口、信号和变量的定义左端对齐</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+  
+  
+  //违反
+	module fd11(
+			input wire d_1,
+	input wire clk_1,
+					input wire clk_2,
+	  input wire clr,
+			output reg q_1 
+   );
+
+	reg in_1;
+					reg in_2;
+	   reg in_3;
+	
+	...
+	
+	endmodule
+
+  </specification>
+   </rule>
+   <rule category="C012" conLevel="L002" enable="true" id="CID10977" name="避免在 default 分支中出现包含 “x” 的值。" priority="P002">
+      <description>Verilog_A_11_3避免在 default 分支中出现包含 “x” 的值。</description>
+      <message>避免在 default 分支中出现包含 “x” 的值。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+	always@(posedge clk)
+		if(rst)
+			z_out &lt;= 3'b000;
+		else
+		  begin
+			case(state)
+				2'b00: 
+					z_out &lt;=3'b001;
+				2'b01: 
+					z_out &lt;=3'b010;
+				2'b10:                       
+					z_out &lt;=3'b110;
+				default:
+					z_out &lt;=3'bxxx;  //违反
+				
+			endcase
+		  end 
+
+  </specification>
+   </rule>
+   <rule category="C012" conLevel="L002" enable="true" id="CID10976" name="避免使用 casex 与 casez 语句。" priority="P002">
+      <description>Verilog_A_11_2避免使用 casex 与 casez 语句。</description>
+      <message>避免使用 casex 与 casez 语句。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+    ...
+	casex(state)//违反
+		2'b0x: 
+			z_out &lt;=3'b001;
+		2'b1x:
+			z_out &lt;=3'b100;
+		default:
+			z_out &lt;=3'b111;
+	...
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10885" name="端口例化时禁止使用表达式" priority="P001">
+      <description>Verilog_R_3_1端口例化时禁止使用表达式</description>
+      <message>端口例化时禁止使用表达式</message>
+      <language>Verilog</language>
+      <specification>
+案例代码:
+	module top  (
+		input wire clk,
+		input wire rst,
+		input wire w_en,
+		input wire [31:0] d_1,
+		output reg [31:0] q_1 
+	);
+	fd32 inst_fd32(.d_1(~d_1),//违反
+	.w_en(w_en),
+	.clk(clk),
+	.rst(rst),
+	.q_1(q_1));  
+	endmodule
+  </specification>
+   </rule>
+   <rule category="C001" conLevel="L002" enable="true" id="CID10952" name="建议 module 名、端口名，instance 名、信号名、变量名、define 名和函数名长度在 2 到 32 个字符之间。" priority="P002">
+      <description>Verilog_A_2_2建议 module 名、端口名，instance 名、信号名、变量名、define 名和函数名长度在 2 到 32 个字符之间。</description>
+      <message>建议 module 名、端口名，instance 名、信号名、变量名、define 名和函数名长度在 2 到 32 个字符之间。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+   
+		module t (//违反
+			...
+		);
+
+		endmodule
+
+
+  </specification>
+   </rule>
+   <rule category="C001" conLevel="L002" enable="true" id="CID10951" name="建议文件名与 module 名相同。" priority="P002">
+      <description>Verilog_A_2_1建议文件名与 module 名相同。</description>
+      <message>建议文件名与 module 名相同。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+   //....................................
+   
+	// FILE_NAME: temp.v    
+	//AUTHOR: Robrrl 
+	// TYPE : Circuit 
+	//EDIT: Bob 
+	// REV_DATE : 1.0  04/01/08 
+	 //            1.1  02/02/08 
+   
+		module empp  (//违反
+
+		);
+
+		endmodule
+
+  </specification>
+   </rule>
+   <rule category="C001" conLevel="L002" enable="true" id="CID10953" name="建议时钟信号命名采用 “clk“或者 “Clk_X”，其中 “X” 代表特定含义的时钟频率。" priority="P002">
+      <description>Verilog_A_2_3建议时钟信号命名采用 “clk“或者 “Clk_X”，其中 “X” 代表特定含义的时钟频率。</description>
+      <message>建议时钟信号命名采用 “clk“或者 “Clk_X”，其中 “X” 代表特定含义的时钟频率。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+  
+	module fd11(
+	input wire d_1,
+	input wire cp,
+	input wire rst,
+	output reg q_1 
+   );
+
+	always@(posedge cp)  //违反
+	begin
+		if(rst)
+			begin
+				q_1 &lt;= 1'b0;
+			
+			end	 
+		else
+			begin
+				q_1 &lt;=  d_1; 
+			end	
+		
+	end 
+	
+	endmodule
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L002" enable="true" id="CID10957" name="避免在不同 module 中使用相同的参数名。" priority="P002">
+      <description>Verilog_A_2_7避免在不同 module 中使用相同的参数名。</description>
+      <message>避免在不同 module 中使用相同的参数名。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+  
+	module test1(
+	...
+   );
+	parameter DATA =8'h01;    
+	
+	
+	endmodule
+
+
+    module test2(
+	...
+   );
+	parameter DATA =8'h11;    //违反
+	
+	
+	endmodule
+  </specification>
+   </rule>
+   <rule category="C014" conLevel="L001" enable="true" id="CID10904" name="禁止在算术表达式中同时出现无符号数和有符号数" priority="P001">
+      <description>Verilog_R_9_3禁止在算术表达式中同时出现无符号数和有符号数</description>
+      <message>禁止在算术表达式中同时出现无符号数和有符号数</message>
+      <language>Verilog</language>
+      <specification>
+ 案例代码：
+  ...
+ input signed din1; 
+ input  din2; 
+ output [1:0] dout; 
+ assign dout=din1 + din2;    //违反
+ 
+  </specification>
+   </rule>
+   <rule category="C017" conLevel="L002" enable="true" id="CID10943" name="建议采用标准文件头" priority="P002">
+      <description>Verilog_A_1_1建议采用标准文件头</description>
+      <message>建议采用标准文件头</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码：
+   //....................................
+   
+	// FILE_NAME: clk.v     //遵循
+	//AUTHOR: Robrrl 
+	// TYPE : Circuit 
+	//EDIT: Bob 
+	// REV_DATE : 1.0  04/01/08 
+	 //            1.1  02/02/08 
+   
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10934" name="敏感信号列表中的敏感信号必须齐全，无遗漏，无冗余。" priority="P001">
+      <description>Verilog_R_13_9敏感信号列表中的敏感信号必须齐全，无遗漏，无冗余。</description>
+      <message>敏感信号列表中的敏感信号必须齐全，无遗漏，无冗余。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码: 
+	module fd31(
+		input wire a_1,
+		input wire b_1,
+		input wire sl_1,
+		output reg q_1 
+	);
+
+	always@(a_1 or b_1)         //always的敏感信号列表应正确、完整
+		begin
+			if(!sl)
+				q_1 = a_1;
+			else    
+				q_1 = b_1;
+		end 
+	endmodule  
+
+  </specification>
+   </rule>
+   <rule category="C003" conLevel="L002" enable="true" id="CID10968" name="避免使用内部生成信号作为寄存器的异步复位信号。" priority="P002">
+      <description>Verilog_A_5_3避免使用内部生成信号作为寄存器的异步复位信号。</description>
+      <message>避免使用内部生成信号作为寄存器的异步复位信号。</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码:
+
+	  wire clr;
+	   ......
+	  assign  clr = temp;  //违反
+	 
+	  always@(posedge clk or posedge clr )
+	  begin 
+	  if(clr==1'b1)  //违反
+			...... 
+	  end 
+
+  </specification>
+   </rule>
+   <rule category="C001" conLevel="L001" enable="true" id="CID10879" name="每个文件中只能有一个 module。" priority="P001">
+      <description>Verilog_R_2_5每个文件中只能有一个 module。</description>
+      <message>每个文件中只能有一个 module。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+		module emp1  (
+
+		);
+         ...
+		endmodule
+		
+		module emp2  (//违反
+
+		);
+         ...
+	    endmodule
+  </specification>
+   </rule>
+   <rule category="C003" conLevel="L002" enable="true" id="CID10966" name="建议为复位产生电路创建独立的模块" priority="P002">
+      <description>Verilog_A_5_1建议为复位产生电路创建独立的模块</description>
+      <message>建议为复位产生电路创建独立的模块</message>
+      <language>Verilog</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C015" conLevel="L002" enable="true" id="CID10983" name="建议尽量减少状态机在状态转换时的改变位数。" priority="P002">
+      <description>Verilog_A_14_2建议尽量减少状态机在状态转换时的改变位数。</description>
+      <message>建议尽量减少状态机在状态转换时的改变位数。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+  
+  //建议使用格雷码和独热玛
+  
+ parameter  STATE_IDLE=3'b000,
+		   STATE_STEP1=3'b001,
+		   STATE_STEP2=3'b011,
+		   STATE_STEP3=3'b010,
+		   STATE_STEP4=3'b110,
+		   STATE_STEP5=3'b111,
+		   STATE_STEP6=3'b101,
+		    STATE_STOP=3'b100;    //遵循
+			
+ parameter  STATE_IDLE=7'b0000000,
+		   STATE_STEP1=7'b0000001,
+		   STATE_STEP2=7'b0000010,
+		   STATE_STEP3=7'b0000100,
+		   STATE_STEP4=7'b0001000,
+		   STATE_STEP5=7'b0010000,
+		   STATE_STEP6=7'b0100000,
+		    STATE_STOP=7'b1000000;  //遵循
+		   
+		   
+  </specification>
+   </rule>
+   <rule category="C017" conLevel="L002" enable="true" id="CID10950" name="建议代码注释率不小于 20%。" priority="P002">
+      <description>Verilog_A_1_8建议代码注释率不小于 20%。</description>
+      <message>建议代码注释率不小于 20%。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+  
+   //违反
+   
+	module fd11(
+	input wire d_1,
+	input wire clk_2,
+	input wire clr,
+	output reg q_1 
+   );
+
+	reg in_2,in_3,in_4;
+	
+	always@(posedge clk_2)
+	begin
+		if(clr)
+			begin
+			in_2 &lt;=  1'b0;
+			in_3 &lt;=  1'b0;
+			q_1 &lt;=1'b0;
+			end	 
+		else
+			begin
+				in_2 &lt;=   d_1;	
+				in_3 &lt;=  in_2;
+				q_1 &lt;=  in_3; 
+			end	
+		
+	end 
+	
+	endmodule
+  </specification>
+   </rule>
+   <rule category="C014" conLevel="L001" enable="true" id="CID10903" name="位操作符左边和右边的数据位宽必须一致" priority="P001">
+      <description>Verilog_R_9_2位操作符左边和右边的数据位宽必须一致</description>
+      <message>位操作符左边和右边的数据位宽必须一致</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码：
+		...
+	wire (7:0] w_slot_a;
+	wire (5:0] w _slo1_b;
+	wire [7:0] w_or; 
+	assign w_or = w_slot_a | w _slo1_b;   //违反
+		...
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID10894" name="非 SRAM 型 FPGA，必须对寄存器进行上电初始化，赋固定值" priority="P001">
+      <description>Verilog_R_5_5非 SRAM 型 FPGA，必须对寄存器进行上电初始化，赋固定值</description>
+      <message>非 SRAM 型 FPGA，必须对寄存器进行上电初始化，赋固定值</message>
+      <language>Verilog</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C014" conLevel="L001" enable="true" id="CID10908" name="禁止算术运算结果出现位宽溢出" priority="P001">
+      <description>Verilog_R_9_7禁止算术运算结果出现位宽溢出</description>
+      <message>禁止算术运算结果出现位宽溢出</message>
+      <language>Verilog</language>
+      <specification>
+   案例代码：
+		...
+	wire [7:0]tmp;
+	reg [7:0]tmp1;
+	reg [7:0]tmp2;
+	
+	assign tmp = tmp1 + tmp2;//违反
+  </specification>
+   </rule>
+   <rule category="C007" conLevel="L002" enable="true" id="CID10979" name="建议组合逻辑电路中 If 语句以 else 语句结尾。" priority="P002">
+      <description>Verilog_A_11_5建议组合逻辑电路中 If 语句以 else 语句结尾。</description>
+      <message>建议组合逻辑电路中 If 语句以 else 语句结尾。</message>
+      <language>Verilog</language>
+      <specification>
+  案例代码:
+	...
+	always@(data,en)
+	  begin
+		if(en == 1'b1)        //违反
+		
+			dout1_1 &lt;= data;
+		   
+	  end
+	...
+
+  </specification>
+   </rule>
+</ruleset>

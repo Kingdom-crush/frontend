@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HDL 规则检查前端演示</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">H</div>
+          <div>
+            <strong>HDL Sentinel</strong>
+            <span>规则检查控制台</span>
+          </div>
+        </div>
+
+        <nav class="nav" aria-label="演示导航">
+          <button class="nav-item active" data-view="overview">总览</button>
+          <button class="nav-item" data-view="project">新建项目</button>
+          <button class="nav-item" data-view="sources">被测代码</button>
+          <button class="nav-item" data-view="rules">规则集</button>
+          <button class="nav-item" data-view="runner">执行检查</button>
+          <button class="nav-item" data-view="results">结果审计</button>
+          <button class="nav-item" data-view="reports">报告模板</button>
+          <button class="nav-item" data-view="rtl">RTL 电路图</button>
+          <button class="nav-item" data-view="system">系统适配</button>
+        </nav>
+
+        <div class="sidebar-card">
+          <span class="eyebrow">Demo Mode</span>
+          <p>静态前端演示，不连接真实引擎。用于讨论页面流程、数据边界和可行性。</p>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">HDL Static Analysis Frontend</p>
+            <h1>Verilog / VHDL 规则检查平台</h1>
+          </div>
+          <div class="top-actions">
+            <span class="status-dot"></span>
+            <span>Windows x86</span>
+            <span>Linux x86</span>
+            <span>麒麟 ARM64</span>
+          </div>
+        </header>
+
+        <section class="view active" id="overview">
+          <div class="hero">
+            <div>
+              <p class="eyebrow">可行性讨论版</p>
+              <h2>从项目导入到审计报告的一体化检查流程</h2>
+              <p>
+                演示稿把现有 `spec-hdl`、`vhdl-checker.jar`、规则集 XML、`toif.db`
+                这些资源抽象为本地后端能力，前端专注项目配置、结果呈现、人工审计和报告导出。
+              </p>
+              <div class="hero-actions">
+                <button class="primary nav-jump" data-view="runner">模拟执行检查</button>
+                <button class="secondary nav-jump" data-view="system">查看技术边界</button>
+              </div>
+            </div>
+            <div class="hero-panel">
+              <span class="panel-label">当前样本项目</span>
+              <strong>hdl / new_CAST规则集</strong>
+              <div class="hero-metrics">
+                <div><b>76</b><span>源文件</span></div>
+                <div><b>2,457</b><span>代码行</span></div>
+                <div><b>675</b><span>发现项</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="metric-grid">
+            <article class="metric-card">
+              <span>规则来源</span>
+              <strong>XML 规则集</strong>
+              <p>读取分类、等级、启用状态、规则说明和案例代码。</p>
+            </article>
+            <article class="metric-card">
+              <span>结果来源</span>
+              <strong>SQLite / XML</strong>
+              <p>优先使用 `toif.db` 驱动热点统计、审计状态和详情表。</p>
+            </article>
+            <article class="metric-card">
+              <span>执行来源</span>
+              <strong>本地引擎适配器</strong>
+              <p>Windows/Linux `spec-hdl` 与 Java `vhdl-checker` 统一封装。</p>
+            </article>
+            <article class="metric-card">
+              <span>交付形态</span>
+              <strong>Web UI + 本地后端</strong>
+              <p>前端负责交互，后端负责文件、进程、插件和授权。</p>
+            </article>
+          </div>
+
+          <div class="pipeline">
+            <div><span>01</span>创建项目</div>
+            <div><span>02</span>导入 RTL / 工程文件</div>
+            <div><span>03</span>选择规则集</div>
+            <div><span>04</span>调用静态分析引擎</div>
+            <div><span>05</span>展示结果与人工审计</div>
+            <div><span>06</span>生成报告</div>
+          </div>
+        </section>
+
+        <section class="view" id="project">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Project Wizard</p>
+              <h2>新建检查项目</h2>
+            </div>
+            <button class="primary">保存项目草稿</button>
+          </div>
+
+          <div class="wizard-grid">
+            <article class="card wide">
+              <h3>基础信息</h3>
+              <div class="form-grid">
+                <label>项目名称<input value="avionics_hdl_review" /></label>
+                <label>分析人<input value="admin" /></label>
+                <label>项目位置<input value="D:\Projects\HDLReview\avionics_hdl_review" /></label>
+                <label>默认规则集<select><option>new_CAST规则集</option><option>GJB规则集</option></select></label>
+              </div>
+            </article>
+
+            <article class="card">
+              <h3>导入方式</h3>
+              <div class="choice-list">
+                <label><input type="checkbox" checked /> RTL 文件夹</label>
+                <label><input type="checkbox" checked /> Vivado `.xpr`</label>
+                <label><input type="checkbox" /> Quartus `.qsf/.qip`</label>
+                <label><input type="checkbox" /> Lattice `.ldf/.prj`</label>
+              </div>
+            </article>
+
+            <article class="card">
+              <h3>项目产物</h3>
+              <ul class="check-list">
+                <li>生成 `project.json` 保存前端项目状态</li>
+                <li>生成 `analysis.conf` 供引擎执行</li>
+                <li>生成 `results.db` 保存结果与审计</li>
+                <li>保留原始 stdout/stderr 日志</li>
+              </ul>
+            </article>
+          </div>
+
+          <article class="card">
+            <h3>跨平台引擎选择</h3>
+            <div class="engine-table">
+              <div class="engine-row head"><span>平台</span><span>Verilog 引擎</span><span>VHDL 引擎</span><span>状态</span></div>
+              <div class="engine-row"><span>Windows x86</span><span>spec-hdl.exe</span><span>java -jar vhdl-checker.jar</span><b class="ok">可配置</b></div>
+              <div class="engine-row"><span>Linux x86</span><span>spec-hdl</span><span>java -jar vhdl-checker.jar</span><b class="ok">已发现</b></div>
+              <div class="engine-row"><span>麒麟 ARM64</span><span>待提供</span><span>JRE + jar</span><b class="warn">需验证</b></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="view" id="sources">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Source Manager</p>
+              <h2>被测代码管理</h2>
+            </div>
+            <div class="button-row">
+              <button class="secondary">添加文件</button>
+              <button class="secondary">导入工程</button>
+            </div>
+          </div>
+
+          <div class="split">
+            <article class="card wide">
+              <h3>源文件清单</h3>
+              <table class="data-table">
+                <thead>
+                  <tr><th>文件</th><th>语言</th><th>来源</th><th>行数</th><th>状态</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>rtl/fd29.v</td><td>Verilog</td><td>RTL 文件夹</td><td>42</td><td><span class="pill ok">已纳入</span></td></tr>
+                  <tr><td>rtl/R6_2_4_1_3.vhd</td><td>VHDL</td><td>工程文件</td><td>61</td><td><span class="pill ok">已纳入</span></td></tr>
+                  <tr><td>ip/clock_sync.v</td><td>Verilog</td><td>手动添加</td><td>136</td><td><span class="pill warn">待确认</span></td></tr>
+                  <tr><td>sim/tb_top.v</td><td>Verilog</td><td>RTL 文件夹</td><td>220</td><td><span class="pill muted">已排除</span></td></tr>
+                </tbody>
+              </table>
+            </article>
+            <aside class="card">
+              <h3>导入规则</h3>
+              <p>自动识别 `.v`、`.vh`、`.sv`、`.vhd`、`.vhdl`，工程文件导入后支持人工勾选最终被测代码。</p>
+              <div class="source-stat"><b>76</b><span>已纳入文件</span></div>
+              <div class="source-stat"><b>2</b><span>被排除测试文件</span></div>
+              <div class="source-stat"><b>0</b><span>路径异常</span></div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view" id="rules">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Ruleset Manager</p>
+              <h2>规则集管理</h2>
+            </div>
+            <div class="button-row">
+              <button class="secondary">复制为自定义规则集</button>
+              <button class="primary">新建规则集</button>
+            </div>
+          </div>
+
+          <div class="rules-layout">
+            <article class="card rules-browser">
+              <div class="card-toolbar">
+                <h3>规则清单</h3>
+                <input id="ruleSearch" placeholder="搜索 CID / 规则名称 / 分类" />
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr><th>CID</th><th>规则</th><th>分类</th><th>等级</th><th>启用</th></tr>
+                </thead>
+                <tbody id="rulesBody">
+                  <tr data-key="CID9427 跨时钟域 同步处理 C005"><td>CID9427</td><td>对跨时钟域信号，应采取同步处理措施</td><td>C005 异步电路</td><td><select class="severity"><option>严重违规</option><option>一般违规</option></select></td><td><input type="checkbox" checked /></td></tr>
+                  <tr data-key="CID9588 模块名 文件名 命名 C001"><td>CID9588</td><td>模块名和文件名宜保持一致</td><td>C001 命名</td><td><select class="severity"><option>一般违规</option><option>严重违规</option></select></td><td><input type="checkbox" checked /></td></tr>
+                  <tr data-key="CID9038 敏感信号列表 C006"><td>CID9038</td><td>敏感信号列表应齐全，无遗漏、无冗余</td><td>C006 语法约束</td><td><select class="severity"><option>严重违规</option><option>一般违规</option></select></td><td><input type="checkbox" checked /></td></tr>
+                  <tr data-key="CID10954 复位信号 命名 C001"><td>CID10954</td><td>复位信号命名宜以 rst_/reset_ 开始</td><td>C001 命名</td><td><select class="severity"><option>一般违规</option><option>严重违规</option></select></td><td><input type="checkbox" checked /></td></tr>
+                </tbody>
+              </table>
+            </article>
+
+            <aside class="card rule-preview">
+              <h3>规则帮助信息</h3>
+              <span class="pill danger">严重违规</span>
+              <h4>CID9427 对跨时钟域信号，应采取同步处理措施</h4>
+              <p>帮助栏从当前规则集 XML 的 `description`、`message`、`specification` 读取，用于审计人员理解违规原因。</p>
+              <pre>always @(posedge clk_b) begin
+  data_b <= data_a; // 跨时钟域未同步
+end</pre>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view" id="runner">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Run Center</p>
+              <h2>执行检查</h2>
+            </div>
+            <button class="primary" id="runDemo">模拟执行</button>
+          </div>
+
+          <div class="runner-grid">
+            <article class="card command-card">
+              <h3>命令预览</h3>
+              <div class="tabs">
+                <button class="tab active" data-platform="windows">Windows</button>
+                <button class="tab" data-platform="linux">Linux</button>
+                <button class="tab" data-platform="kylin">麒麟 ARM64</button>
+              </div>
+              <pre id="commandPreview">spec-hdl.exe D:\Projects\rtl\fd29.v
+java -jar vhdl-checker.jar -checks D:\Projects\rtl\R6_2_4_1_3.vhd</pre>
+            </article>
+
+            <article class="card">
+              <h3>执行队列</h3>
+              <div class="job-list">
+                <div><span>解析项目文件</span><b class="ok">完成</b></div>
+                <div><span>生成 analysis.conf</span><b class="ok">完成</b></div>
+                <div><span>调用 spec-hdl</span><b id="jobSpec">等待</b></div>
+                <div><span>调用 vhdl-checker</span><b id="jobVhdl">等待</b></div>
+                <div><span>写入 results.db</span><b id="jobDb">等待</b></div>
+              </div>
+            </article>
+
+            <article class="card wide">
+              <h3>运行进度</h3>
+              <div class="progress-line"><span>总体进度</span><div><i id="progressBar"></i></div><b id="progressText">0%</b></div>
+              <div class="log-panel" id="logPanel">
+                <p>[ready] 等待用户启动检查...</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="results">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Findings & Audit</p>
+              <h2>规则检查结果与人工审计</h2>
+            </div>
+            <div class="review-counter"><b id="reviewedCount">256</b> / 675 已审计</div>
+          </div>
+
+          <div class="result-grid">
+            <article class="card stat-card"><span>发现项</span><b>675</b><p>来自 spec-hdl 与 vhdl-checker</p></article>
+            <article class="card stat-card"><span>严重违规</span><b>411</b><p>按规则集 conLevel 汇总</p></article>
+            <article class="card stat-card"><span>一般违规</span><b>264</b><p>可批量改为不违规</p></article>
+            <article class="card stat-card"><span>审计通过率</span><b id="reviewRate">38%</b><p>示例状态，可由 confirmflag 驱动</p></article>
+          </div>
+
+          <div class="split">
+            <article class="card wide">
+              <h3>热点统计</h3>
+              <div class="bar-chart">
+                <div><span>6_2_7_1_5.v</span><i style="--w: 92%"></i><b>27</b></div>
+                <div><span>6_2_7_1_4.v</span><i style="--w: 92%"></i><b>27</b></div>
+                <div><span>6_2_7_1_3.v</span><i style="--w: 92%"></i><b>27</b></div>
+                <div><span>R6_2_9_1_3.vhd</span><i style="--w: 68%"></i><b>20</b></div>
+                <div><span>R6_2_4_1_3.vhd</span><i style="--w: 54%"></i><b>16</b></div>
+              </div>
+            </article>
+            <aside class="card">
+              <h3>规则分布</h3>
+              <div class="donut" aria-label="严重违规 61%, 一般违规 39%"></div>
+              <div class="legend"><span><i class="danger"></i>严重违规 61%</span><span><i class="info"></i>一般违规 39%</span></div>
+            </aside>
+          </div>
+
+          <div class="audit-layout">
+            <article class="card audit-table">
+              <div class="card-toolbar">
+                <h3>违规详情</h3>
+                <button class="secondary" id="bulkAudit">批量标记为违规</button>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr><th>状态</th><th>文件 / 行</th><th>CID</th><th>说明</th><th>审计</th></tr>
+                </thead>
+                <tbody>
+                  <tr class="finding-row active" data-rule="CID9427" data-message="对跨时钟域信号，应采取同步处理措施">
+                    <td><span class="pill muted">未审计</span></td><td>fd29.v:29</td><td>CID9427</td><td>对跨时钟域信号，应采取同步处理措施</td><td><button class="mini audit-ok">违规</button><button class="mini audit-no">不违规</button></td>
+                  </tr>
+                  <tr class="finding-row" data-rule="CID9588" data-message="文件名和模块名宜保持一致">
+                    <td><span class="pill ok">违规</span></td><td>6_2_6_1_2.v:3</td><td>CID9588</td><td>文件名和模块名宜保持一致</td><td><button class="mini audit-ok">违规</button><button class="mini audit-no">不违规</button></td>
+                  </tr>
+                  <tr class="finding-row" data-rule="CID9038" data-message="敏感信号列表应齐全">
+                    <td><span class="pill warn">不违规</span></td><td>R6_2_1_1_1.vhd:24</td><td>CID9038</td><td>敏感信号列表应齐全</td><td><button class="mini audit-ok">违规</button><button class="mini audit-no">不违规</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </article>
+
+            <aside class="card help-pane">
+              <h3>帮助栏</h3>
+              <span id="helpRule" class="pill danger">CID9427</span>
+              <h4 id="helpTitle">对跨时钟域信号，应采取同步处理措施</h4>
+              <p>从规则集 XML 中读取说明、建议修复方法和示例代码。双击详情行时，主区域可以打开源文件并定位到行号。</p>
+              <pre id="codePreview">29  always @(posedge clk_b) begin
+30    data_b <= data_a;
+31  end</pre>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view" id="reports">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Report Center</p>
+              <h2>报告生成与模板管理</h2>
+            </div>
+            <button class="primary">生成报告</button>
+          </div>
+
+          <div class="report-grid">
+            <article class="card">
+              <h3>报告格式</h3>
+              <div class="format-list">
+                <span>Word</span><span>PDF</span><span>Excel</span><span>HTML</span><span>TXT</span>
+              </div>
+              <p>演示里只展示前端入口；真实实现由后端调用外置文档生成插件。</p>
+            </article>
+            <article class="card wide">
+              <h3>模板管理</h3>
+              <table class="data-table">
+                <thead><tr><th>模板</th><th>适用规则集</th><th>版本</th><th>状态</th></tr></thead>
+                <tbody>
+                  <tr><td>GJB 审查报告模板.docx</td><td>GJB规则集</td><td>v1.3</td><td><span class="pill ok">默认</span></td></tr>
+                  <tr><td>CAST 快速评估模板.docx</td><td>new_CAST规则集</td><td>v2.0</td><td><span class="pill muted">可选</span></td></tr>
+                  <tr><td>客户自定义模板.docx</td><td>自定义规则集</td><td>v1.0</td><td><span class="pill warn">待校验</span></td></tr>
+                </tbody>
+              </table>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="rtl">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">RTL Explorer</p>
+              <h2>RTL 电路图查看</h2>
+            </div>
+            <button class="secondary">导出 SVG</button>
+          </div>
+
+          <div class="rtl-layout">
+            <article class="card rtl-canvas">
+              <svg viewBox="0 0 860 420" role="img" aria-label="RTL 模块连接图">
+                <defs>
+                  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#294a44" />
+                  </marker>
+                </defs>
+                <rect x="40" y="72" width="170" height="110" rx="22" class="node-a" />
+                <text x="72" y="118">clock_sync</text>
+                <text x="72" y="145" class="svg-sub">clk_a, clk_b, rst_n</text>
+                <rect x="350" y="42" width="180" height="125" rx="22" class="node-b" />
+                <text x="392" y="92">fsm_core</text>
+                <text x="392" y="119" class="svg-sub">state, next_state</text>
+                <rect x="350" y="245" width="180" height="125" rx="22" class="node-c" />
+                <text x="393" y="295">data_path</text>
+                <text x="393" y="322" class="svg-sub">din, dout, valid</text>
+                <rect x="650" y="132" width="165" height="130" rx="22" class="node-d" />
+                <text x="690" y="186">top_out</text>
+                <text x="690" y="214" class="svg-sub">out_data</text>
+                <path d="M210 127 C270 127 290 100 350 100" class="edge" />
+                <path d="M210 150 C270 205 285 304 350 304" class="edge hot" />
+                <path d="M530 105 C592 116 610 152 650 172" class="edge" />
+                <path d="M530 305 C596 286 608 220 650 205" class="edge" />
+              </svg>
+            </article>
+            <aside class="card">
+              <h3>选中节点</h3>
+              <span class="pill danger">clock_sync</span>
+              <p>模块包含 2 个跨时钟域信号，其中 1 条未同步路径命中 `CID9427`。</p>
+              <div class="source-stat"><b>3</b><span>输入信号</span></div>
+              <div class="source-stat"><b>2</b><span>输出信号</span></div>
+              <div class="source-stat"><b>1</b><span>高风险连接</span></div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view" id="system">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Feasibility</p>
+              <h2>系统适配与技术边界</h2>
+            </div>
+          </div>
+
+          <div class="system-grid">
+            <article class="card">
+              <h3>前端职责</h3>
+              <p>展示项目、规则、执行状态、结果、审计、报告、RTL 图。所有本地敏感能力通过后端 API 完成。</p>
+            </article>
+            <article class="card">
+              <h3>本地后端职责</h3>
+              <p>调用 `spec-hdl` / `vhdl-checker.jar`，解析输出，读写 SQLite，管理文件和插件。</p>
+            </article>
+            <article class="card">
+              <h3>规则集兼容</h3>
+              <p>读取现有 XML；内置规则集只读，自定义规则集允许复制、增删规则、调整等级。</p>
+            </article>
+            <article class="card">
+              <h3>需要确认</h3>
+              <p>麒麟 ARM64 引擎、报告插件接口、软件锁 SDK、RTL 图生成来源。</p>
+            </article>
+          </div>
+
+          <article class="card roadmap">
+            <h3>建议落地顺序</h3>
+            <ol>
+              <li>MVP：项目、规则、执行、结果、审计。</li>
+              <li>兼容层：导入旧 `toif.db`，输出新 `results.db`。</li>
+              <li>插件层：报告生成、软件锁授权、RTL 图生成。</li>
+              <li>跨平台打包：Windows x86、Linux x86、麒麟 ARM64 分别验证。</li>
+            </ol>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

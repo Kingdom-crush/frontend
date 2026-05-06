@@ -1,0 +1,8 @@
+1，创建项目指令，-s后面是源代码路径，-p后面是工程路径，-l后面是语言，默认v_vhd就行
+hdl-checker.bat create -s ..\hdl_src -p .\workspace\prj9-3 -l v_vhd
+
+2，分析指令，-r是规则集名，根据用户选择（最好去掉中文，linux可能有问题），-p跟上面一样
+hdl-checker.bat analyze -r new_CAST -p .\workspace\prj9-3
+
+3，生成报告指令（仅限html，后面再增加其他格式），-p跟上面一样，-f后面固定是html，-o是生成报告的位置
+hdl-checker.bat report -p .\workspace\prj9-3 -f html -o .\workspace\prj9-3\report

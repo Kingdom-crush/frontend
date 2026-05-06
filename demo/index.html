@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SunwiseHDLChecker Web Demo</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="desktop-shell">
+    <header class="window-bar">
+      <div class="window-title">
+        <span class="window-mark"></span>
+        <span>结果审查 - test/out/test.xml - SunwiseHDLChecker</span>
+      </div>
+      <div class="window-buttons">
+        <button type="button">_</button>
+        <button type="button">□</button>
+        <button type="button">×</button>
+      </div>
+    </header>
+
+    <nav class="menu-bar" aria-label="菜单栏">
+      <div class="menu-item">
+        <button class="menu-trigger" data-menu="project" type="button">工程(E)</button>
+        <div class="menu-popup" id="projectMenu">
+          <button id="menuCreateProjectBtn" type="button">新建工程</button>
+          <button id="menuLoadProjectBtn" type="button">加载项目</button>
+          <button id="menuSaveProjectBtn" type="button">保存项目</button>
+        </div>
+      </div>
+      <div class="menu-item">
+        <button class="menu-trigger" data-menu="config" type="button">配置(C)</button>
+        <div class="menu-popup" id="configMenu">
+          <button id="menuProjectPageBtn" type="button">打开项目管理</button>
+          <button id="menuOpenConfigBtn" type="button">打开分析配置</button>
+          <button id="menuSourceListBtn" type="button">源文件列表管理</button>
+        </div>
+      </div>
+      <div class="menu-item">
+        <button class="menu-trigger" data-menu="check" type="button">规则检查(S)</button>
+        <div class="menu-popup" id="checkMenu">
+          <button id="menuRulesetBtn" type="button">选择规则集</button>
+          <button id="menuRunCheckBtn" type="button">运行代码规则检查</button>
+          <button id="menuResultViewBtn" type="button">打开结果浏览视图</button>
+        </div>
+      </div>
+      <div class="menu-item">
+        <button class="menu-trigger" data-menu="result" type="button">分析结果(R)</button>
+        <div class="menu-popup" id="resultMenu">
+          <button id="menuReportBtn" type="button">查看分析报告</button>
+          <button id="menuExportHtmlBtn" type="button">导出 HTML 报告</button>
+          <button id="menuExportDocBtn" type="button">导出 Word 报告</button>
+          <button id="menuExportPdfBtn" type="button">导出 PDF 报告</button>
+          <button id="menuExportExcelBtn" type="button">导出 Excel 报告</button>
+          <button id="menuExportWpsBtn" type="button">导出 WPS 报告</button>
+        </div>
+      </div>
+      <div class="menu-item">
+        <button class="menu-trigger" data-menu="help" type="button">帮助(H)</button>
+        <div class="menu-popup" id="helpMenu">
+          <button id="menuHelpDocBtn" type="button">打开帮助说明</button>
+          <button id="menuQuickStartBtn" type="button">查看快速入门流程</button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="tool-bar">
+      <div class="tool-actions">
+        <button class="tool-action" id="toolCreateProjectBtn" type="button">
+          <span class="tool-glyph plus"></span>
+          <span>新建工程</span>
+        </button>
+        <button class="tool-action" id="toolLoadProjectBtn" type="button">
+          <span class="tool-glyph open"></span>
+          <span>加载项目</span>
+        </button>
+        <button class="tool-action" id="toolSaveProjectBtn" type="button">
+          <span class="tool-glyph save"></span>
+          <span>保存项目</span>
+        </button>
+        <button class="tool-action" id="toolOpenConfigBtn" type="button">
+          <span class="tool-glyph config"></span>
+          <span>打开配置</span>
+        </button>
+        <button class="tool-action" id="toolSourceListBtn" type="button">
+          <span class="tool-glyph list"></span>
+          <span>源文件列表</span>
+        </button>
+        <button class="tool-action" id="toolRunCheckBtn" type="button">
+          <span class="tool-glyph run"></span>
+          <span>运行检查</span>
+        </button>
+        <button class="tool-action" id="toolReportBtn" type="button">
+          <span class="tool-glyph report"></span>
+          <span>查看报告</span>
+        </button>
+      </div>
+
+      <div class="toolbar-meta">
+        <label class="meta-inline" for="activeProjectSelect">
+          <span>工程</span>
+          <select id="activeProjectSelect"></select>
+        </label>
+        <label class="meta-inline" for="activeRulesetSelect">
+          <span>规则集</span>
+          <select id="activeRulesetSelect"></select>
+        </label>
+        <button class="audit-button" id="runSelectedProjectBtn" type="button">运行检查</button>
+        <button class="audit-button" id="reportSelectedProjectBtn" type="button">查看报告</button>
+      </div>
+    </div>
+
+    <main class="workbench">
+      <aside class="left-column">
+        <section class="dock-panel">
+          <div class="panel-title">
+            <strong>项目资源管理器</strong>
+            <div class="panel-actions">
+              <button type="button">+</button>
+              <button type="button">▾</button>
+            </div>
+          </div>
+          <div class="tree-view" id="projectTree"></div>
+        </section>
+
+        <div class="splitter horizontal" id="leftColumnSplitter" aria-label="调整左侧面板高度" role="separator"></div>
+
+        <section class="dock-panel">
+          <div class="panel-title">
+            <strong>检查结果浏览视图</strong>
+            <div class="panel-actions">
+              <button type="button">⟳</button>
+              <button type="button">▾</button>
+            </div>
+          </div>
+          <div class="tree-summary" id="browserSummary"></div>
+          <div class="tree-view result-tree" id="resultTree"></div>
+        </section>
+      </aside>
+
+      <div class="splitter vertical" id="leftSplitter" aria-label="调整左侧面板宽度" role="separator"></div>
+
+      <section class="center-column">
+        <div class="tab-strip project-tabs" id="projectTabs"></div>
+        <div class="tab-strip workspace-tabs" id="workspaceTabs"></div>
+
+        <section class="workspace-frame">
+          <div class="workspace-page" id="page-source">
+            <section class="source-section">
+              <div class="section-head">
+                <span class="section-arrow">▾</span>
+                <strong>文件快照</strong>
+              </div>
+              <div class="source-toolbar">
+                <div class="source-path" id="sourcePath"></div>
+                <div class="source-meta" id="sourceMeta"></div>
+              </div>
+              <div class="source-viewer" id="sourceViewer"></div>
+            </section>
+          </div>
+
+          <div class="workspace-page active" id="page-report">
+            <section class="section-box">
+              <div class="section-head">
+                <span class="section-arrow">▾</span>
+                <strong>分析概述</strong>
+              </div>
+              <div class="overview-grid">
+                <div class="metric-box blue" id="metricCompile">
+                  <span>编译错误数</span>
+                  <strong>0</strong>
+                </div>
+                <div class="metric-box purple" id="metricViolation">
+                  <span>规则违反数</span>
+                  <strong>0</strong>
+                  <em id="metricAuditState">未确认/其他</em>
+                </div>
+                <div class="metric-box violet" id="metricLoc">
+                  <span>代码行数</span>
+                  <strong>0</strong>
+                </div>
+                <div class="metric-box navy" id="metricSourceCount">
+                  <span>源文件个数</span>
+                  <strong>0</strong>
+                </div>
+
+                <div class="overview-card info-card">
+                  <h3>概要信息</h3>
+                  <dl class="info-grid">
+                    <div><dt>工程名:</dt><dd id="infoProjectName"></dd></div>
+                    <div><dt>分析人:</dt><dd id="infoAnalyst"></dd></div>
+                    <div><dt>规则集:</dt><dd id="infoRuleset"></dd></div>
+                    <div><dt>规则数:</dt><dd id="infoRuleCount"></dd></div>
+                    <div><dt>有效行数:</dt><dd id="infoEffectiveLoc"></dd></div>
+                    <div><dt>注释率:</dt><dd id="infoCommentRate"></dd></div>
+                    <div><dt>规则总数:</dt><dd id="infoRulesetTotal"></dd></div>
+                    <div><dt>分析时间:</dt><dd id="infoRuntime"></dd></div>
+                    <div><dt>开始时间:</dt><dd id="infoStartTime"></dd></div>
+                    <div><dt>结束时间:</dt><dd id="infoEndTime"></dd></div>
+                    <div><dt>已审计:</dt><dd id="infoAudited"></dd></div>
+                  </dl>
+                </div>
+
+                <div class="overview-card export-card">
+                  <h3>生成报告</h3>
+                  <div class="template-box">
+                    <label for="templateSelect">模板选择</label>
+                    <select id="templateSelect"></select>
+                  </div>
+                  <div class="template-box">
+                    <label for="reportFormatSelect">导出格式</label>
+                    <select id="reportFormatSelect">
+                      <option value="HTML">HTML</option>
+                      <option value="Word">Word</option>
+                      <option value="PDF">PDF</option>
+                      <option value="Excel">Excel</option>
+                      <option value="WPS">WPS</option>
+                    </select>
+                  </div>
+                  <div class="report-actions stacked">
+                    <button id="openGeneratedReportBtn" type="button">打开 HTML 报告</button>
+                    <button id="exportReportBtn" type="button">导出报告</button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="section-box hotspot-box">
+              <div class="section-head">
+                <span class="section-arrow">▾</span>
+                <strong>规则违反热点统计</strong>
+              </div>
+              <div class="hotspot-grid">
+                <article class="chart-panel">
+                  <h3>检出规则违反最多的五个文件及数量如下</h3>
+                  <div class="chart-bars" id="fileChart"></div>
+                </article>
+                <article class="chart-panel">
+                  <h3>检出违反最多的五条规则及数量如下</h3>
+                  <div class="chart-bars" id="ruleChart"></div>
+                </article>
+              </div>
+            </section>
+
+            <section class="section-box design-summary-box">
+              <div class="section-head">
+                <span class="section-arrow">▾</span>
+                <strong>层次化调用与 IP 识别</strong>
+              </div>
+              <div class="design-grid">
+                <article class="chart-panel">
+                  <h3>层次化调用</h3>
+                  <div class="hierarchy-view" id="hierarchyView"></div>
+                </article>
+                <article class="chart-panel">
+                  <h3>IP 黑盒识别</h3>
+                  <table class="flat-table ip-table">
+                    <thead>
+                      <tr>
+                        <th>名称</th>
+                        <th>类型</th>
+                        <th>状态</th>
+                        <th>来源</th>
+                      </tr>
+                    </thead>
+                    <tbody id="ipTableBody"></tbody>
+                  </table>
+                </article>
+              </div>
+            </section>
+          </div>
+
+          <div class="workspace-page" id="page-project">
+            <section class="section-box">
+              <div class="section-head">
+                <span class="section-arrow">▾</span>
+                <strong>项目管理</strong>
+              </div>
+              <div class="management-toolbar">
+                <button id="saveProjectBtn" type="button">保存工程</button>
+                <button id="browsePathBtn" type="button">打开分析配置</button>
+                <button id="uploadSourceBtn" type="button">导入源文件</button>
+              </div>
+              <div class="management-grid">
+                <article class="manager-card">
+                  <h3>项目属性</h3>
+                  <div class="form-grid">
+                    <label>
+                      <span>项目名称</span>
+                      <input id="projectNameInput" type="text">
+                    </label>
+                    <label>
+                      <span>分析人</span>
+                      <input id="analystInput" type="text">
+                    </label>
+                    <label class="path-field wide-field">
+                      <span>项目位置</span>
+                      <div class="input-with-button">
+                        <input id="projectPathInput" type="text">
+                        <button id="selectPathBtn" type="button">选择...</button>
+                      </div>
+                    </label>
+                    <label>
+                      <span>创建方式</span>
+                      <select id="importModeSelect"></select>
+                    </label>
+                    <label>
+                      <span>当前规则集</span>
+                      <input id="currentRulesetInput" type="text" readonly>
+                    </label>
+                  </div>
+                </article>
+
+                <article class="manager-card">
+                  <h3>已保存项目</h3>
+                  <div class="saved-projects" id="savedProjects"></div>
+                </article>
+
+                <article class="manager-card full-width">
+                  <h3>源文件列表管理</h3>
+                  <table class="flat-table">
+                    <thead>
+                      <tr>
+                        <th>路径</th>
+                        <th>语言</th>
+                        <th>来源</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                      </tr>
+                    </thead>
+                    <tbody id="sourcePreviewBody"></tbody>
+                  </table>
+                </article>
+
+                <article class="manager-card full-width">
+                  <h3>RTL 约束文件检查</h3>
+                  <table class="flat-table">
+                    <thead>
+                      <tr>
+                        <th>约束文件</th>
+                        <th>语法</th>
+                        <th>一致性</th>
+                        <th>完备性</th>
+                      </tr>
+                    </thead>
+                    <tbody id="constraintTableBody"></tbody>
+                  </table>
+                </article>
+
+                <article class="manager-card full-width">
+                  <h3>自动化集成接口</h3>
+                  <div class="integration-box" id="integrationBox"></div>
+                </article>
+              </div>
+            </section>
+          </div>
+
+          <div class="workspace-page" id="page-rules">
+            <section class="section-box">
+              <div class="section-head">
+                <span class="section-arrow">▾</span>
+                <strong>规则集管理</strong>
+              </div>
+              <div class="management-toolbar">
+                <button id="createRulesetBtn" type="button">新建规则集</button>
+                <button id="saveRulesetBtn" type="button">保存自定义规则集</button>
+                <button id="runCheckBtn" type="button">执行检查</button>
+                <span class="current-ruleset-tag" id="currentRulesetTag"></span>
+              </div>
+              <div class="rules-layout">
+                <article class="manager-card ruleset-list-card">
+                  <h3>规则集列表</h3>
+                  <div class="ruleset-list" id="rulesetList"></div>
+                </article>
+
+                <article class="manager-card rule-editor-card">
+                  <div class="rule-editor-head">
+                    <h3>规则明细</h3>
+                    <div class="rule-search">
+                      <input id="ruleSearchInput" type="search" placeholder="搜索指定规则">
+                    </div>
+                  </div>
+                  <div class="new-ruleset-box">
+                    <label>
+                      <span>新规则集名称</span>
+                      <input id="newRulesetName" type="text" value="五院VHDL规则集_审计版">
+                    </label>
+                    <label>
+                      <span>基于规则集</span>
+                      <select id="baseRulesetSelect"></select>
+                    </label>
+                  </div>
+                  <table class="flat-table rule-table">
+                    <thead>
+                      <tr>
+                        <th>选择</th>
+                        <th>规则编号</th>
+                        <th>规则名称</th>
+                        <th>分类</th>
+                        <th>等级</th>
+                      </tr>
+                    </thead>
+                    <tbody id="ruleTableBody"></tbody>
+                  </table>
+                </article>
+
+                <article class="manager-card rule-note-card">
+                  <h3>编辑说明</h3>
+                  <div class="note-list">
+                    <p>原厂规则集默认只读，不直接修改。</p>
+                    <p>新建规则集可从已有规则集中勾选若干规则组成。</p>
+                    <p>自定义规则集保存到单独的用户规则目录。</p>
+                    <p>执行进度按快速入门里的流程放在当前页右侧，便于在配规则后直接发起检查。</p>
+                  </div>
+                  <div class="progress-panel">
+                    <div class="progress-row"><span>解析项目</span><b id="progressProject">完成</b></div>
+                    <div class="progress-row"><span>加载规则集</span><b id="progressRules">完成</b></div>
+                    <div class="progress-row"><span>执行检查</span><b id="progressRun">待执行</b></div>
+                    <div class="progress-row"><span>写入结果</span><b id="progressResult">待执行</b></div>
+                    <div class="progress-line">
+                      <span>执行进度</span>
+                      <div class="progress-track"><i id="progressBar"></i></div>
+                      <strong id="progressText">0%</strong>
+                    </div>
+                    <div class="progress-log" id="progressLog"></div>
+                  </div>
+                </article>
+              </div>
+            </section>
+          </div>
+
+          <div class="workspace-page" id="page-state">
+            <section class="section-box">
+              <div class="section-head">
+                <span class="section-arrow">▾</span>
+                <strong>状态机图</strong>
+              </div>
+              <div class="state-layout">
+                <article class="state-canvas-card">
+                  <svg class="state-svg" viewBox="0 0 860 340" role="img" aria-label="状态机图">
+                    <defs>
+                      <marker id="stateArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                        <path d="M0,0 L0,6 L9,3 z" fill="#5878a4"></path>
+                      </marker>
+                    </defs>
+                    <rect x="40" y="120" width="170" height="72" rx="6"></rect>
+                    <rect x="345" y="38" width="180" height="72" rx="6"></rect>
+                    <rect x="345" y="228" width="180" height="72" rx="6"></rect>
+                    <rect x="650" y="120" width="170" height="72" rx="6"></rect>
+                    <text x="95" y="162">IDLE</text>
+                    <text x="402" y="80">LOAD_CFG</text>
+                    <text x="401" y="270">CHECK_DATA</text>
+                    <text x="693" y="162">REPORT</text>
+                    <path d="M210 156 C278 156 282 74 345 74"></path>
+                    <path d="M210 156 C278 156 285 264 345 264"></path>
+                    <path d="M525 74 C588 74 602 156 650 156"></path>
+                    <path d="M525 264 C588 264 602 176 650 176"></path>
+                  </svg>
+                </article>
+
+                <article class="manager-card state-info-card">
+                  <h3>节点说明</h3>
+                  <div class="state-node">当前节点: CHECK_DATA</div>
+                  <p>该页保留你意见里的“原电路图页改成状态机图”的要求，但仍然维持在工作台式布局内，不再采用单独的现代化页面。</p>
+                  <ul class="state-list">
+                    <li>输入条件: `data_valid = 1`</li>
+                    <li>命中规则: `VHDL_2_1_1_14`</li>
+                    <li>建议动作: 查看帮助栏和详细违反表</li>
+                  </ul>
+                </article>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <div class="splitter horizontal" id="detailSplitter" aria-label="调整明细视图高度" role="separator"></div>
+
+        <section class="detail-frame">
+          <div class="panel-title">
+            <strong>检查结果详细视图</strong>
+            <div class="detail-status" id="auditedSummary"></div>
+          </div>
+          <div class="detail-toolbar">
+            <input id="resultSearchInput" type="search" placeholder="请输入搜索关键词">
+            <select id="resultViewSelect">
+              <option value="rule">按违反规则条目</option>
+              <option value="file">按文件</option>
+              <option value="status">按问题级别</option>
+              <option value="category">按规则类别</option>
+            </select>
+            <button id="searchBtn" type="button">搜索</button>
+            <button id="clearSearchBtn" type="button">清除</button>
+            <button id="markViolationBtn" type="button">违反</button>
+            <button id="markPassBtn" type="button">不违反</button>
+            <button id="markPendingBtn" type="button">未确认</button>
+            <button id="markAllViolationBtn" type="button">全部违反</button>
+            <button id="markAllPassBtn" type="button">全部不违反</button>
+            <button id="markAllPendingBtn" type="button">全部未确认</button>
+            <button id="openCircuitBtn" type="button">查看电路图</button>
+          </div>
+          <div class="result-pager hidden" id="backendResultPager">
+            <span id="backendResultPagerInfo">后端分页未启用</span>
+            <button id="backendResultPrevBtn" type="button">上一页</button>
+            <label>第 <input id="backendResultPageInput" type="number" min="1" value="1"> 页</label>
+            <button id="backendResultNextBtn" type="button">下一页</button>
+            <label>每页
+              <select id="backendResultPageSizeSelect">
+                <option value="50">50</option>
+                <option value="100" selected>100</option>
+                <option value="200">200</option>
+                <option value="500">500</option>
+              </select>
+              条
+            </label>
+          </div>
+          <div class="table-wrap">
+            <table class="detail-table">
+              <thead>
+                <tr>
+                  <th>违反情况</th>
+                  <th data-sort="rule">规则</th>
+                  <th data-sort="level">级别</th>
+                  <th data-sort="file">源文件</th>
+                  <th data-sort="line">行号</th>
+                  <th data-sort="conf">置信度</th>
+                  <th data-sort="info">信息</th>
+                  <th data-sort="note">备注</th>
+                </tr>
+              </thead>
+              <tbody id="detailTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <div class="splitter vertical" id="rightSplitter" aria-label="调整右侧帮助宽度" role="separator"></div>
+
+      <aside class="right-column">
+        <section class="dock-panel help-panel">
+          <div class="help-toolbar">
+            <div class="help-icons">
+              <button type="button">⌂</button>
+              <button type="button">◎</button>
+              <button type="button">?</button>
+              <button type="button">↩</button>
+            </div>
+            <div class="help-tabs">
+              <button class="active" type="button">内容</button>
+              <button type="button">搜索</button>
+              <button type="button">相关主题</button>
+              <button type="button">索引</button>
+            </div>
+          </div>
+          <div class="help-content">
+            <div class="help-tip" id="helpTip"></div>
+            <div class="help-rule" id="helpRuleId"></div>
+            <p class="help-message" id="helpMessage"></p>
+            <h4>详细说明:</h4>
+            <div class="help-example" id="helpExample"></div>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="status-bar">
+      <span id="statusText">状态信息</span>
+      <span id="statusProject"></span>
+      <span id="statusRuleset"></span>
+    </footer>
+  </div>
+
+  <div class="context-menu hidden" id="detailContextMenu">
+    <button data-action="focus" type="button">定位当前结果</button>
+    <button data-action="open-source" type="button">打开源文件</button>
+    <button data-action="violation" type="button">标记为违反</button>
+    <button data-action="pass" type="button">标记为不违反</button>
+    <button data-action="pending" type="button">标记为未确认</button>
+    <button data-action="circuit" type="button">查看电路图</button>
+  </div>
+
+  <div class="modal-backdrop hidden" id="backendTaskModal">
+    <div class="modal-window task-modal-window">
+      <div class="modal-title">
+        <strong>后端任务中心</strong>
+        <button id="backendTaskCloseTopBtn" type="button">关闭</button>
+      </div>
+      <div class="task-center-body">
+        <div class="task-center-head">
+          <span id="backendTaskSummary">尚未加载任务</span>
+          <button id="backendTaskRefreshBtn" type="button">刷新任务</button>
+        </div>
+        <div class="task-center-grid">
+          <div class="task-list" id="backendTaskList"></div>
+          <div class="task-log-panel">
+            <div class="task-log-title" id="backendTaskLogTitle">请选择任务</div>
+            <pre class="task-log" id="backendTaskLog"></pre>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="backendTaskCloseBtn" type="button">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="backendProjectModal">
+    <div class="modal-window project-modal-window">
+      <div class="modal-title">
+        <strong>新建后端工程</strong>
+        <button id="backendProjectCancelTopBtn" type="button">关闭</button>
+      </div>
+      <div class="backend-form-body">
+        <div class="backend-form-intro">
+          <strong>服务器工作区模式</strong>
+          <span>这里填写的是后端服务器可访问的源码目录。浏览器本机路径只有在后端也能访问同一路径时才有效。</span>
+        </div>
+
+        <div class="backend-form-grid">
+          <label>
+            <span>工程名称</span>
+            <input id="backendProjectNameInput" type="text" placeholder="例如 servo_ctrl">
+          </label>
+
+          <label>
+            <span>源码目录</span>
+            <div class="input-with-button">
+              <input id="backendSourcePathInput" type="text" placeholder="例如 D:\workspace\servo_ctrl\rtl 或 sample-src">
+              <button id="backendBrowseSourceBtn" type="button">浏览...</button>
+            </div>
+          </label>
+
+          <label>
+            <span>语言类型</span>
+            <select id="backendLanguageSelect">
+              <option value="v_vhd">Verilog/VHDL 混合</option>
+              <option value="verilog">Verilog</option>
+              <option value="vhdl">VHDL</option>
+            </select>
+          </label>
+
+          <label>
+            <span>规则集</span>
+            <select id="backendProjectRulesetSelect"></select>
+          </label>
+
+          <label class="backend-form-wide">
+            <span>当前后端地址</span>
+            <input id="backendApiUrlInput" type="text" readonly>
+          </label>
+        </div>
+
+        <div class="server-browser hidden" id="backendDirectoryBrowser">
+          <div class="server-browser-head">
+            <strong>服务器源码目录</strong>
+            <span id="backendDirectoryPath">可选根目录</span>
+            <div>
+              <button id="backendDirectoryUpBtn" type="button">上一级</button>
+              <button id="backendDirectoryRefreshBtn" type="button">刷新</button>
+            </div>
+          </div>
+          <div class="server-browser-list" id="backendDirectoryList"></div>
+          <div class="server-browser-foot">选择的是后端服务器上的目录；如需浏览其他磁盘或共享盘，请在后端启动时配置 HDL_SOURCE_ROOTS。</div>
+        </div>
+
+        <div class="backend-form-error hidden" id="backendProjectError"></div>
+      </div>
+      <div class="modal-actions">
+        <button id="backendProjectCancelBtn" type="button">取消</button>
+        <button class="primary" id="backendProjectSubmitBtn" type="button">创建工程</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="circuitModal">
+    <div class="modal-window">
+      <div class="modal-title">
+        <strong>RTL 电路图预览</strong>
+        <button id="closeCircuitModalBtn" type="button">关闭</button>
+      </div>
+      <div class="modal-body">
+        <svg class="circuit-svg" viewBox="0 0 760 320" role="img" aria-label="RTL 电路图">
+          <defs>
+            <marker id="circuitArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L9,3 z" fill="#456a95"></path>
+            </marker>
+          </defs>
+          <rect x="30" y="110" width="150" height="86" rx="6"></rect>
+          <rect x="296" y="50" width="170" height="86" rx="6"></rect>
+          <rect x="296" y="196" width="170" height="86" rx="6"></rect>
+          <rect x="580" y="110" width="150" height="86" rx="6"></rect>
+          <text x="66" y="158">src_samp</text>
+          <text x="339" y="96">merrval_sub</text>
+          <text x="338" y="242">merrval_reg</text>
+          <text x="628" y="158">out_rtl</text>
+          <path d="M180 150 C240 150 245 94 296 94"></path>
+          <path d="M180 150 C240 150 246 238 296 238"></path>
+          <path d="M466 94 C518 94 530 150 580 150"></path>
+          <path d="M466 238 C518 238 530 170 580 170"></path>
+        </svg>
+        <div class="modal-note">
+          <p>这里对应你备注里的“右键查看电路图弹窗”。当前 demo 只做前端弹窗，不模拟 jar 和 json 调用。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+  <script src="./backend-bridge.js"></script>
+</body>
+</html>

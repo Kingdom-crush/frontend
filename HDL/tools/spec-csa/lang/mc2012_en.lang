@@ -1,0 +1,203 @@
+CHECKER_NAME(R2_1, "2.1 A project shall not contain unreachable code")
+MESSAGE_STRING(R2_1_WARNING, "This code is unreachable")
+
+CHECKER_NAME(R2_3, "2.3 A project should not contain unused type declarations")
+MESSAGE_STRING(R2_3_WARNING, "Type '%0' is never used")
+
+CHECKER_NAME(R2_6, "2.6 A function should not contain unused label declarations")
+MESSAGE_STRING(R2_6_WARNING, "The label '%1' is not used in function'%0' and could be removed.")
+
+CHECKER_NAME(R5_1, "5.1 External identifiers shall be distinct")
+MESSAGE_STRING(R5_1_WARNING, "External identifier '%0' does not differ from other identifier(s) within the specified number (%1) of significant characters")
+MESSAGE_STRING(R5_1_NOTE_BUILTIN, "Built-in identifier '%0'")
+MESSAGE_STRING(R5_1_NOTE_VAR, "External identifier '%0'")
+
+CHECKER_NAME(R5_3, "5.3 An identifier declared in an inner scope shall not hide an identifier declared in an outer scope")
+MESSAGE_STRING(R5_3_WARNING_GLOBAL, "The declaration of '%0' hides a global identifier")
+MESSAGE_STRING(R5_3_WARNING_PARENT, "The declaration of '%0' hides an identifier in the outer code block")
+MESSAGE_STRING(R5_3_WARNING_FUNCTION, "The declaration of '%0' hide a function parameter")
+MESSAGE_STRING(R5_3_WARNING_FUNCDECL, "The declaration of '%0' hide an identifier of a function declaration")
+MESSAGE_STRING(R5_3_NOTE, "Another identifier of '%0'")
+
+CHECKER_NAME(R5_4, "5.4 Macro identifiers shall be distinct")
+MESSAGE_STRING(R5_4_WARNING_NAME, "Macro '%0' does not differ from other macro(s) within the specified number (%1) of significant characters")
+MESSAGE_STRING(R5_4_WARNING_PARA, "Macro parameter %1 does not differ from %2 within the specified number (%0)")
+MESSAGE_STRING(R5_4_NOTE, "Macro '%0'")
+
+CHECKER_NAME(R5_6, "5.6 A typedef name shall be a unique identifier")
+MESSAGE_STRING(R5_6_WARNING, "The typedef '%0' is declared in more than one location")
+MESSAGE_STRING(R5_6_NOTE, "Another declaration of '%0'")
+
+CHECKER_NAME(R5_9, "5.9 Identifiers that define objects or functions with internal linkage should be unique")
+MESSAGE_STRING(R5_9_WARNING, "'%0' with internal linkage has same identifier as another object with different linkage")
+MESSAGE_STRING(R5_9_NOTE, "Object with different linkage")
+
+CHECKER_NAME(R7_1, "7.1 Octal constants shall not be used")
+MESSAGE_STRING(R7_1_WARNING, "Octal constants used")
+
+CHECKER_NAME(R7_3, "7.3 The lowercase character 'l' shall not be used in a literal suffix")
+MESSAGE_STRING(R7_3_WARNING, "A lowercase letter L(l) has been used in an integer of floating suffix")
+
+CHECKER_NAME(R8_3, "8.3 All declarations of an object or function shall use the same names and type qualifiers")
+MESSAGE_STRING(R8_3_WARNING_VAR, "Declarations of %0 have different names or type qualifiers")
+MESSAGE_STRING(R8_3_NOTE, "Another declaration of %0")
+MESSAGE_STRING(R8_3_WARNING_FUNC, "Function %0 has more than one declarations with")
+MESSAGE_STRING(R8_3_STRING_AND, " and ")
+MESSAGE_STRING(R8_3_STRING_NUM, "different counts of parameters")
+MESSAGE_STRING(R8_3_STRING_TYPE, "different types of parameters")
+MESSAGE_STRING(R8_3_STRING_NAME, "different names of parameters")
+MESSAGE_STRING(R8_3_STRING_RET, "different types of return values")
+
+CHECKER_NAME(R8_4, "8.4 A compatible declaration shall be visible when an object or function with external linkage is defined")
+MESSAGE_STRING(R8_4_WARNING, "'%0' has external linkage and is being defined without any previous declaration")
+
+CHECKER_NAME(R8_5, "8.5 An external object or function shall be declared once in one and only one file")
+MESSAGE_STRING(R8_5_WARNING, "The global identifier '%0' has been declared in more than one file")
+MESSAGE_STRING(R8_5_NOTE_ORI, "Declared here")
+MESSAGE_STRING(R8_5_NOTE_CHK, "Declared here")
+
+CHECKER_NAME(R8_6, "8.6 An identifier with external linkage shall have exactly one external definition")
+MESSAGE_STRING(R8_6_WARNING, "Identifier '%0' has external linkage and has multiple definitions")
+MESSAGE_STRING(R8_6_NOTE_NOR, "Another definition of '%0'")
+MESSAGE_STRING(R8_6_NOTE_BUILTIN, "Built-in definition of '%0'")
+
+CHECKER_NAME(R8_12, "8.12 Within an enumerator list, the value of an implicitly-specified enumeration constant shall be unique")
+MESSAGE_STRING(R8_12_WARNING, "The value ('%0') of this implicitly-specified enumeration constant is not unique")
+
+CHECKER_NAME(R8_14, "8.14 The restrict type qualifier shall not be used")
+MESSAGE_STRING(R8_14_WARNING, "Use of 'restrict' type qualifier")
+
+CHECKER_NAME(R9_2, "9.2 The initializer for an aggregate or union shall be enclosed in braces")
+MESSAGE_STRING(R9_2_WARNING, "The initializer of '%0' does not use braces to show initialization explicitly")
+MESSAGE_STRING(R9_2_NOTE, "Missing braces")
+
+CHECKER_NAME(R9_4, "9.4 An element of an object shall not be initialized more than once")
+MESSAGE_STRING(R9_4_WARNING_MUL, "The element is initialized more than once")
+
+CHECKER_NAME(R12_5, "12.5 The sizeof operator shall not have an operand which is a function parameter declared as 'array of type'")
+MESSAGE_STRING(R12_5_WARNING, "Sizeof expression ('%0') has an operand which is a function parameter declared as 'array of type'")
+MESSAGE_STRING(R12_5_NOTE, "Declared here")
+
+CHECKER_NAME(R13_2, "13.2 The value of an expression and its persistent side effects shall be the same under all permitted evaluation orders")
+MESSAGE_STRING(R13_2_WARNING_V, "Modify or access more than one volatile-qualified object ('%0' and '%1') between sequence points - evaluation order unspecified")
+MESSAGE_STRING(R13_2_WARNING_S, "'%0' is modified more than once between sequence points - evaluation order unspecified")
+MESSAGE_STRING(R13_2_WARNING_SL, "'%0' is modified and accessed between sequence points - evaluation order unspecified")
+
+CHECKER_NAME(R13_3, "13.3 A full expression containing an increment (++) or decrement (--) operator should have no other potential side effects other than that caused by the increment or decrement operator")
+MESSAGE_STRING(R13_3_WARNING_F, "An expression containing a ++ of -- operator contains a call expression ('%0') with possible  potential side effects")
+MESSAGE_STRING(R13_3_WARNING_S, "An expression containing a ++ of -- operator contains a %0 operation with possible potential side effects")
+MESSAGE_STRING(R13_3_WARNING_V, "An expression containing a ++ of -- operator contains a volatile qualified object ('%0') with possible potential side effects")
+MESSAGE_STRING(R13_3_WARNING_A, "An expression containing a ++ of -- operator contains a assigning operation with possible potential side effects")
+
+CHECKER_NAME(R13_4, "13.4 The result of an assignment operator should not be used")
+MESSAGE_STRING(R13_4_WARNING, "The result of assignment ('%0') is being used in an arithmetic operation or another assigning operation")
+
+CHECKER_NAME(R14_2, "14.2 A for loop shall be well-formed")
+MESSAGE_STRING(R14_2_WARNING_1, "The variable identified as the loop counter is not in the second clause")
+MESSAGE_STRING(R14_2_WARNING_2, "The variable incremented in the third clause is not the variable identified as the loop counter")
+MESSAGE_STRING(R14_2_WARNING_3, "The variable initialized in the first clause is not the variable identified as the loop counter")
+MESSAGE_STRING(R14_2_WARNING_4, "The second clause may have persistent side effects")
+MESSAGE_STRING(R14_2_WARNING_5, "The variable identified as the loop counter is not in the second clause")
+MESSAGE_STRING(R14_2_WARNING_6, "The second clause may have persistent side effects")
+MESSAGE_STRING(R14_2_WARNING_7, "More than one possible loop control variable")
+MESSAGE_STRING(R14_2_WARNING_8, "The variable identified as the loop counter is not in the second clause")
+MESSAGE_STRING(R14_2_WARNING_9, "The variable incremented is not modified in the third clause")
+MESSAGE_STRING(R14_2_WARNING_A, "The variable incremented in the third clause is not the variable identified as the loop counter")
+MESSAGE_STRING(R14_2_WARNING_B, "The variable incremented is not modified in the third clause")
+MESSAGE_STRING(R14_2_WARNING_C, "Modify the loop counter in this statement or code block")
+MESSAGE_STRING(R14_2_WARNING_D, "Modify the loop counter")
+MESSAGE_STRING(R14_2_WARNING_E, "Loop counter in this for statement is modified in the body of the loop")
+MESSAGE_STRING(R14_2_WARNING_F, "Modify the loop counter")
+MESSAGE_STRING(R14_2_WARNING_G, "The variable initialized in the first clause is not the variable identified as the loop counter")
+MESSAGE_STRING(R14_2_WARNING_H, "The variable initialized in the first clause is not the variable identified as the loop counter")
+
+CHECKER_NAME(R16_2, "16.2 A switch label shall only be used when the most closely-enclosing compound statement is the body of a switch statement")
+MESSAGE_STRING(R16_2_WARNING, "Switch label is located within a nested code block")
+
+CHECKER_NAME(R17_3, "17.3 A function shall not be declared implicitly")
+MESSAGE_STRING(R17_3_WARNING, "No function declaration and implicit declaration inserted: 'extern int %0()'")
+
+CHECKER_NAME(R20_4, "20.4 A macro shall not be defined with the same name as a keyword")
+MESSAGE_STRING(R20_4_WARNING, "Macro '%0' redefines a keyword")
+
+CHECKER_NAME(R20_7, "20.7 Expressions resulting from the expansion of macro parameters shall be enclosed in parentheses")
+MESSAGE_STRING(R20_7_WARNING, "Macro ('%0') parameter  is not enclosed in parentheses")
+MESSAGE_STRING(R20_7_NOTE, "The macro is defined here")
+MESSAGE_STRING(R20_7_WARNING_I, "Macro parameter is not enclosed in parentheses")
+MESSAGE_STRING(R20_7_NOTE_I, "The macro is defined here")
+
+CHECKER_NAME(R20_9, "20.9 All identifiers used in the controlling expression of #if or #elif preprocessing directives shall be #define'd before evaluation")
+MESSAGE_STRING(R20_9_WARNING, "The identifier is not defined before evaluation")
+
+CHECKER_NAME(R20_10, "20.10 The # and ## preprocessor operators should not be used")
+MESSAGE_STRING(R20_10_WARNING_W, "Use the glue operator '##'")
+MESSAGE_STRING(R20_10_WARNING_O, "Use the stringify operator '#'")
+
+CHECKER_NAME(R20_11, "20.11 A macro parameter immediately following a # operator shall not immediately be followed by a ## operator")
+MESSAGE_STRING(R20_11_WARNING, "A macro parameter immediately following a # operator is immediately be followed by a ## operator (%0)")
+
+CHECKER_NAME(R20_12, "20.12 A macro parameter used as an operand to the # or ## operators, which is itself subject to further macro replacement, shall only be used as an operand to these operators")
+MESSAGE_STRING(R20_12_WARNING, "'%0', as an operand to the # or ## operators, is a macro")
+MESSAGE_STRING(R20_12_WARNING_I, "The operand to the # or ## operators is a macro")
+
+CHECKER_NAME(R21_12, "21.12 The exception handling features of <fenv.h> should not be used")
+MESSAGE_STRING(R21_12_WARNING_H, "The standard header file <fenv.h> shall not be used")
+MESSAGE_STRING(R21_12_WARNING_M, "'%0' in <fenv.h> shall not be used")
+
+CHECKER_NAME(R21_19, "The pointers returned by the Standard Library functions localeconv, getenv, setlocale or strerror shall only be used as if they have pointer to const-qualified type")
+MESSAGE_STRING(R21_19_WARNING, "The pointers returned by '%0' is not used as a pointer to const-qualified type")
+
+CHECKER_NAME(R21_20, "21.20 The pointer returned by the Standard Library functions asctime, ctime, gmtime, localtime, localeconv, getenv, setlocale or strerror shall not be used following a subsequent call to the same function")
+MESSAGE_STRING(R21_20_WARNING, "After running '%0', the value '%1' pointed to may be changed")
+
+CHECKER_NAME(R22_1, "22.1 All resources obtained dynamically by means of Standard Library functions shall be explicitly released")
+MESSAGE_STRING(R22_1_ALLOC, "Allocate resources")
+MESSAGE_STRING(R22_1_MSG_B, "Resources pointed by '")
+MESSAGE_STRING(R22_1_MSG_M, "' is not explicitly released")
+MESSAGE_STRING(R22_1_MSG_A, "Some resources is not explicitly released")
+
+CHECKER_NAME(R22_2, "22.2 A block of memory shall only be freed if it was allocated by means of a Standard Library function")
+MESSAGE_STRING(R22_2_WARNING_DF, "Allocated block freed more than one time")
+MESSAGE_STRING(R22_2_WARNING_FI, "This memory block is not allocated by means of a Standard Library function")
+
+CHECKER_NAME(R22_3, "22.3 The same file shall not be open for read and write access at the same time on different streams")
+MESSAGE_STRING(R22_3_MODE_R, "read-only")
+MESSAGE_STRING(R22_3_MODE_W, "write-only")
+MESSAGE_STRING(R22_3_MODE_RW, "read-write")
+MESSAGE_STRING(R22_3_MODE_U, "unknown")
+MESSAGE_STRING(R22_3_MSG1_B, "File '")
+MESSAGE_STRING(R22_3_MSG1_M, "' has been open for")
+MESSAGE_STRING(R22_3_MSG1_A, "access")
+MESSAGE_STRING(R22_3_MSG2_B, "File '")
+MESSAGE_STRING(R22_3_MSG2_A, "' has been open for read and write access at the same time on different streams")
+
+CHECKER_NAME(R22_4, "22.4 There shall be no attempt to write to a stream which has been opened as read-only")
+MESSAGE_STRING(R22_4_WARNING_O, "Open the read-only stream")
+MESSAGE_STRING(R22_4_WARNING_W, "Write to a read-only stream")
+
+CHECKER_NAME(R22_5, "22.5 A pointer to a FILE object shall not be dereferenced")
+MESSAGE_STRING(R22_5_WARNING_S, "The FILE object pointer shall not be dereferenced by '*' operator")
+MESSAGE_STRING(R22_5_WARNING_P, "The FILE object pointer shall not be dereferenced by '->' operator")
+MESSAGE_STRING(R22_5_WARNING_F, "The FILE object pointer shall not be dereferenced by '%0' operator")
+
+CHECKER_NAME(R22_6, "22.6 The value of a pointer to a FILE shall not be used after the associated stream has been closed")
+MESSAGE_STRING(R22_6_WARNING_C, "Close the stream")
+MESSAGE_STRING(R22_6_WARNING_U, "The FILE pointer is used after the associated stream has been closed")
+
+CHECKER_NAME(R22_7, "22.7 The macro EOF shall only be compared with the unmodified return value from any Standard Library function capable of returning EOF")
+MESSAGE_STRING(R22_7_WARNING, "The return value from '%0' may be modified before comparing with EOF")
+MESSAGE_STRING(R22_7_NOTE, "Call function '%0' which may return EOF")
+
+CHECKER_NAME(R22_8, "22.8 The value of errno shall be set to zero prior to a call to an errno-setting-function")
+MESSAGE_STRING(R22_8_WARNING, "The value of 'errno' is not set to zero prior to a call to an errno-setting-function")
+
+CHECKER_NAME(R22_9, "22.9 The value of errno shall be tested against zero after calling an errno-setting function")
+MESSAGE_STRING(R22_9_CALL, "Call an errno-setting-function")
+MESSAGE_STRING(R22_9_TEST, "The value of errno is not tested against zero after calling an errno-setting-function")
+
+CHECKER_NAME(R22_10, "22.10 The value of errno shall only be tested when the last function to be called was an errno-setting function")
+MESSAGE_STRING(R22_10_CALL, "Call a non-errno-setting-function")
+MESSAGE_STRING(R22_10_TEST, "The value of errno is tested when the last function to be called was an non-errno-setting function")
+
+CHECKER_NAME(D4_8, "4.8 If a pointer to a structure or union is never dereferenvced within a translation unit, then the implementation of the object should be hidden")
+MESSAGE_STRING(PointerToStruct_WARNING, "A pointer to a structure or a union %0 is never dereferenced in this translation unit, the implementation of it should be hidden")

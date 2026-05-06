@@ -1,0 +1,858 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ruleset description="" id="" name="VHDL_DO-254规则集" type="1">
+  <categories>
+    <category id="C001" name="01 命名" parent=""/>
+    <category id="C002" name="02 基本设计单元" parent=""/>
+    <category id="C003" name="03 复位" parent=""/>
+    <category id="C004" name="04 时钟" parent=""/>
+    <category id="C005" name="05 异步电路处理" parent=""/>
+    <category id="C006" name="06 语法约束" parent=""/>
+    <category id="C007" name="07 组合逻辑" parent=""/>
+    <category id="C008" name="08 时序逻辑" parent=""/>
+    <category id="C009" name="09 三态缓冲器" parent=""/>
+    <category id="C010" name="10 进程" parent=""/>
+    <category id="C011" name="11 IF语句描述" parent=""/>
+    <category id="C012" name="12 CASE语句描述" parent=""/>
+    <category id="C013" name="13 循环语句描述" parent=""/>
+    <category id="C014" name="14 操作符" parent=""/>
+    <category id="C015" name="15 有限状态机" parent=""/>
+    <category id="C016" name="16 可测试设计" parent=""/>
+    <category id="C017" name="17 版面书写" parent=""/>
+    <category id="C018" name="编译错误" parent=""/>
+	<category id="C021" name="021 敏感列表" parent=""/>
+    <category id="C031" name="031 顶层设计" parent=""/>
+    <category id="C023" name="023 运算赋值" parent=""/>
+	<category id="C027" name="027 状态机" parent=""/>
+	<category id="C022" name="022 声明命名定义" parent=""/>
+	
+  </categories>
+  <priorities>
+    <priority id="P001" name="高" value="1"/>
+    <priority id="P002" name="中" value="3"/>
+  </priorities>
+  <conLevels>
+    <conLevel id="L001" name="严重错误"/>
+    <conLevel id="L002" name="一般性错误"/>
+  </conLevels>
+  
+  <rule category="C018" conLevel="L001" enable="true" id="CID555" name="编译错误"
+		priority="P001">
+		<description>编译错误</description>
+		<message>编译错误</message>
+		<language>VHDL</language>
+		<specification>
+		</specification>
+  </rule> 
+   <rule category="C014" conLevel="L001" enable="true" id="CID9043" name="关系运算符的参数位宽应匹配" priority="P001">
+      <description>VHDL1621 关系运算符的参数位宽应匹配。</description>
+      <message>关系运算符的参数位宽应匹配</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	process ( A ) is
+	variable T: std_logic_vector ( 5 downto 1 );
+	variable W: std_logic_vector ( 15 downto 1 );
+	variable R: boolean;
+	variable E: std_logic_vector ( 10 downto 1 );
+	begin
+	if ( T = E ) then                          //关系操作符"="右边的10 位与左边5 位宽度不一致，应保持位宽的一致，避免运算错误。
+	  Q &lt;= "11";
+	elsif ( ( W &lt;= E ) &gt;= R ) then             //关系操作符"&lt;="右边的10 位与左边15 位宽度不一致，应保持位宽的一致，避免运算错误。
+	  Q &lt;= "00";
+	end if;
+    </specification>
+   </rule>
+  
+  <rule category="C004" conLevel="L001" enable="true" id="CID11037" name="请勿使用门控时钟" priority="P001">
+      <description>NETLIST1211 请勿使用门控时钟</description>
+      <message>请勿使用门控时钟</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	entity example_ENT is
+	  port(clk : in std_logic;
+	       ……
+	       clk_out: out std_logic);
+	end example_ENT;
+	……
+	Signal s1: std_logic;
+	……
+	    clk_out &lt;= clk and s1; --输出时钟由输入时钟、控制信号经与门产生，容易产生毛刺
+	……
+	end behave_ARC;
+  </specification>
+   </rule>
+
+  <rule category="C004" conLevel="L002" enable="true" id="CID9046" name="将门控时钟隔离至独立的时钟生成器实例中" priority="P001">
+      <description>NETLIST1212 将门控时钟隔离至独立的时钟生成器实例中</description>
+      <message>将门控时钟隔离至独立的时钟生成器实例中</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	entity top is
+	port (
+	CLK, CTRL, D1, D2: in std_logic;
+	OUT1 : out std_logic;
+	OUT2 : out std_logic
+	);
+	end entity;
+
+	architecture basic of top is
+	signal and_clk : std_logic;
+	begin
+		DFF1 : entity dff port map ( CLK =&gt; and_clk, D =&gt; D1, Q =&gt; OUT1 );
+		DFF2 : entity dff port map ( CLK =&gt; CLK, D =&gt; D2, Q =&gt; OUT2 );
+		and_clk &lt;= CTRL and CLK;		//全局时钟“CLK”通过了门控，只要有可能就不要将门控时钟用在FPGA中，因为这样的设计进行时钟延迟和偏斜的细调会变得很困难
+	end architecture;
+    </specification>
+   </rule>
+  
+  <rule category="C004" conLevel="L001" enable="true" id="CID9078" name="不要使用触发器输出作为时钟" priority="P002">
+      <description>NETLIST1221 不要使用触发器输出作为时钟。</description>
+      <message>不要使用触发器输出作为时钟</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	entity sr is
+	port (
+		clk, reset, data_a, data_b: in std_logic;
+		Q: out std_logic
+	 );
+	end;
+	architecture rtl of sr is
+	signal trf12: std_logic;
+	begin
+	process ( trf12, reset ) begin
+	if reset = '1' then
+		Q &lt;= '0';
+	elsif (trf12'event and trf12='1') then
+		Q &lt;= data_b;                     //触发器的时钟端“sr.Q”被另一触发器的输出所驱动。时钟树综合工具将无法考虑时钟的平衡
+	end if;
+	end process;
+	process ( clk, reset ) begin
+	if reset = '1' then
+		trf12 &lt;= '0';
+	elsif (clk'event and clk='1') then
+		trf12 &lt;= data_a;              //时钟端由触发器“sr.trf12”所驱动
+	end if;
+	end process;
+	end;
+	</specification>
+   </rule>
+  
+  <rule category="C004" conLevel="L001" enable="true" id="CID9079" name="不要将时钟到除触发器时钟引脚以外的任何其他引脚" priority="P002">
+      <description>NETLIST1222 不要将时钟到除触发器时钟引脚以外的任何其他引脚。</description>
+      <message>不要将时钟到除触发器时钟引脚以外的任何其他引脚</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	entity dff is
+	port (
+		clk_a, clk_b: in std_logic;
+		data: std_logic;
+		Q1, Q2: out std_logic
+	 );
+	end;
+	architecture rtl of top is
+	begin
+	process( clk_a )
+	begin
+	-- clk_a is auto-detected as the clock signal
+	if (clk_a'event and clk_a='1') then
+		Q1 &lt;= data;
+	end if;
+	end process;
+	process( clk_b )
+	begin
+	if (clk_b'event and clk_b='1') then
+		Q2 &lt;= clk_a;                             //将时钟信号连接至触发器的非时钟端将导致时序分析错误,全局时钟信号“clk_a”被连接至触发器“Q2”的数据输入端
+	end if;
+	end process;
+	end;
+	</specification>
+   </rule>
+  
+  
+  <rule category="C003" conLevel="L001" enable="true" id="CID9075" name="不要将复位信号连接到除触发器复位引脚以外的任何其他引脚" priority="P002">
+      <description>NETLIST1231 不要将复位信号连接到除触发器复位引脚以外的任何其他引脚。</description>
+      <message>不要将复位信号连接到除触发器复位引脚以外的任何其他引脚</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：  
+	entity dff is
+	port (...
+		reset: in std_logic;
+		...
+		);
+	end entity dff;
+	architecture rtl of dff is
+	begin
+		...
+	process( reset )           //全局复位“dff.reset”被连接到时钟端。全局复位宜直接连接到复位端作为复位使用
+	begin
+	if rising_edge( reset ) then
+		Q &lt;= data;
+	end if;
+	end process;
+		...
+	end architecture rtl；  
+	</specification>
+   </rule>
+  
+  <rule category="C003" conLevel="L001" enable="true" id="CID9076" name="不要在复位路径中使用组合逻辑" priority="P002">
+      <description>NETLIST1232_a 不要在复位路径中使用组合逻辑。</description>
+      <message>不要在复位路径中使用组合逻辑</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	entity dff is
+	port (
+		clk, reset_a, reset_b, data: in std_logic;
+		Q: out std_logic
+	);
+	end entity dff;
+	architecture rtl of dff is
+	signal rst_gen: std_logic;
+	begin
+		rst_gen &lt;= reset_a xor reset_b;
+	process ( clk, rst_gen ) begin
+	if rst_gen = '1' then
+		Q &lt;= '0';
+	elsif ( clk'event and clk='1' ) then
+		Q &lt;= data;
+	end if;
+	</specification>
+   </rule>
+  
+  <rule category="C008" conLevel="L001" enable="true" id="CID9040" name="触发器推断应仅包含一个异步控制信号" priority="P001">
+      <description>NETLIST1242 触发器推断应仅包含一个异步控制信号</description>
+      <message>触发器推断应仅包含一个异步控制信号</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	process (clk, reset, set) begin //触发器q引用了两个异步置位和异步复位控制。推荐使用单独的异步复位控制。
+	if ( reset = '1' ) then   //异步复位控制。
+	  q &lt;= '0';
+	elsif ( set= '1' ) then   //异步置位控制。
+	  q &lt;= '1';
+	elsif ( clk'event and clk = '1' ) then
+	  q &lt;= data;
+	end if;
+	end process;
+    </specification>
+   </rule>
+  
+  <rule category="C016" conLevel="L001" enable="true" id="CID9055" name="不要将同一信号既用作时钟又用作复位" priority="P001">
+      <description>NETLIST1243 不要将同一信号既用作时钟又用作复位。</description>
+      <message>不要将同一信号既用作时钟又用作复位</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	entity top is
+	port (
+		  in1, in2, in3, clk1, clk2, reset, sel : in std_logic; //信号“clk1”被同时用作时钟和复位。不要混合使用时钟和复位以免DFT产生问题，此时扫描会排除所有时钟信号连接的部分。
+		  out1, out2 : out std_logic
+		  );
+	end entity;
+	architecture top_rtl of top is
+	signal mux_to_ff1, mux_to_ff2 : std_logic;
+	begin
+	 mux_to_ff2 &lt;= clk1 when sel = '1' else
+	  in3;
+	 MUX_INSTANCE : entity mux port map ( in1 =&gt;
+	clk1, in2 =&gt; in2 , sel =&gt; sel, out1 =&gt; mux_to_ff1
+	);
+	 DFF_INSTANCE1 : entity dff port map ( D =&gt; in1, CLK =&gt; mux_to_ff1, RESET =&gt; reset , Q =&gt; out1 ); //连接到“top. DFF_INSTANCE1”时钟端。
+	 DFF_INSTANCE2 : entity dff port map ( D =&gt; in1, CLK =&gt; clk2, RESET =&gt; mux_to_ff2, Q =&gt; out2 ); //连接到“top. DFF_INSTANCE2”异步复位端。
+	end architecture;
+    </specification>
+   </rule>
+  
+  
+  <rule category="C008" conLevel="L001" enable="true" id="CID9062" name="所有寄存器都应具有复位控制" priority="P001">
+      <description>NETLIST1245 所有寄存器都应具有复位控制。</description>
+      <message>所有寄存器都应具有复位控制</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	process (clk,reset) begin
+	if (reset = '1') then
+		q1 &lt;= '0';
+	elsif ( clk'event and clk = '1' ) then
+		q1 &lt;= data1;
+		q2 &lt;= data2;           //触发q2未复位
+	end if;
+	end process;
+	</specification>
+   </rule>
+  
+  <rule category="C006" conLevel="L001" enable="true" id="CID9005" name="尽可能使用std_logic_1164标准库" priority="P001">
+      <description>VHDL1311 尽可能使用std_logic_1164标准库 </description>
+      <message>尽可能使用std_logic_1164标准库</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	entity DFF is		//实体“DFF”没有使用IEEE.std_logic_1164,RTL设计需要通过连接基本包来使用std_logic和std_logic_vector
+		...
+	end DFF;
+	library ieee;
+	use ieee.std_logic_1164.all;
+	architecture RTL of DFF is
+		...
+	end RTL;
+    </specification>
+   </rule>
+  
+    <rule category="C006" conLevel="L001" enable="true" id="CID9006" name="仅在输入/输出端口使用std_logic类型" priority="P001">
+      <description>VHDL1313 仅在输入/输出端口使用std_logic类型</description>
+      <message>仅在输入/输出端口使用std_logic类型</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	component MUX2x1 is		//一个非标准逻辑类型用于端口定义，端口应该是std_logic和std_logic_vector类型
+	port(
+		d1: in std_logic_vector;
+		d2: in std_logic_vector;
+		sel: in bit;		//端口“sel”是一个非标准逻辑类型
+		mout: out std_logic_vector
+		);
+	end component;
+    </specification>
+   </rule>
+  
+  <rule category="C006" conLevel="L001" enable="true" id="CID9036" name="不要在结构体内不安全的数据类型" priority="P001">
+      <description>VHDL1314 不要在结构体内不安全的数据类型</description>
+      <message>不要在结构体内不安全的数据类型</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	package types is		//声明中使用了非标准逻辑类型
+	constant c0: bit :='0';		//常量“c0”是使用了被禁止使用的数据类型
+	type my_time is array(natural) of time;		//类型“my_time”基于被禁止使用的数据类型
+		...
+	end types;
+    </specification>
+   </rule>
+  
+  <rule category="C006" conLevel="L001" enable="true" id="CID9007" name="使用integer时应定义范围" priority="P001">
+      <description>VHDL1315 使用integer时应定义范围</description>
+      <message>使用integer时应定义范围</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	package pack_types is		//没有在具有integer数据类型的声明中定义范围，通过定义范围可以明确地砍掉不被使用的位
+	type cnt_int is array(integer range 7 downto 0) of integer;		//类型“cnt_int”基于默认范围的整数数据类型
+		...
+	end package;
+    </specification>
+   </rule>
+  
+  <rule category="C006" conLevel="L001" enable="true" id="CID9008" name="不要使用bit数据类型" priority="P001">
+      <description>VHDL1316 不要使用bit数据类型</description>
+      <message>不要使用bit数据类型</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	package func_pack is		//bit被用于声明，避免使用bit和bit_vector类型信号因为它们在RTL仿真中阻止了“X”and“Z”的传播
+	function bit2bit (s:bit_vector)return bit is		//函数“bit2bit”返回了bit数据类型
+	variable tmp : bit_vector;		//变量“tmp”是bit_vector数据类型
+	begin
+		...
+	end function;
+		...
+	end func_pack;
+    </specification>
+   </rule>
+  
+  <rule category="C006" conLevel="L001" enable="true" id="CID9009" name="不要在枚举类型上使用enum_encoding属性" priority="P001">
+      <description>VHDL1317 不要在枚举类型上使用enum_encoding属性</description>
+      <message>不要在枚举类型上使用enum_encoding属性</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	library synopsys;
+	use synopsys.attributes.all;
+	attribute ENUM_ENCODING of my_enc : type is "001 010 100";		//不要在RTL描述中使用属性enum_encoding
+    </specification>
+   </rule>
+  
+  <rule category="C006" conLevel="L001" enable="true" id="CID9010" name="为std_logic_vector数据类型的接口对象指定范围" priority="P001">
+      <description>VHDL1318 为std_logic_vector数据类型的接口对象指定范围</description>
+      <message>为std_logic_vector数据类型的接口对象指定范围</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	entity model is		//声明std_logic_vector数据类型的目标时未定义范围，定义范围可以避免RTL和综合后仿真的不一致性
+	port(
+		in1: std_logic_vector;		//接口信号in1声明中没有定义范围
+		in2: std_logic_vector(7 downto 0);
+		 ...
+		);
+	end model;
+    </specification>
+   </rule>
+  
+  <rule category="C006" conLevel="L001" enable="true" id="CID9016" name="对非常量索引仅使用简单信号" priority="P001">
+      <description>VHDL1323 对非常量索引仅使用简单信号</description>
+      <message> 对非常量索引仅使用简单信号</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	architecture RTL of e_fstl is
+	signal src_samp: integer;
+	begin
+		...
+		res_cntp_1 &lt;= inp_nonproc(src_samp + 2);		//向量inp_nonproc的索引表达式检测到了一个操作符，应该使用简单信号作为索引表达式来避免生成冗余逻辑
+		...
+	end RTL;
+    </specification>
+   </rule>
+   
+   <rule category="C022" conLevel="L001" enable="true" id="CID11011" name="所有已声明的对象应在描述中被使用" priority="P001">
+      <description>VHDL1331 避免出现多余的信号或端口</description>
+      <message>避免出现多余的信号或端口</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	entity sig_ENT is port （
+		reset: in std_logic;
+		clk : in std_logic;
+		cnt_out: out std_logic_vector(5 downto 0));
+	end sig_ENT;
+	architecture behave_ARC of sig_ENT is
+		signal S_count:std_logic_vector(7 downto 0);
+	begin
+	cnt_out &lt;= S_count(5 downto 0);
+	process(reset,clk)
+	begin
+		if reset='0' then
+			S_count &lt;= X"00";
+		elsif rising_edge(clk) then
+			S_count &lt;= count +1;
+		end if;
+	end process;
+	end behave_ARC
+	……
+	U0：sig_ENT
+	port map（
+	reset =&gt; reset,
+	clk =&gt; clk);--模块例化时未连接cnt。
+  </specification>
+   </rule>
+   
+   <rule category="C006" conLevel="L001" enable="true" id="CID9013" name="不要使用顺序端口连接" priority="P001">
+      <description>VHDL1411 不要使用顺序端口连接</description>
+      <message>不要使用顺序端口连接</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	architecture Behavioral of top is
+	   component add_rst
+		  port( 
+			clk             :in  std_logic;
+			rst_1            :in  std_logic; 
+			rst_2            :in  std_logic;		  
+			rst_o            :out std_logic
+		   );
+	  end component;
+	begin
+	 r1: add_rst PORT MAP(clk,rst_1,rst_2,rst_o);		//端口连接应通过名字描述连接
+	end Behavioral;
+    </specification>
+   </rule>
+   
+   <rule category="C001" conLevel="L001" enable="true" id="CID12271" name="避免在组件实例中留下未连接的输入端口" priority="P001">
+  <description>VHDL1421 避免在组件实例中留下未连接的输入端口</description>
+  <message>避免在组件实例中留下未连接的输入端口</message>
+  <language>VHDL</language>
+  <specification>
+	案例代码：
+	--例化时不应输入端口悬空
+	example_ent_inst:example_ent
+	port map(a_in => open,
+			 b_in => s_b,
+			 c_out => s_c);
+	entity example_ent is
+	port(
+		 a_in: in std_logic;
+		 b_in: in std_logic;
+		 c_out:out std_logic);
+	end example_ent;	
+  </specification>
+  </rule>
+ 
+  <rule category="C001" conLevel="L001" enable="true" id="CID12272" name="避免在组件实例中留下未连接的输出端口" priority="P001">
+  <description>VHDL1422 避免在组件实例中留下未连接的输出端口</description>
+  <message>避免在组件实例中留下未连接的输出端口</message>
+  <language>VHDL</language>
+  <specification>
+	案例代码：
+	example_ent_inst : example_ent 
+	port map(a_in => s_a,
+			 b_in => s_b,
+			 c_out => s_c);--未连接的输出端口d_out
+	entity example_ent is 
+	port(
+		 a_in : in std_logic; 
+		 b_in : in std_logic; 
+		 c_out : out std_logic; 
+		 d_out : out std_logic);
+	end example_ent;	 
+  </specification>
+  </rule>
+  <rule category="C016" conLevel="L001" enable="true" id="CID9054" name="不要将时钟信号用作数据" priority="P001">
+      <description>NETLIST1511 不要将时钟信号用作数据</description>
+      <message>不要将时钟信号用作数据</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	begin
+	 case ( sel ) is
+	  when '1' =&gt; mux_out &lt;= data;
+	  when '0' =&gt; mux_out &lt;= clk_gate;
+	  when others =&gt; mux_out &lt;= data;
+	 end case;
+	end process;
+	process ( clk, clk_gate ) is
+	 begin
+	  if ( clk_gate ) then
+	   out1 &lt;= '1';
+	  elsif ( RISING_EDGE(clk) ) then
+	   out1 &lt;= mux_out;           //时钟信号“clk”连接至触发器的“out1”数据输入端。
+	  end if;
+	 end process;
+	end architecture;
+    </specification>
+   </rule>
+  
+   <rule category="C007" conLevel="L001" enable="true" id="CID9038" name="敏感列表中应定义所有必要的信号" priority="P001">
+      <description>VHDL1711 敏感列表中应定义所有必要的信号。</description>
+      <message>敏感列表中应定义所有必要的信号</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	process ( D1, D2 ) begin //敏感信号列表不完整，可能会存在RTL 和综合后仿真的差异。
+	if (SEL = '0') then //信号SEL 被读取，但未在敏感信号列表中。
+	  Q &lt;= D1;
+	else
+	  Q &lt;= D2;
+	end if;
+	end process;
+    </specification>
+   </rule>
+   <rule category="C021" conLevel="L001" enable="true" id="CID11009" name="不要在敏感列表中定义不必要的对象" priority="P001">
+      <description>VHDL1721 不要在敏感列表中定义不必要的对象</description>
+      <message>不要在敏感列表中定义不必要的对象</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	process(a,b,enable,out1) --敏感列表中定义多余信号out1
+	begin
+		if(enable =’0’)then
+			out1&lt;= a;
+		else
+			out1&lt;=b;
+		end if;
+	end process;
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9061" name="不要在函数体内读取全局信号" priority="P001">
+      <description>VHDL1811 不要在函数体内读取全局信号</description>
+      <message>不要在函数体内读取全局信号</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	impure function f_sel( signal arg: std_logic_vector(0 to 3) ) return        //函数f_sel 使用的一个信号不是函数的输入或本地信号。RTL 和综合后的仿真结果可能会不一致
+	std_logic_vector is
+		variable a: std_logic_vector( x'range );
+		variable b: std_logic_vector( x'range );
+	begin
+	-- ...
+	case ( SEL_1 ) is                                                             //信号SEL_1 不是函数输入或本地信号
+		when "0001" =&gt; a := pow_n( arg, 1 );
+		-- ...
+		when others =&gt; a := pow_n( arg, 7 );
+	end case;
+		-- ...
+	end function;
+		-- ...
+	  </specification>
+   </rule>
+   <rule category="C011" conLevel="L001" enable="true" id="CID9083" name="函数不应在条件分支中返回" priority="P002">
+      <description>VHDL1822 函数不应在条件分支中返回。</description>
+      <message>函数不应在条件分支中返回</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	function ar_prog (a: in integer) return integer is   //在条件语句分支处发现返回语句，不宜在条件语句分支处返回
+	begin
+	if (a &gt; 0) then
+		return ar_prog(a -1) + a;           //发现返回语句
+	else
+		return a;                           //发现返回语句
+	end if;
+	end function;
+	</specification>
+   </rule>
+   <rule category="C027" conLevel="L002" enable="true" id="CID11064" name="为状态机状态选择合适的编码方式" priority="P002">
+      <description>VHDL1911 为状态机状态选择合适的编码方式</description>
+      <message>为状态机状态选择合适的编码方式</message>
+      <language>VHDL</language>
+      <specification>
+  </specification>
+   </rule>
+   <rule category="C015" conLevel="L001" enable="true" id="CID9044" name="每个状态机都应具备复位控制" priority="P001">
+      <description>VHDL1921 每个状态机都应具备复位控制。</description>
+      <message>每个状态机都应具备复位控制</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	statereg: process (clock, reset)
+	begin
+	 if  (clock'event and clock ='1') then 
+	  pres_state &lt;= next_state; //上电时，有限状态机必须进入明确的初始状态。
+	 end if;
+	end process statereg;
+    </specification>
+   </rule>
+   <rule category="C027" conLevel="L001" enable="true" id="CID11059" name="避免在状态机描述中出现死锁状态" priority="P001">
+      <description>VHDL1924 避免在状态机描述中出现死锁状态</description>
+      <message>避免在状态机描述中出现死锁状态</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	--（程序中状态机进入无效状态后置空操作，可能导致状态机死锁）
+	singal current_state_r , next_state_r ：std_logic_vector (1 downto 0);
+	  CONSTANT Cst0 : std_logic_vector (1 downto 0) := “00” ;
+	  CONSTANT Cst1 : std_logic_vector (1 downto 0) := “01” ;
+	  CONSTANT Cst2 : std_logic_vector (1 downto 0) := “10” ;
+	  CONSTANT Cst3 : std_logic_vector (1 downto 0) := “11” ;
+		……
+	  case current_state_r is
+		when Cst0=&gt;
+		……
+		when Cst1=&gt;
+		……
+		when Cst2=&gt;
+		……
+	--当程序的状态机进入无效状态后执行when others分支，由于程序
+	--中未对无效状态进行任何处理，状态机一旦进入无效状态则无法再返回到正常的状
+	--态，导致状态机死锁。
+		when others =&gt;null;
+	end case
+  </specification>
+   </rule>
+   <rule category="C005" conLevel="L001" enable="true" id="CID12289" name="不同的对象不要使用相同的名称" priority="P001">
+  <description>VHDL2124 不同的对象不要使用相同的名称。</description>
+  <message>不同的对象不要使用相同的名称。</message>
+  <language>VHDL</language>
+  <specification>
+	案例代码:
+	entity ent is 
+	port( 
+		 ent  : in std_logic;   --实体名和端口名不应采用相同的标识符
+		 D_out : out std_logic ) ; 
+	end ent; 
+  </specification>
+  </rule>
+   <rule category="C031" conLevel="L002" enable="true" id="CID11006" name="每个文件描述一个设计单元" priority="P002">
+      <description>VHDL2132 每个文件描述一个设计单元</description>
+      <message>每个文件描述一个设计单元</message>
+      <language>VHDL</language>
+      <specification>
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9022" name="不要在赋值语句中使用多个波形或可选延迟表达式" priority="P001">
+      <description>VHDL3111 不要在赋值语句中使用多个波形或可选延迟表达式</description>
+      <message>不要在赋值语句中使用多个波形或可选延迟表达式</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	s &lt;= reject 15 ns inertial 8 after 20 ns, 16 after 41 ns;		//不应该在RTL描述中使用波形。多重波形单元不被逻辑综合工具支持。延时机制reject、intertial和transport会被逻辑综合工具忽略
+    </specification>
+   </rule>
+   <rule category="C023" conLevel="L001" enable="true" id="CID11020" name="避免出现未驱动的信号" priority="P001">
+      <description>VHDL3141 避免出现未驱动的信号</description>
+      <message>避免出现未驱动的信号</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	entity example_ENT is
+		port (SEL_in: in std_logic;
+			DATA_out : out std_logic );
+	end example_ENT;
+	architecture behave_ARC of example_ENT is
+		--信号在使用前没有赋值，会使此信号被认为是不确定值
+		signal S_tmp : std_logic;
+		begin
+			process (SEL_in，Stmp) begin
+			if(SEL_in = '1') then
+			DATA_out &lt;= Stmp;
+			else
+			DATA_OUT &lt;= '0';
+			end if;
+			end process;
+	end behave_ARC;
+  </specification>
+   </rule>
+   <rule category="C012" conLevel="L001" enable="true" id="CID9030" name="case语句必须始终包含others分支" priority="P001">
+      <description>VHDL3212 case语句必须始终包含others分支。</description>
+      <message>case语句必须始终包含others分支</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	case sel is   //始终应增加others 选项。
+	when "0001" =&gt; out1 &lt;= "00";
+	when "0010" =&gt; out1 &lt;= "01";
+	when "0100" =&gt; out1 &lt;= "10";
+	when "1000" =&gt; out1 &lt;= "11";
+	end case
+	示例中始终应增加others 选项。
+    </specification>
+   </rule>
+   <rule category="C011" conLevel="L001" enable="true" id="CID9064" name="不要描述无法达到的条件" priority="P001">
+      <description>VHDL3221 不要描述无法达到的条件。</description>
+      <message>不要描述无法达到的条件</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	entity mux2x1 is
+	port (
+		IN1, IN2, SEL: in std_logic;
+		Q: out std_logic
+	);
+	end entity;
+	architecture basic of mux2x1 is
+	begin
+	process ( SEL, IN1, IN2 ) is
+	begin
+	if ( SEL = 2 ) then                       //条件不可达
+		Q &lt;= IN1;
+	else
+		Q &lt;= IN2;
+		end if;
+	end process;
+	end architecture;
+	</specification>
+   </rule>
+   <rule category="C009" conLevel="L001" enable="true" id="CID9028" name="不要将inout端口直接连接到input/output端口" priority="P001">
+      <description>NETLIST3411 不要将inout端口直接连接到input/output端口。</description>
+      <message>不要将inout端口直接连接到input/output端口</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	library ieee;
+	use ieee.std_logic_1164.all;
+	entity top is
+	port (
+		  in1, enb: in std_logic;
+		  out_data: out std_logic;
+		  io: inout std_logic
+	);
+	end entity;
+	architecture RTL of top is
+	begin
+	  io &lt;= in1;       //inout 端口io 不应直接连接到输入端口in1。
+	  out_data &lt;= io;  //inout 端口io 不应直接连接到输出端口out_data。
+	end architecture;
+    </specification>
+   </rule>
+   <rule category="C009" conLevel="L001" enable="true" id="CID9027" name="每个信号只能关联一个非三态驱动器" priority="P001">
+      <description>NETLIST3413 每个信号只能关联一个非三态驱动器。</description>
+      <message>每个信号只能关联一个非三态驱动器</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	architecture rtl of top is
+	signal DS_STATUS: std_logic; //信号DS_STATUS 有两个非三态驱动。除非是三态，否则不应在RTL 描述中使用两个或更多的输出驱动同一个信号。
+	begin
+	   ...
+	   DS_STATUS &lt;= C_RS; //检测到非三态驱动。
+	   ...
+	   DS_STATUS &lt;= F_RS; //检测到非三态驱动。
+	   ...
+	end architecture;
+    </specification>
+   </rule>
+   <rule category="C002" conLevel="L001" enable="true" id="CID9034" name="不要使用组合逻辑反馈" priority="P001">
+      <description>NETLIST3511 不要使用组合逻辑反馈</description>
+      <message>不要使用组合逻辑反馈</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	entity top is
+	port(
+		 data: in std_logic_vector(1 downto 0);
+		 sel: in std_logic;
+		 Q: inout std_logic
+		);
+	end entity;
+
+	architecture rtl of top is
+	signal temp: std_logic_vector(2 downto 0);
+	begin
+		 temp(0)&lt;=data(0) and temp(2);
+		 temp(1)&lt;=temp(0) xor data(1);
+		 temp(2)&lt;=data(0) when sel = '0' else temp(1);		//在信号线“temp(2)”检测到组合电路反馈，为避免时序分析时产生反馈循环，不要在组合电路中使用反馈
+		 Q &lt;= temp(2);
+	end;
+    </specification>
+   </rule>
+   <rule category="C010" conLevel="L001" enable="true" id="CID9092" name="不要在进程中描述多个独立条件" priority="P002">
+      <description>VHDL3611 不要在进程中描述多个独立条件。</description>
+      <message>不要在进程中描述多个独立条件</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	process ( SEL, X_IN, Z_IN, TMP_STORAGE ) begin       //不宜在同一个顺序块中描述2 个或更多的if 或case 语句
+	if( SEL = '1' ) then                                 //if 语句在顺序块中
+		TMP_STORAGE &lt;= X_IN + Z_IN;
+	else
+		TMP_STORAGE &lt;= X_IN - Z_IN;
+	end if
+	LO_B = TMP_STORAGE[31];
+	if( TMP_STORAGE(7 downto 0) = X"00" ) then       //if 语句在同一个顺序块中
+		Z_REG &lt;= '1';
+	else
+		Z_REG &lt;= '0';
+	end if
+	if( LO_B = '1' and Z_REG = '0' ) then                //if 语句在同一个顺序块中
+		X_REG &lt;= '1';
+	else
+		X_REG &lt;= '0';
+	end if
+		R_REG &lt;= TMP_STORAGE(30 downto 0);
+	end process
+	</specification>
+   </rule>
+   <rule category="C007" conLevel="L002" enable="true" id="CID9050" name="尽量避免使用锁存器" priority="P001">
+      <description>VHDL_2_2_1_1 尽量避免使用锁存器 </description>
+      <message>尽量避免使用锁存器 </message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	process (g_op, a, b, c) begin 
+	if(g_op) then 	
+	  y &lt;= a and b and c;  //可能会生成锁存器。
+	end if;
+	end process;
+    </specification>
+   </rule>
+   <rule category="C008" conLevel="L002" enable="true" id="CID9039" name="避免使用变量来推断时序逻辑" priority="P001">
+      <description>VHDL_2_3_1_1 避免使用变量来推断时序逻辑</description>
+      <message>避免使用变量来推断时序逻辑</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	process (CLK)
+	variable B : std_logic;
+	begin
+	if(CLK'event and CLK='1') then
+	 B := A;
+	 C &lt;= B; //使用变量赋值
+	end if;
+	end process;
+    </specification>
+   </rule>
+   
+</ruleset>

@@ -1,0 +1,6 @@
+在vhdl-checker.jar路径输入指令
+ java -jar vhdl-checker.jar -checks C:\Users\admin\Desktop\当天工作\verilog\test_hdl\6_1_1_1_1.hdl
+
+
+在spec-hdl路径输入指令
+spec-hdl.exe C:\Users\admin\Desktop\当天工作\verilog\test_hdl\6_1_1_1_2.v

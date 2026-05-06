@@ -1,0 +1,168 @@
+Pinpoint pp-check 静态漏洞挖掘分析器 1.5 alpha 版使用说明：
+
+	USAGE: pp-check [指定开启的检查器] [运行参数] <待分析的llvm bitcode文件>
+
+1、 必要运行参数列表：
+-use-international-package=<report-tip-cn.txt> 指定语言包，没有指定语言包默认使用英语
+-report=<report_file.json> 指定输出报告文件，如果没有指定将不会输出报告文件
+
+2、 性能相关
+2.1 时间
+pp-check根据不同时间及分析深度需求设定了5种运行模式（由以下参数指定）：
+-execution-mode=<string> 指定运行模式从快速浅层，慢速深度挖掘分别有以下5个等级：glancing/quick/normal(默认)/thorough/digging
+
+其中5个档位设定如下：
+（1）glancing : 快速得到扫描结果，深度不高，适用于需要快速结果的场景，比如程序员软件开发时的临时正确性检测 (预期30-40分钟百万行代码）
+（2）quick: 标准运行查找漏洞，更加注重运行效率，适用于不希望等很久的阶段性程序检查，比如在代码提交之前的整体快速检查 (预期60-90分钟百万行代码）
+（3）normal: 标准运行查找漏洞，平衡的运行效率以及查找深度，适用于阶段性程序检查，比如在主代码库变动之后的日常检查 (预期2-3小时百万行代码）
+（4）thorough: 全面分析，适用于保证程序稳定性时的需求，比如在新版本对外发布以前 (预期4-6小时百万行代码）
+（5）digging: 漏洞挖掘，适用于有需求发现极深层漏洞或者稳定性极度重要的场景 (预期10-15小时百万行代码）
+这里5个档位主要是分析时间和分析深度的区分，digging会用较长的分析时间达到更高的召回率，而glancing使用更短时间快速浅层分析。这里不同档位都没有牺牲精度，都尽量保证低误报。另外5个档位在内存使用上只有微小差别，digging模式会略高于glancing模式。
+
+2.2 内存占用
+我们推荐用以下方式估算pp-check运行时消耗的内存 ：内存消耗 = llvm bitcode大小 * 2000。例如：1.5MB大小的bitcode需要预留3GB内存。此外，内存消耗也会和运行模式（-execution-mode指定），checker开启数量，程序本身复杂程度以及开启线程数量有微弱相关。
+	
+3、 检查器列表
+-ps-npd 空指针解引用 (稳定)
+-ps-uuv 使用未初始化的变量/使用未初始化内存 (稳定)
+-ps-rsa 返回栈地址 (稳定)
+-ps-fnhm 释放栈内存 (稳定)
+-ps-uaf 使用释放过内存/内存重复释放 (稳定)
+-ps-fduac 文件描述符释放后使用 (实验)
+-ps-taint 污点传播类问题 (稳定)
+-ps-ml 内存泄漏 (稳定)
+-ps-fdl 文件描述符泄漏 (稳定)
+-ps-icb 缓冲区溢出 (稳定)
+-ps-bcis 缓冲区复制没有检查长度 (实验)
+-ps-race 多线程数据竞争 (实验)
+-ps-dbz 除零 (实验)
+-ps-iow 整数溢出 (实验)                                                     
+
+4、 分析能力调节参数列表（将会覆盖-execution-mode指定运行模式相关项的默认设置）
+-falcon-cg 打开函数指针解析，默认不开启 (增加召回，降低分析速度)
+-falcon-restrict-function-pointer-size=<int> 设置每个函数指针可以指向的最大函数数量，默认1（增加召回，降低分析精度，增加误报)）
+-psa-enable-side-effect-source 启用副作用分析，默认不开启 (增加召回，降低分析速度)
+-inline-depth 设置函数调用追踪深度 (调节召回与分析速度)
+-enable-over-depth 允许数值分析类（缓冲区溢出/除零/整数溢出）检查器报包含不确定因素的漏洞，默认不开启 (增加召回，降低分析精度，增加误报率)
+-num-incomplete=<int> 设置数值分析类（缓冲区溢出/除零/整数溢出）检查器允许的不确定因素的数目，默认0 (调节召回及分析精度和误报率)
+-enable-fd-alloc-failure 考虑文件打开可能失败的情况，默认不开启                                             
+-enable-heap-alloc-failure 考虑内存分配可能失败的情况，默认不开启
+
+5、 其他可能有用的参数                                                       
+-nworkers=<uint> 指定开启的并行分析的线程数量                                                   
+-omit-no-dbginfo 在输入的llvm bitcode中没有debug信息的情况下依然执行分析
+-hide-progress-bar 屏幕上不输出进度条，只输出进度百分比
+-report-format=<string> 设置报告提示的格式，可以是html和plain-text
+-report-pass-line 设置报告的可靠度/分数阈值（0-100），默认1,也就是1分以上可靠度的bug都会出现在报告中
+-debug-report 在报告中加入llvm bitcode信息
+-help 显示帮助信息
+
+6、 报告文件格式
+
+每次运行pp-check会生成一份json格式的报告文件
+
+{
+    "Info": [“string”],  # 分析时一些信息说明
+    "Target": "string.bc", # 输入文件
+    "TotalBugs": int, # 找到的bug总数
+    "TotalFunc": int, # bitcode中的函数总数
+    "ExternalFuncRatio": "float string" , # bitcode中外部函数百分比
+    "TotalInst": int, # bitcode中总语句数量
+    "AvgInstPerFunc": "float string", # bitcode中平均每个函数语句数量
+    "MaxInstPerFunc": int, # bitcode中包含语句最多的函数包含语句的数量
+    "FuncWithMostInst": "string", # bitcode中包含语句最多的函数（最大的函数）
+    "AvgCyclomaticComplexity": "float string", # bitcode中函数平均圈复杂度
+    "MaxCyclomaticComplexity": int, # bitcode中函数最大圈复杂度
+    "FuncWithMaxCyclomaticComplexity": "string", # bitcode中圈复杂度最大的函数（最复杂的函数）
+    "SrcFiles": [ # 报告中包含的源文件，按数组顺序是每个源文件的ID（从0开始数）,后边报告中使用
+        "string.cpp"
+        "string.h"
+    ],
+    "BugTypes": [ # 分类型报告列表
+        {
+            "Name": "Null Pointer Deference", # 漏洞类型名
+            "Description": "CWE-476", # 漏洞额外注解，比如CWE编号等
+            "TotalReports": int, # 同类报告数量
+            "Reports": [ # 具体同类报告列表
+                {
+                    "Dominated": bool, # 是否被覆盖，也即当这个bug发生时是否一定在前面有同类bug发生（标为true的时候表示bug重要性降低）
+                    "Score": 96, # bug可靠度，0-100 分数越高越可能是真bug
+                    "Valid": true,  # 调试用吗，标记是否为真bug，只有标为true的才需要展示给用户
+                    "Bug Type": "Checked NULL Dereference", # 漏洞类型名
+                    "Bug Type Description": "CWE-476", # 漏洞额外注解，比如CWE编号等
+                    "Importance": "string", # 漏洞重要程度 critical/high/medium/low
+                    "Classification": “string” # 漏洞分类 error/security/performance等,
+                    "DiagSteps": [ # 报告的漏洞详细触发步骤
+                        {
+                            "Inst": "string", # 当前步骤在llvm-bitcode中的对应语句（-debug-report参数开启是适用）
+                            "File": int, # 当前步骤所在的源文件ID (详见report json文件最顶层SrcFiles列表)
+                            "Line": int, # 当前步骤所在的源文件行号
+                            "Tip": "string", # 当前步骤提示信息
+                            "RawTip": "string", # 当前步骤提示信息（英文版）
+                            "Importance": int, # 当前步骤的重要性 [-100, 100], -100或以下表示该步骤完全不需要展示，0以上表示该步骤更倾向与展示给用户，100或以上表示该步骤是关键步骤，一定要展示给用户。可以根据importance分量有选择的给用户展示trace信息
+                            "FuncKey": "string", # 当前步骤所在函数在llvm-bitcode中的名字，不同函数的名字一定不一样
+                            "FuncName": "string" # 当前步骤所在函数的人可读的名字，不同函数的名字可能一样，比如C++中的函数重载
+                        },
+                        {
+                            "File": int,
+                            "Line": int,
+                            "Tip": "string",
+                            "RawTip": "string",
+                            "Importance": int,
+                            "FuncKey": "string",
+                            "FuncName": "string"
+                        }
+                    ],
+                    "ReportChecker": "PSA Null Pointer Deference Checker" # 报告漏洞的检查器,
+                },
+            ]
+        }
+    ]
+}
+
+7、 使用示例：
+（1）例如分析test.bc在默认情况下开启所有检查器时使用命令如下：pp-check.exe -ps-npd -ps-uuv -ps-rsa -ps-fnhm -ps-uaf -ps-fduac -ps-taint -ps-ml -ps-fdl -ps-icb -ps-bcis -ps-race -ps-dbz -ps-iow -report=report.json -use-international-package=report-tip-cn.txt test.bc   
+
+（2）如只想开启特定检查器（如空指针解引用），使用命令如下：pp-check.exe -ps-npd -report=report.json -use-international-package=report-tip-cn.txt test.bc   
+
+（3）如果需要深度漏洞挖掘，开启函数指针，做空指针检测，使用命令如下：pp-check.exe -ps-npd -execution-mode=digging -falcon-cg -report=report.json -use-international-package=report-tip-cn.txt test.bc
+
+（4）如果需要深度漏洞挖掘，开启函数指针，做空指针检测，并生成txt文本格式报告，使用命令如下：pp-check.exe -ps-npd -execution-mode=digging -falcon-cg -report=report.json -use-international-package=report-tip-cn.txt -report-format=plain-text test.bc 
+
+#附表 ：可能用到的参数合集
+-use-international-package=<report-tip-cn.txt> 指定语言包，没有指定语言包默认使用英语
+-report=<report_file.json> 指定输出报告文件，如果没有指定将不会输出报告文件
+-execution-mode=<string> 指定如上所述运行模式
+
+-ps-npd 空指针解引用 (稳定)
+-ps-uuv 使用未初始化的变量/使用未初始化内存 (稳定)
+-ps-rsa 返回栈地址 (稳定)
+-ps-fnhm 释放栈内存 (稳定)
+-ps-uaf 使用释放过内存/内存重复释放 (稳定)
+-ps-fduac 文件描述符释放后使用 (实验)
+-ps-taint 污点传播类问题 (稳定)
+-ps-ml 内存泄漏 (稳定)
+-ps-fdl 文件描述符泄漏 (稳定)
+-ps-icb 缓冲区溢出 (稳定)
+-ps-bcis 缓冲区复制没有检查长度 (实验)
+-ps-race 多线程数据竞争 (实验)
+-ps-dbz 除零 (实验)
+-ps-iow 整数溢出 (实验)   
+
+-falcon-cg 打开函数指针解析，默认不开启 (增加召回，降低分析速度)
+-falcon-restrict-function-pointer-size=<int> 设置每个函数指针可以指向的最大函数数量，默认1（增加召回，降低分析精度，增加误报)）
+-psa-enable-side-effect-source 启用副作用分析，默认不开启 (增加召回，降低分析速度)
+-inline-depth 设置函数调用追踪深度 (调节召回与分析速度)
+-enable-over-depth 允许数值分析类（缓冲区溢出/除零/整数溢出）检查器报包含不确定因素的漏洞，默认不开启 (增加召回，降低分析精度，增加误报率)
+-num-incomplete=<int> 设置数值分析类（缓冲区溢出/除零/整数溢出）检查器允许的不确定因素的数目，默认0 (调节召回及分析精度和误报率)
+-enable-fd-alloc-failure 考虑文件打开可能失败的情况，默认不开启                                             
+-enable-heap-alloc-failure 考虑内存分配可能失败的情况，默认不开启
+
+-nworkers=<uint> 指定开启的并行分析的线程数量                                                   
+-omit-no-dbginfo 在输入的llvm bitcode中没有debug信息的情况下依然执行分析
+-hide-progress-bar 屏幕上不输出进度条，只输出进度百分比
+-report-format=<string> 设置报告提示的格式，可以是html和plain-text
+-report-pass-line 设置报告的可靠度/分数阈值（0-100），默认1,也就是1分以上可靠度的bug都会出现在报告中
+-debug-report 在报告中加入llvm bitcode信息
+-help 显示帮助信息
+

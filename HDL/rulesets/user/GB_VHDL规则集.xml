@@ -1,0 +1,1488 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ruleset description="" id="" name="GB_VHDL规则集" type="2">
+   <categories>
+      <category id="C002" name="02 结构设计" parent=""/>
+      <category id="C009" name="09 时钟" parent=""/>
+      <category id="C012" name="012 综合/约束" parent=""/>
+      <category id="C011" name="011 状态机" parent=""/>
+      <category id="C001" name="01 例化" parent=""/>
+      <category id="C006" name="06 运算" parent=""/>
+      <category id="C014" name="014 编码格式" parent=""/>
+      <category id="C010" name="010 复位及初始化" parent=""/>
+      <category id="C008" name="08 分支控制" parent=""/>
+      <category id="C007" name="07 循环控制" parent=""/>
+      <category id="C003" name="03 敏感列表" parent=""/>
+      <category id="C013" name="013 注释" parent=""/>
+      <category id="C004" name="04 声明定义定义" parent=""/>
+      <category id="C005" name="05 命名" parent=""/>
+   </categories>
+   <conLevels>
+      <conLevel id="L001" name="严重错误"/>
+      <conLevel id="L002" name="一般性错误"/>
+   </conLevels>
+   <priorities>
+      <priority id="P002" name="中" value="1"/>
+      <priority id="P001" name="高" value="1"/>
+   </priorities>
+   <rule category="C009" conLevel="L001" enable="true" id="CID12317" name="同一进程中应只使用一个时钟。" priority="P001">
+      <description>VHDL_R_5_9_5同一进程中应只使用一个时钟。</description>
+      <message>同一进程中应只使用一个时钟。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	process(clk_l,clk_2)   --在一个进程中使用多个时钟
+	  begin
+		if rising_edge(clk_l) then
+		  a &lt;= b; 
+		end if; 
+		if rising_edge(clk_2) then
+			C &lt;= d;
+		end if; 
+	  end process;
+  </specification>
+   </rule>
+   <rule category="C009" conLevel="L001" enable="true" id="CID12323" name="避免在时钟路径上插入反相器或缓冲器。" priority="P001">
+      <description>VHDL_R_5_9_11避免在时钟路径上插入反相器或缓冲器。</description>
+      <message>避免在时钟路径上插入反相器或缓冲器。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity top_ent is 
+	port( 
+		 clk : in std_logic; 
+		 reset : in std_logic; 
+		 D_in : in std_logic; 
+		 D_out : out std_logic);
+	end top_ent;
+	architecture behave_arc of top_ent is
+	signal clock_l : std_Logic; 
+	clock_l &lt;= not clk;         --在时钟路径上使用反相器
+	INBUF _O_inst : INBUF 
+	port map(
+			 PAD =&gt; clock_l,
+			 Y =&gt; clock_2 );     --在时钟路径上使用缓存器
+	process (reset, clock_2) 
+	......
+	end process; 
+	end behave_arc; 		
+  </specification>
+   </rule>
+   <rule category="C010" conLevel="L001" enable="true" id="CID12325" name="同一寄存器的复位与置位信号不应该来自同一个信号。" priority="P001">
+      <description>VHDL_R_5_10_2同一寄存器的复位与置位信号不应该来自同一个信号。</description>
+      <message>同一寄存器的复位与置位信号不应该来自同一个信号。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity top_ent is 
+	port( 
+		 clk : in std_logic; 
+		 sys_rst : in std_logic; 
+		 D_in : in std_logic_vector(2 downto 0); 
+		 D_out : out std_logic_vector(2 downto 0) );
+	end top_ent; 
+	architecture behave_arc of top_ent is 
+	signal rst_n, rst:std_logic;
+	signal S_Dout_temp_r:std_logic_vector(2 downto 0);
+	begin 
+	rst_n &lt;= sys_rst;
+	rst &lt;= not sys_rst;
+	process (clk, rst_n,rst) 
+	  begin
+	    if rst_n= '0' then 
+		  S_Dout_temp_r &lt;= "000"; 
+		elsif  rst= '1' then      --寄存器S_Dout_temp_r的复位和置位来自同一信号sys_rst，可能会导致竞争与冒险
+		  S_Dout_temp_r &lt;= "111"; 
+		elsif clk'event and clk= '1'then
+		  S_Dout_temp_r &lt;= D_in; 
+		end if; 
+	  end process;
+	D_out &lt;= S_Dout_temp_r;
+	end behave_arc;	
+  </specification>
+   </rule>
+   <rule category="C008" conLevel="L001" enable="true" id="CID12308" name="case 语句的分支不应使用变量或者变量表达式。" priority="P001">
+      <description>VHDL_R_5_8_2case 语句的分支不应使用变量或者变量表达式。</description>
+      <message>case 语句的分支不应使用变量或者变量表达式。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	case (Va) is 
+	when "01" : Vb = Va; 
+	when "10" : Vb = Va + l; 
+	when "Vc + Vd" : Vb = l;  --使用变量或者变量表达式作为case语句的分支
+	end case 
+  </specification>
+   </rule>
+   <rule category="C002" conLevel="L001" enable="true" id="CID12278" name="设计中不应存在多余代码或不可达分支" priority="P001">
+      <description>VHDL_R_5_2_5设计中不应存在多余代码或不可达分支</description>
+      <message>设计中不应存在多余代码或不可达分支</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	signal S_count : std_logic_vector(3 downto 0); 
+	signal S_flag : std_logic; 
+	......
+	process (clk, reset_n) 
+	begin 
+	if (reset_n = '0') then
+	  S_count &lt;= (others =&gt; '0');
+	  S_flag &lt;= '0';
+	elsif clk'event and clk = '1' then  
+	  if(S_count = 16) then 
+	    S_flag &lt;= '1'; 
+	  else 
+	    S_count &lt;= S_count + 1;
+	  end if;
+	end if; 
+	end process;
+  </specification>
+   </rule>
+   <rule category="C010" conLevel="L001" enable="true" id="CID12334" name="组合逻辑作为复位信号时应该被同步" priority="P001">
+      <description>VHDL_R_5_10_11组合逻辑作为复位信号时应该被同步</description>
+      <message>组合逻辑作为复位信号时应该被同步</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	rst_n &lt;= rst_a and rst_b;    --复位信号由组合逻辑产生
+	process (clk)
+	begin
+	  if clk'event and clk ='1'then   --对复位信号进行同步化处理，消除毛刺
+		rst_n_syn0 &lt;= rst_n ; 
+		rst_n_synl &lt;= rst_n_syn0;
+	  end if;
+	end process;
+	process (clk,rst_n_synl)    --使用同步处理后的复位信号进行复位
+	  begin
+	    if(rst_n_synl ='0') then
+	......
+  </specification>
+   </rule>
+   <rule category="C010" conLevel="L001" enable="true" id="CID12326" name="异步复位释放时应采用同步释放的方式。" priority="P001">
+      <description>VHDL_R_5_10_3异步复位释放时应采用同步释放的方式。</description>
+      <message>异步复位释放时应采用同步释放的方式。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码-1:
+	Process (clk, rst_n)       --复位信号rst_n与时钟clk为异步关系
+	begin
+	  if (rst_n = '0') then   --rst_n释放时寄存器S_test存在亚稳态风险
+	    S_test &lt;= "00";
+	案例代码-2:
+	process (clk, rst_n) 
+	begin 
+	  if(rst_n ='0') then
+	    rst_n_syn0 &lt;='0'; 
+		rst_n_synl &lt;='0';
+	  elsif clk'event and clk ='1' then   --对异步复位信号进行同步释放处理
+	    rst_n_synO &lt;= 1; 
+		rst_n_synl &lt;= rst_n_syn0;
+	  end if;
+	end process;
+	process (clk, rst_n_synl) －－使用可以同步释放的复位信号进行复位
+	begin 
+	  if(rst_n_synl ='O') then
+	    S_test &lt;= "00";
+	......
+  </specification>
+   </rule>
+   <rule category="C011" conLevel="L001" enable="true" id="CID12337" name="状态机应初始化为合法状态。" priority="P001">
+      <description>VHDL_R_5_11_3状态机应初始化为合法状态。</description>
+      <message>状态机应初始化为合法状态。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	process (rst_n, clk) 
+	begin 
+	  if rst_n ='0'then 
+		current_state_r &lt;= IDLE;       --初始化为IDLE状态 
+	  elsif rising_edge(clk) then 
+	  ......
+	  end if; 
+	end process;
+  </specification>
+   </rule>
+   <rule category="C012" conLevel="L001" enable="true" id="CID12343" name="应避免使用 buffer 类型的端口。" priority="P001">
+      <description>VHDL_R_5_12_3应避免使用 buffer 类型的端口。</description>
+      <message>应避免使用 buffer 类型的端口。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity example_ent is 
+	port( 
+		 in_l : in std_logic;
+		 out_l : buffer std_logic ) ;  --应避免使用buffer类型
+	end example_ent; 	 
+  </specification>
+   </rule>
+   <rule category="C005" conLevel="L001" enable="true" id="CID12288" name="信号，变量等短标识符的命名不应与关键字重复。" priority="P001">
+      <description>VHDL_R_5_5_1信号，变量等短标识符的命名不应与关键字重复。</description>
+      <message>信号，变量等短标识符的命名不应与关键字重复。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	signal S_a : std_logic; 
+	signal Label : std_logic;  --信号命名与关键字重复
+  </specification>
+   </rule>
+   <rule category="C002" conLevel="L001" enable="true" id="CID12274" name="每个模块/单元应至少包含 1 个输入/输出端口" priority="P001">
+      <description>VHDL_R_5_2_1每个模块/单元应至少包含 1 个输入/输出端口</description>
+      <message>每个模块/单元应至少包含 1 个输入/输出端口</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	entity example_ent is 
+	port( 
+	--没有定义端口
+	  ......);
+	end example_ent;
+  </specification>
+   </rule>
+   <rule category="C012" conLevel="L001" enable="true" id="CID12344" name="应在约束文件中对设计的每个时钟进行定义并添加周期约束。" priority="P001">
+      <description>VHDL_R_5_12_4应在约束文件中对设计的每个时钟进行定义并添加周期约束。</description>
+      <message>应在约束文件中对设计的每个时钟进行定义并添加周期约束。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	--该示例的约束文件仅对clk_l进行了定义和周期约束，没有对clk_2进行定义和周期约束，工具无法对clk2时序路径的符合性进行确认
+	--约束文件
+	create_clock -name clk_l -period 20 [get_pins clk_1] 
+	--设计文件
+	entity clk_ent is 
+	port( 
+		 clk_l : in std_logic; 
+		 clk_2 : in std_logic;
+		 ......);
+	end clk_ent; 
+	architecture behave_arc of clk_ent is
+	process (clk_l,......)
+	begin
+	  ......
+	end process;
+	process (clk_2,......)
+	begin
+	  ......
+	end process;
+	end behave_arc;
+  </specification>
+   </rule>
+   <rule category="C003" conLevel="L001" enable="true" id="CID12283" name="应保证进程中的敏感列表完整、准确，避免敏感信号多余或缺失。" priority="P001">
+      <description>VHDL_R_5_3应保证进程中的敏感列表完整、准确，避免敏感信号多余或缺失。</description>
+      <message>应保证进程中的敏感列表完整、准确，避免敏感信号多余或缺失。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码-1：
+	process (a, b)  --组合逻辑中敏感列表缺少enable信号
+	begin 
+	  if enable ='0'then
+		outl &lt;= a;
+	  else 
+	    outl &lt;= b;
+	  emd if;
+	end process; 
+	案例代码-2：
+	process (clk, rst_n, enable)  --时序逻辑中敏感列表enable信号多余
+	begin
+	  if rst_n = '0'then 
+		out_reg &lt;= '0'; 
+	  elsif clk'event and clk ='1'then
+	    if enable = '0'then
+		  out_reg &lt;= a;
+		end if;
+	  end if;
+	ens process;
+  </specification>
+   </rule>
+   <rule category="C002" conLevel="L001" enable="true" id="CID12279" name="设计中不应产生非预期的锁存器" priority="P001">
+      <description>VHDL_R_5_2_6设计中不应产生非预期的锁存器</description>
+      <message>设计中不应产生非预期的锁存器</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	--产生锁存器的实现
+	data_reg &lt;= data when enable == 1 else data_reg;
+  </specification>
+   </rule>
+   <rule category="C013" conLevel="L001" enable="true" id="CID12346" name="端口定义的输入输出信号宜添加注释说明，注释宜靠近信号定义。" priority="P001">
+      <description>VHDL_R_5_13_2端口定义的输入输出信号宜添加注释说明，注释宜靠近信号定义。</description>
+      <message>端口定义的输入输出信号宜添加注释说明，注释宜靠近信号定义。</message>
+      <language>VHDL</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C007" conLevel="L001" enable="true" id="CID12306" name="while 语句条件表达式不应为常量。" priority="P001">
+      <description>VHDL_R_5_7_3while 语句条件表达式不应为常量。</description>
+      <message>while 语句条件表达式不应为常量。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	i := 1;
+	sum := 0;
+	while 1 loop   --while语句表达式为非零常量会陷入死循环
+	sum = sum + 1;
+	i := i + 1;
+	endloop;
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID12297" name="常量赋值表达式等号右边应为固定整型值或可计算的固定整型值。" priority="P001">
+      <description>VHDL_R_5_6_3常量赋值表达式等号右边应为固定整型值或可计算的固定整型值。</description>
+      <message>常量赋值表达式等号右边应为固定整型值或可计算的固定整型值。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	--常量赋值表达式可以计算出明确的数值
+	Signal S : integer; 
+	constant Cintl : integer : = 1 ; 
+	constant Cint2 : integer : = Cintl + 1 ; 
+	begin 
+	S &lt;= Cintl + Cint2; 
+	......
+  </specification>
+   </rule>
+   <rule category="C013" conLevel="L001" enable="true" id="CID12345" name="文件开头宜添加注释" priority="P001">
+      <description>VHDL_R_5_13_1文件开头宜添加注释</description>
+      <message>文件开头宜添加注释</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	IEEE STD 1076-2008 VHDL file: CPU_TOP.vhd
+	Description: XX-3 CPU TOP control 
+	Company: FPGA Panel,XXX 
+	Author: mary 
+	Project name: CPU_ctrl 
+	Version: Vl.00 
+	Date: 2015-2-20 
+	FPGA type: actel APA300 
+	Development tools: libero V9.0 
+	Revision history:
+	Revision 1 2015-3-9 10:33:59 mary 
+	Delete "rd_reg" signal 
+	Revision 2 2015-4-8 11:07:23 mary 
+	Add synthesize restriction: synthesis syn_encoding = "safe" 
+	Add state default restriction 
+	Copyright(C) 2015,XXX Institute, All rights reserved 
+	......
+  </specification>
+   </rule>
+   <rule category="C008" conLevel="L001" enable="true" id="CID12309" name="case 语句除所有条件分支能完全覆盖其表达式或状态机寄存器的所有取值外，应包含一个when others分支。" priority="P001">
+      <description>VHDL_R_5_8_3case 语句除所有条件分支能完全覆盖其表达式或状态机寄存器的所有取值外，应包含一个when others分支。</description>
+      <message>case 语句除所有条件分支能完全覆盖其表达式或状态机寄存器的所有取值外，应包含一个when others分支。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	type state is (s0, sl, s2, s3, s4, s5); 
+	signal nstate, estate : state; 
+	process (cstate, ……)
+	begin
+	  nstate &lt;= s0; 
+	  case nstate is 
+	   when s0 =&gt;
+	   ……
+	   when s1 =&gt;
+	   ……
+	   when s2 =&gt;
+	   ……
+	   when s3 =&gt;
+	   ……
+	   when s4 =&gt;
+	   ……
+	   when s5 =&gt;
+	   ……
+	   when others =&gt;   --case语句包含一个when others分支
+	   ……
+	   end case;
+	end process;   
+  </specification>
+   </rule>
+   <rule category="C010" conLevel="L001" enable="true" id="CID12328" name="应使用复位/置位操作对寄存器进行初始化。" priority="P001">
+      <description>VHDL_R_5_10_5应使用复位/置位操作对寄存器进行初始化。</description>
+      <message>应使用复位/置位操作对寄存器进行初始化。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	signal S_test : std_logic_ vector(l down to 0) : = "10” ；  --声明初始化可能无法综合
+	process (clk, rst_n) 
+	begin 
+	  if （rst_n = '0') then 
+	  S_test &lt;= "10” ;   --使用复位操作对寄存器进行初始化
+	......
+  </specification>
+   </rule>
+   <rule category="C009" conLevel="L001" enable="true" id="CID12313" name="时钟信号不应再汇聚" priority="P001">
+      <description>VHDL_R_5_9_1时钟信号不应再汇聚</description>
+      <message>时钟信号不应再汇聚</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity example_ent is 
+	port( 
+		 clk : in std_logic; 
+		 rst_n : in std_logic; 
+		 sel1 : in std_logic; 
+		 sel2 : in std_logic; 
+		 din : in std_logic; 
+		 dout : out std_logic ) ;
+	end example_ent; 
+	architecture behave_arc of example_ent is signal clkl : std_logic; 
+	signal clk2 : std_logic; 
+	signal clk_sel : std_logic; 
+	begin 
+	  clkl &lt;= sell and clk; 
+	  clk2 &lt;= sel2 or clk; 
+	  clk_sel &lt;= clkl and clk2;   --此处的时钟信号在时钟网络上发生了再汇聚
+	process (rst_n, clk_sel)
+	  begin
+	    if(rst_n ='0')then 
+		  dout &lt;='0'; 
+		elsif clk_sel'event and clk_sel ='1' then
+		  dout &lt;= din;
+		end if; 
+	end process; 
+	end behave_arc;  
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID12302" name="三态节点的使能端和输入端不宜被同一信号源驱动。" priority="P001">
+      <description>VHDL_R_5_6_8三态节点的使能端和输入端不宜被同一信号源驱动。</description>
+      <message>三态节点的使能端和输入端不宜被同一信号源驱动。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity example_ent is 
+	port( 
+		d_in : in std_logic; 
+		en_in : in std_logic; 
+		clk : in std_logic; 
+		rst : in std_logic; 
+		d_out : out std_logic);
+	end example_ent; 
+	signal S_ctrl : std_logic; 
+	signal S_tmpl : std_logic;
+	S_ctrl &lt;= d_in and S_tmpl;
+	d_out &lt;= S_ctrl when S_ctrl ='1'else'Z';   --输人信号和使能信号被相同的信号源(S_ctrl)驱动
+  </specification>
+   </rule>
+   <rule category="C010" conLevel="L001" enable="true" id="CID12332" name="同步复位时，外部复位信号宜使用两级级联寄存器同步。" priority="P001">
+      <description>VHDL_R_5_10_9同步复位时，外部复位信号宜使用两级级联寄存器同步。</description>
+      <message>同步复位时，外部复位信号宜使用两级级联寄存器同步。</message>
+      <language>VHDL</language>
+      <specification>
+    案例代码:
+	process (clk)    --复位信号rst_n在时钟域clk下两级同步
+	begin
+	  if clk'event and clk = '1' then 
+	    rst_n_syn0 &lt;= rst_n; 
+		rst_n_synl &lt;= rst_n_syn0;
+	  end if; 
+	end process; 
+	process (clk)  --使用同步之后的复位信号进行同步复位
+	begin 
+	  if clk'event and clk &lt;= '1' then
+	    if(rst_n_synl = '0') then
+		  S_test &lt;= "00";
+	......
+  </specification>
+   </rule>
+   <rule category="C005" conLevel="L001" enable="true" id="CID12290" name="信号，变量、实体名等不同类型自定义的短标识符的命名应满足要求" priority="P001">
+      <description>VHDL_R_5_5_3信号，变量、实体名等不同类型自定义的短标识符的命名应满足要求</description>
+      <message>信号，变量、实体名等不同类型自定义的短标识符的命名应满足要求</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	signal \~!@#$%^)\ : std_logic;   --标识符应只包含字母、数字字符和下划线
+	signal \signal\ : std_logic;  --标识符应以英文字母开头
+	signal S_a_ : std_logic;   --标识符的末字符不应使用下划线
+	signal S__a : std_logic;   --标识符不应连续使用下划线
+  </specification>
+   </rule>
+   <rule category="C002" conLevel="L001" enable="true" id="CID12277" name="顶层模块宜只进行模块例化" priority="P001">
+      <description>VHDL_R_5_2_4顶层模块宜只进行模块例化</description>
+      <message>顶层模块宜只进行模块例化</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	ENTITY top_ENT(……） ；
+	signal S_Dout1_2: std_logic;
+	S_Doutl_2 &lt;= Doutl_out or Dout2_out;
+	U0: big_blockl port map(clk =&gt; clk, rst =&gt; rst, D_in =&gt; Dinl_in,Dout =&gt; Doutl_out);
+	U1: big_block2 port map(clk =&gt; clk, rst =&gt; rst, D_in =&gt; Din2_in,Dout =&gt; Dout2_out);
+	U3: big_block3 port map(clk =&gt; clk, rst =&gt; rst, D_in =&gt; S_Doutl_2,Dout =&gt; Dout3_out); --在顶层处理的模块例化外，使用了胶连逻辑
+	……
+	end behave_ARC
+  </specification>
+   </rule>
+   <rule category="C014" conLevel="L001" enable="true" id="CID12348" name="宜使用空行进行适当的分隔。" priority="P001">
+      <description>VHDL_R_5_14_1宜使用空行进行适当的分隔。</description>
+      <message>宜使用空行进行适当的分隔。</message>
+      <language>VHDL</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C011" conLevel="L001" enable="true" id="CID12339" name="宜使用枚举类型来声明状态机。" priority="P001">
+      <description>VHDL_R_5_11_5宜使用枚举类型来声明状态机。</description>
+      <message>宜使用枚举类型来声明状态机。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	--枚举类型定义状态机
+	type state_values is (IDLE,Conv_Start,Config_Start,Write_Parameter); 
+	signal state, next_state : state_values; 
+  </specification>
+   </rule>
+   <rule category="C001" conLevel="L001" enable="true" id="CID12270" name="端口例化应采取名称映射的方式，避免位置映射" priority="P001">
+      <description>VHDL_R_5_1_1端口例化应采取名称映射的方式，避免位置映射</description>
+      <message>端口例化应采取名称映射的方式，避免位置映射</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	--端口例化应避免位置映射
+	reset_filter_inst:reset_filter_inst-filter
+	port map(reset_in,reset_out);
+  </specification>
+   </rule>
+   <rule category="C009" conLevel="L001" enable="true" id="CID12322" name="时钟信号源不宜驱动不同时钟沿触发的寄存器。" priority="P001">
+      <description>VHDL_R_5_9_10时钟信号源不宜驱动不同时钟沿触发的寄存器。</description>
+      <message>时钟信号源不宜驱动不同时钟沿触发的寄存器。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity top_ent is 
+	port( 
+		 clk : in std_logic; 
+		 rst_n : in std_logic; 
+		 D_in : in std_logic; 
+		 D_out : out std_logic );
+	end top_ent; 
+	architecture behave_arc of top_ent is 
+	signal S_Doutl_r, S_Dout_temp_r : std_logic; 
+	begin 
+	process (clk, rst_n) 
+	  begin
+	    if rst_n= '0' then 
+		  S_Dout_temp_r &lt;= 0; 
+		elsif clk'event and clk= '1'then             --此处使用时钟信号上升沿
+		  S_Dout_temp_r &lt;= D_in; 
+		end if; 
+	  end process; 
+	process (clk, rst_n)
+	  begin
+		if rst_n= '0' then 
+		  D_out &lt;= 0; 
+		elsif clk'event and clk= '0'then             --此处使用时钟信号下降沿
+		  D_out &lt;= S_Dout_temp_r; 
+		end if;
+	  end process; 
+	end behave_arc;	
+  </specification>
+   </rule>
+   <rule category="C005" conLevel="L001" enable="true" id="CID12291" name="不应使用大小写英文字母区分不同的命名。" priority="P001">
+      <description>VHDL_R_5_5_4不应使用大小写英文字母区分不同的命名。</description>
+      <message>不应使用大小写英文字母区分不同的命名。</message>
+      <language>VHDL</language>
+      <specification>
+    案例代码:
+	signal net : std_logic;   
+	signal Net : std_logic;    --标识符不应使用大小写英文字母区分不同的命名
+  </specification>
+   </rule>
+   <rule category="C014" conLevel="L001" enable="true" id="CID12349" name="程序编写时应注意对齐和缩进。" priority="P001">
+      <description>VHDL_R_5_14_2程序编写时应注意对齐和缩进。</description>
+      <message>程序编写时应注意对齐和缩进。</message>
+      <language>VHDL</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C008" conLevel="L001" enable="true" id="CID12310" name="组合逻辑中 if 语句应该包含 else 分支。" priority="P001">
+      <description>VHDL_R_5_8_4组合逻辑中 if 语句应该包含 else 分支。</description>
+      <message>组合逻辑中 if 语句应该包含 else 分支。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	architecture behave_arc of example_ent is 
+	begin 
+	process (a, en) 
+	  begin
+	    if (en ='1') then   --if语句缺少else分支
+		  C &lt;= a;
+		end if;
+	  end process;
+	end behave_arc;  
+  </specification>
+   </rule>
+   <rule category="C008" conLevel="L001" enable="true" id="CID12311" name="不宜在进程中出现空语句" priority="P001">
+      <description>VHDL_R_5_8_5不宜在进程中出现空语句</description>
+      <message>不宜在进程中出现空语句</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	architecture behave_arc of example_ent is 
+	begin 
+	  process (a, en)
+	    begin
+		  if (en ='1') then
+		    C &lt;= a;
+	      else 
+			NULL;     --不宜在进程中出现空语句
+		  end if; 
+		end process; 
+	end behave_arc; 
+  </specification>
+   </rule>
+   <rule category="C007" conLevel="L001" enable="true" id="CID12305" name="不应在 for 循环体内修改循环变量。" priority="P001">
+      <description>VHDL_R_5_7_2不应在 for 循环体内修改循环变量。</description>
+      <message>不应在 for 循环体内修改循环变量。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	SUM : for i in 1 to 3 loop
+	sum = sum +1;
+	i := i+1;
+	end loop SUM;   --在循环体内修改循环变量
+  </specification>
+   </rule>
+   <rule category="C005" conLevel="L001" enable="true" id="CID12294" name="跨越多个模块层次的信号应该使用同样的命名。" priority="P001">
+      <description>VHDL_R_5_5_7跨越多个模块层次的信号应该使用同样的命名。</description>
+      <message>跨越多个模块层次的信号应该使用同样的命名。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity rs422_ent is 
+	port( 
+		 clk : in std_logic; 
+		 rst : in std_logic;
+		 rx_in : in std_logic; 
+		 rx_data_out : out std_logic_vector (15 downto 0); 
+		 rx_syn_out: out std_logic) ; 
+	end rs422_ent;
+	......
+	rx_syn_out &lt;= S_rx_synb and S_rx_syna;
+	--信号elk rst、rx_in、rx_data_out、rx_syn_out跨越多个层次时采用相同的命名
+	rx_b_block : rec_ent 
+	port map (clk =&gt; clk,
+			  rst =&gt; rst,
+			  rx_in =&gt; rx_in,
+			  rx_data_out =&gt; rx_data_out(lS downto 8),
+			  rx_syn_out =&gt; S_rx_synb); 
+	rx_a_block : rec_ent
+	port map (clk =&gt; clk,
+			  rst =&gt; rst,
+			  rx_in =&gt; rx_in,
+			  rx_data_out =&gt; rx_data_out(7 downto 0),
+			  rx_syn _out =&gt; S_rx_syna); 
+	......
+  </specification>
+   </rule>
+   <rule category="C004" conLevel="L001" enable="true" id="CID12284" name="多位信号、变量定义时应设置位宽" priority="P001">
+      <description>VHDL_R_5_4_1多位信号、变量定义时应设置位宽</description>
+      <message>多位信号、变量定义时应设置位宽</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	--信号、变量定义时应设置位宽
+	signal S_i : std_logic_vector (1 downto 0); 
+	S_i &lt;= "01"; 
+  </specification>
+   </rule>
+   <rule category="C002" conLevel="L001" enable="true" id="CID12281" name="宜按照不同的设计目标进行模块划分" priority="P001">
+      <description>VHDL_R_5_2_8宜按照不同的设计目标进行模块划分</description>
+      <message>宜按照不同的设计目标进行模块划分</message>
+      <language>VHDL</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID12300" name="同一个模块中的单个信号不应有多个驱动。" priority="P001">
+      <description>VHDL_R_5_6_6同一个模块中的单个信号不应有多个驱动。</description>
+      <message>同一个模块中的单个信号不应有多个驱动。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	signal S_net_l, S_net_2, S_net_3, S_net_4 : std_logic;
+	out &lt;= S_net_l and S_net_2; 
+	out &lt;= not (S_net_3 nor S_net_4); -- out被多个信号驱动
+  </specification>
+   </rule>
+   <rule category="C010" conLevel="L001" enable="true" id="CID12330" name="宜将系统复位信号设置为全局信号。" priority="P001">
+      <description>VHDL_R_5_10_7宜将系统复位信号设置为全局信号。</description>
+      <message>宜将系统复位信号设置为全局信号。</message>
+      <language>VHDL</language>
+      <specification>
+    案例代码:
+	BUFG_inst : BUFG      --将复位信号连接至全局时钟网络
+	port map(O =&gt; g_rst_n,
+			 I =&gt; rst_n);
+	......
+	process (clk, g_rst_n) --使用经过全局时钟网络后的复位信号
+	begin 
+	  if(g_rst_n ='0') then
+	......
+  </specification>
+   </rule>
+   <rule category="C004" conLevel="L001" enable="true" id="CID12285" name="避免出现多余信号" priority="P001">
+      <description>VHDL_R_5_4_2避免出现多余信号</description>
+      <message>避免出现多余信号</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity sig_ent is 
+	port( 
+		 rst_n : in std_logic; 
+		 clk : in std_logic; 
+		 cnt_out : out std_logic_vector (5 downto 0)) ; 
+	end sig_ent; 
+	architecture behave_arc of sig_ent is 
+	signal S_count : std_logic_vector (5 downto 0); 
+	signal cnt : std_logic_vector (5 downto 0)； --程序中未使用，多余信号 
+	begin 
+	  cnt_out &lt;= S_count(S downto 0); 
+	process (rst_n, clk) 
+	  begin
+	    if rst_n = 'O' then 
+		  S_count &lt;= (others =&gt; '0'); 
+	    elsif clk'event and clk = '1'then 
+          S_count &lt;= S_count + 1; 
+		end if;
+	  end process;
+	end behave_arc;
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID12299" name="不应在同一运算式中混用有符号数和无符号数。" priority="P001">
+      <description>VHDL_R_5_6_5不应在同一运算式中混用有符号数和无符号数。</description>
+      <message>不应在同一运算式中混用有符号数和无符号数。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	signal ul, u2 : unsigned (3 downto 0); 
+	signal sl : signed (3 downto 0); 
+	u2 &lt;= ul + sl; --将有符号数和无符号数混于同一运算式中
+  </specification>
+   </rule>
+   <rule category="C014" conLevel="L001" enable="true" id="CID12351" name="版面书写应符合规则要求" priority="P001">
+      <description>VHDL_R_5_14_4版面书写应符合规则要求</description>
+      <message>版面书写应符合规则要求</message>
+      <language>VHDL</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C010" conLevel="L001" enable="true" id="CID12331" name="不宜使用时钟信号做复位（置位）操作。" priority="P001">
+      <description>VHDL_R_5_10_8不宜使用时钟信号做复位（置位）操作。</description>
+      <message>不宜使用时钟信号做复位（置位）操作。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity dff is
+	port (
+	D, CLK, RESET : in std_logic;
+	Q : out std_logic
+	);
+	end entity;
+	architecture dff_rtl of dff is
+	begin
+	process ( CLK, RESET ) is
+	begin
+	if (RESET) then
+	Q &lt;= '1';
+	elsif (RISING_EDGE(CLK))
+	Q &lt;= D;
+	end if;
+	end process;
+	end architecture;
+	entity mux is
+	port (
+	in1, in2, sel : in std_logic;
+	out1 : out std_logic
+	);
+	end entity;
+	architecture mux_rtl of mux is
+	begin
+	out1 &lt;= in1 when sel = '1' else in2;
+	end architecture;
+	entity top is
+	port (
+	in1, in2, in3, clk1, clk2, reset, sel : in std_logic;      --clk1被同时用作时钟和复位
+	out1, out2 : out std_logic
+	);
+	end entity;
+	architecture top_rtl of top is
+	signal mux_to_ff1, mux_to_ff2 : std_logic;
+	begin
+	mux_to_ff2 &lt;= clk1 when sel = '1' else
+	in3;
+	MUX_INSTANCE : entity mux port map ( in1 =&gt;
+	clk1, in2 =&gt; in2 , sel =&gt; sel, out1 =&gt; mux_to_ff1
+	);
+	DFF_INSTANCE1 : entity dff port map ( D =&gt; in1, CLK =&gt; mux_to_ff1, RESET =&gt; reset , Q =&gt; out1 );   --clk1连接到top.DFF_INSTANCE1的时钟端
+	DFF_INSTANCE2 : entity dff port map ( D =&gt; in1, CLK =&gt; clk2, RESET =&gt; mux_to_ff2, Q =&gt; out2 );     --clk1连接到top.DFF_INSTANCE2的复位端
+	end architecture;
+  </specification>
+   </rule>
+   <rule category="C009" conLevel="L001" enable="true" id="CID12321" name="在设计中使用较少的时钟域，最好只使用一个时钟域。" priority="P001">
+      <description>VHDL_R_5_9_9在设计中使用较少的时钟域，最好只使用一个时钟域。</description>
+      <message>在设计中使用较少的时钟域，最好只使用一个时钟域。</message>
+      <language>VHDL</language>
+      <specification>
+	
+  </specification>
+   </rule>
+   <rule category="C011" conLevel="L001" enable="true" id="CID12338" name="宜使用三段式状态机。" priority="P001">
+      <description>VHDL_R_5_11_4宜使用三段式状态机。</description>
+      <message>宜使用三段式状态机。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	--第一个进程，同步时序进程，描述次态寄存器迁移到现态寄存器
+	process (rst_n, clk) 
+	begin
+	  if rst_n ='0'then 
+		current_state_r &lt;= IDLE; 
+	  elsif rising_edge(clk) then
+		current_state_r &lt;= next_state_r; 
+	  end if; 
+	end process; 
+	--第二个进程，组合逻辑进程，描述状态转移条件判断
+	process (current_state_r, AD_start,...) 
+	begin
+	  next_state_r &lt;= IDLE; 
+	  case current_state_r is 
+	    when IDLE =&gt;
+		  if AD_start= '1' then
+		    next_state_r &lt;= STATE_l;
+		  else
+		    next_state_r &lt;= IDLE;
+		  end if;
+		when STATE_l =&gt;
+		  next_state_r &lt;= STATE_2;
+		  .......
+		when others =&gt;
+		  next_state_r &lt;= IDLE;
+	  end case;
+	end process;
+	--第三个进程，同步时序进程，描述次态寄存器输出
+	process (rst_n, clk) 
+	begin 
+	  if rst_n = '0' then
+	    AD_CS &lt;= 'l'; 
+	    AD_RD &lt;= 'l'; 
+		AD DONE &lt;= "00"; 
+		......
+	  elsif rising_edge(clk) then
+	    case next_state_r is 
+		when IDLE =&gt;
+		  AD_CS &lt;='l'; 
+		  AD_RD &lt;= '1'; 
+		  AD_DONE &lt;= '0';
+		  ......
+		end case;
+	  end if;
+	end process;
+  </specification>
+   </rule>
+   <rule category="C009" conLevel="L001" enable="true" id="CID12314" name="时钟信号不应该连接多路竞争器的控制端" priority="P001">
+      <description>VHDL_R_5_9_2时钟信号不应该连接多路竞争器的控制端</description>
+      <message>时钟信号不应该连接多路竞争器的控制端</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity example_ent is 
+	port( 
+		 clk : in std_logic; 
+		 d_in : in std_logic; 
+		 d_out : out std_logic);
+    end example_ent;
+	d_out &lt;= d_in when clk ='l'else'0';  --时钟信号连接到多路选择器的控制端
+  </specification>
+   </rule>
+   <rule category="C014" conLevel="L001" enable="true" id="CID12350" name="应使用空格进行适当的分隔。" priority="P001">
+      <description>VHDL_R_5_14_3应使用空格进行适当的分隔。</description>
+      <message>应使用空格进行适当的分隔。</message>
+      <language>VHDL</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID12301" name="相同的信号源应避免驱动同一个寄存器的多个异步信号端。" priority="P001">
+      <description>VHDL_R_5_6_7相同的信号源应避免驱动同一个寄存器的多个异步信号端。</description>
+      <message>相同的信号源应避免驱动同一个寄存器的多个异步信号端。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	--相同的信号源不应驱动同一个寄存器的多个异步信号端 
+	test_block: test_ent          --rst和set分别为test_block模块的复位端和置位端   
+	port map(clk =&gt; clk,
+			 rst =&gt; rst_c,   --使用rst_c信号驱动复位端
+			 d_in =&gt; d_in,
+			 set =&gt; rst_c,   ---使用rst_c信号驱动置位端
+			 d_out =&gt; d_out);
+  </specification>
+   </rule>
+   <rule category="C005" conLevel="L001" enable="true" id="CID12289" name="信号，变量、实体名等不同类型的自定义的短标识符不应采用相同的名称。" priority="P001">
+      <description>VHDL_R_5_5_2信号，变量、实体名等不同类型的自定义的短标识符不应采用相同的名称。</description>
+      <message>信号，变量、实体名等不同类型的自定义的短标识符不应采用相同的名称。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity ent is 
+	port( 
+		 ent  : in std_logic;   --实体名和端口名不应采用相同的标识符
+		 D_out : out std_logic ) ; 
+	end ent; 
+  </specification>
+   </rule>
+   <rule category="C009" conLevel="L001" enable="true" id="CID12320" name="不宜使用行波时钟。" priority="P001">
+      <description>VHDL_R_5_9_8不宜使用行波时钟。</description>
+      <message>不宜使用行波时钟。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity sr is
+	port (
+	  clk, reset, data_a, data_b: in std_logic;
+	  Q: out std_logic
+	);
+	end;
+	architecture rtl of sr is
+	signal trf12: std_logic;
+	begin
+	process ( trf12, reset ) begin
+	if reset = '1' then
+	  Q &lt;= '0';
+	elsif (trf12'event and trf12='1') then
+	  Q &lt;= data_b;          --触发器Q的时钟端trf12被另一触发器的输出所驱动
+	end if;
+	end process;
+	process ( clk, reset ) begin
+	if reset = '1' then
+	  trf12 &lt;= '0';
+	elsif (clk'event and clk='1') then
+	  trf12 &lt;= data_a;           --触发器trf12的输出端作为另一触发器的时钟端
+	end if;
+	end process;
+	end;
+  </specification>
+   </rule>
+   <rule category="C010" conLevel="L001" enable="true" id="CID12327" name="寄存器复位端口不应悬空。" priority="P001">
+      <description>VHDL_R_5_10_4寄存器复位端口不应悬空。</description>
+      <message>寄存器复位端口不应悬空。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	example_ent_inst : example_ent 
+	port map(clk =&gt; clk,
+			 out_l =&gt; out_l ) ; --复位端口被悬空
+	......
+	entity example_ent is 
+	port( 
+		 clk : in std_logic; 
+		 rst : in std_logic; 
+		 out_l : out std_logic );
+	end example_ent;	 
+  </specification>
+   </rule>
+   <rule category="C011" conLevel="L001" enable="true" id="CID12335" name="状态机中的无效状态应进行合理处置。" priority="P001">
+      <description>VHDL_R_5_11_1状态机中的无效状态应进行合理处置。</description>
+      <message>状态机中的无效状态应进行合理处置。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	--程序中状态机进入无效状态后置空操作，可能导致状态机死锁 
+	singal current_state_r, next_state_r : std_logic_vector (1 downto 0); 
+	constant Cst0 : std_logic_vector (1 downto 0) := "00";
+	constant Cst1 : std_logic_vector (1 downto 0) := "01";
+	constant Cst2 : std_logic_vector (1 downto 0) := "10";
+	constant Cst3 : std_logic_vector (1 downto 0) := "11";
+	......
+	case current_state_r is 
+	  when Cst0 =&gt;
+	......
+	  when Cst1 =&gt;
+	......
+	  when Cst2 =&gt;
+	......
+	  when others =&gt; null;   --当程序的状态机进入无效状态后执行when others分支，由于程序中未对无效状态进行任何处理，状态机一旦进人无效状态则无法再返回到正常的状态，导致状态机死锁。
+	end case 
+  </specification>
+   </rule>
+   <rule category="C012" conLevel="L001" enable="true" id="CID12342" name="在进行约束设置时，应避免不同的约束间出现矛盾。" priority="P001">
+      <description>VHDL_R_5_12_2在进行约束设置时，应避免不同的约束间出现矛盾。</description>
+      <message>在进行约束设置时，应避免不同的约束间出现矛盾。</message>
+      <language>VHDL</language>
+      <specification>
+	 
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID12298" name="不应在整数，实数和无符号整数之间使用隐式转换。" priority="P001">
+      <description>VHDL_R_5_6_4不应在整数，实数和无符号整数之间使用隐式转换。</description>
+      <message>不应在整数，实数和无符号整数之间使用隐式转换。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	signal ul : unsigned(3 downto 0); 
+	signal intl : integer range 0 to 15;
+	intl &lt;= ul;  --将无符号数隐式转化为整数
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID12303" name="不宜使用组合逻辑的输出控制三态门。" priority="P001">
+      <description>VHDL_R_5_6_9不宜使用组合逻辑的输出控制三态门。</description>
+      <message>不宜使用组合逻辑的输出控制三态门。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity example_ent is 
+	port( 
+		 a_in : in std_logic; 
+		 b_in : in std_logic; 
+		 d_in : in std_logic; 
+		 d_out : out std_logic) ;
+	end example_ent;
+	signal S_c : std_logic;
+	S_c &lt;= a_in xor b_in; 
+	d_out &lt;= d_in when S_c ='0'else'Z';  --使用组合逻辑的输出控制三态门
+  </specification>
+   </rule>
+   <rule category="C004" conLevel="L001" enable="true" id="CID12287" name="不应在一个进程中使用多个event control段。" priority="P001">
+      <description>VHDL_R_5_4_4不应在一个进程中使用多个event control段。</description>
+      <message>不应在一个进程中使用多个event control段。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	signal S_a, S_b : std_logic; 
+	signal S_r : std_logic; 
+	process (S_a, S_b) 
+	  begin
+	    if S_a'event and S_a ='1'then
+		  if S_b'event and S_b ='1'then  --不应在一个进程中使用多个event control段
+			S_r = S_a xor S_b; 
+		  end if; 
+		end if; 
+	  end process ;	
+  </specification>
+   </rule>
+   <rule category="C009" conLevel="L001" enable="true" id="CID12319" name="全局时钟宜使用全局时钟布线资源。" priority="P001">
+      <description>VHDL_R_5_9_7全局时钟宜使用全局时钟布线资源。</description>
+      <message>全局时钟宜使用全局时钟布线资源。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity exarnple_ent is 
+	port( 
+		 clk_in : in std_logic;
+	);
+	end example_ent; 	
+	BUFG_inst : BUFG 
+	port map(O =&gt; clk,        --将输人时钟连接至全局时钟网络后再使用
+			 I =&gt; clk_in);
+  </specification>
+   </rule>
+   <rule category="C013" conLevel="L001" enable="true" id="CID12347" name="内部信号，变量宜添加注释说明，注释宜靠近信号定义。" priority="P001">
+      <description>VHDL_R_5_13_3内部信号，变量宜添加注释说明，注释宜靠近信号定义。</description>
+      <message>内部信号，变量宜添加注释说明，注释宜靠近信号定义。</message>
+      <language>VHDL</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C001" conLevel="L001" enable="true" id="CID12273" name="端口例化时不应进行逻辑运算操作" priority="P001">
+      <description>VHDL_R_5_1_4端口例化时不应进行逻辑运算操作</description>
+      <message>端口例化时不应进行逻辑运算操作</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	example_ent_inst : example_ent 
+	port map(a_in =&gt; s_a,
+			 b_in =&gt; s_b,
+			 c_out =&gt; s_c,
+			 d_out=&gt; not s_d_n);--端口例化时进行逻辑非运算
+	entity example_ent is 
+	port( 
+		 a_in : in std_logic; 
+		 b_in : in std_logic; 
+		 c_out : out std_logic; 
+		 d_out : out std_logic);
+	end example_ent;
+  </specification>
+   </rule>
+   <rule category="C011" conLevel="L001" enable="true" id="CID12336" name="应对状态综合属性进行适当的设置，确保对无效状态的处理综合有效。" priority="P001">
+      <description>VHDL_R_5_11_2应对状态综合属性进行适当的设置，确保对无效状态的处理综合有效。</description>
+      <message>应对状态综合属性进行适当的设置，确保对无效状态的处理综合有效。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	--使用Synplify综合工具时，可以在代码中增加综合属性设置 
+	type state is (s0, sl, s2, s3, s4, s5); 
+	signal nstate, estate : state; 
+	attribute syn_encoding of estate : signal is "safe, gray"; 
+  </specification>
+   </rule>
+   <rule category="C002" conLevel="L001" enable="true" id="CID12276" name="内部信号应避免使用三态逻辑" priority="P001">
+      <description>VHDL_R_5_2_3内部信号应避免使用三态逻辑</description>
+      <message>内部信号应避免使用三态逻辑</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	entity top_ent is
+	port(……
+		 Dout : out std_logic) ;
+	……	
+	signal S_inter_data, S_inter_ctrl, S_inter_din : std_logic; 
+	S_inter_data &lt;= S_inter_din when S_inter _ctrl ='1' else'Z'; --内部信号S_inter_data不应使用三态门
+  </specification>
+   </rule>
+   <rule category="C002" conLevel="L001" enable="true" id="CID12282" name="宜将相关的组合逻辑和可以复用的逻辑划分在同一模块层次中" priority="P001">
+      <description>VHDL_R_5_2_9宜将相关的组合逻辑和可以复用的逻辑划分在同一模块层次中</description>
+      <message>宜将相关的组合逻辑和可以复用的逻辑划分在同一模块层次中</message>
+      <language>VHDL</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C008" conLevel="L001" enable="true" id="CID12312" name="多级 if else 化句应重视优先级顺序对性能的影响。" priority="P001">
+      <description>VHDL_R_5_8_6多级 if else 化句应重视优先级顺序对性能的影响。</description>
+      <message>多级 if else 化句应重视优先级顺序对性能的影响。</message>
+      <language>VHDL</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C009" conLevel="L001" enable="true" id="CID12316" name="避免使用门控时钟。" priority="P001">
+      <description>VHDL_R_5_9_4避免使用门控时钟。</description>
+      <message>避免使用门控时钟。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity example_ent is 
+	port( 
+		 clk : in std_logic;
+		 clk_out : out std_logic ); 
+	end example_ent; 
+	signal sl : std_logic; 
+	clk_out &lt;= clk and sl;   --输出时钟由输入时钟、控制信号经与门产生，容易产生毛刺
+  </specification>
+   </rule>
+   <rule category="C010" conLevel="L001" enable="true" id="CID12324" name="不应将寄存器的输出反馈到异步复位（置位）端。" priority="P001">
+      <description>VHDL_R_5_10_1不应将寄存器的输出反馈到异步复位（置位）端。</description>
+      <message>不应将寄存器的输出反馈到异步复位（置位）端。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	U5 : GTECH_FD2 
+	Port map(D =&gt; in2_in,
+			 CP =&gt; clk, 
+			 CD =&gt; rst,
+			 Q =&gt; outl_out );  --触发器U5的输出经组合逻辑后又反馈回U5复位端。
+	rst &lt;= inl_i AND outl_out; 
+  </specification>
+   </rule>
+   <rule category="C005" conLevel="L001" enable="true" id="CID12292" name="时钟的命名宜于一般的端口名字相区别。" priority="P001">
+      <description>VHDL_R_5_5_5时钟的命名宜与一般的端口名字相区别。</description>
+      <message>时钟的命名宜与一般的端口名字相区别。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	--时钟的命名宜与一般的端口名字相区别
+	entity clk_ent is 
+	port( 
+		 clk : in std_logic;
+		 rst : in std_logic;
+		 clk_lOM : out std_logic; 
+		 clk_gps : out std_logic);
+	end clk_ent；	 
+  </specification>
+   </rule>
+   <rule category="C008" conLevel="L001" enable="true" id="CID12307" name="case 语句表达式不应为固定常量。" priority="P001">
+      <description>VHDL_R_5_8_1case 语句表达式不应为固定常量。</description>
+      <message>case 语句表达式不应为固定常量。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity example_ent is 
+	port( 
+		 A_in, SEL_in : in std_logic;
+		 A_out : out std_logic) ;
+	end example_ent; 
+	architecture behave_arc of example_ent is 
+	constant CTMP : std_logic : = '1'; 
+	constant CFS_COND : std_logic : = '1'; begin 
+	process (SEL_in, A_in) 
+	  begin
+	    case (CFS_COND) is    ---- case语句的条件表达式不应为常量
+		  when CTMP  =&gt; A_out &lt;= A_in;
+		  when others =&gt; A_out &lt;= 'X'; 
+		end case; 
+	end process; 
+	end behave_arc; 
+  </specification>
+   </rule>
+   <rule category="C010" conLevel="L001" enable="true" id="CID12333" name="同一复位（置位）信号宜使用唯一的有效电平。" priority="P001">
+      <description>VHDL_R_5_10_10同一复位（置位）信号宜使用唯一的有效电平。</description>
+      <message>同一复位（置位）信号宜使用唯一的有效电平。</message>
+      <language>VHDL</language>
+      <specification>
+	
+	
+  </specification>
+   </rule>
+   <rule category="C001" conLevel="L001" enable="true" id="CID12272" name="例化时未使用的输出端口宜采用 “open” 说明" priority="P001">
+      <description>VHDL_R_5_1_3例化时未使用的输出端口宜采用 “open” 说明</description>
+      <message>例化时未使用的输出端口宜采用 “open” 说明</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	example_ent_inst : example_ent 
+	port map(a_in =&gt; s_a,
+			 b_in =&gt; s_b,
+			 c_out =&gt; s_c,
+			 d_out=&gt; open);--未使用的端口采用open说明
+	entity example_ent is 
+	port(
+		 a_in : in std_logic; 
+		 b_in : in std_logic; 
+		 c_out : out std_logic; 
+		 d_out : out std_logic);
+	end example_ent;	 
+  </specification>
+   </rule>
+   <rule category="C004" conLevel="L001" enable="true" id="CID12286" name="条件判断表达式中应避免使用 “?“ “X” “Z“ 等状态" priority="P001">
+      <description>VHDL_R_5_4_3条件判断表达式中应避免使用 “?“ “X” “Z“ 等状态</description>
+      <message>条件判断表达式中应避免使用 “?“ “X” “Z“ 等状态</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码-1:
+	entity top_ent is 
+	port( 
+		 D_in : in std_logic; 
+		 D_out : out std_logic ) ; 
+	end top_ent; 
+	signal S_Ctrl_in : std_logic; 
+	D_out &lt;= D_in when S_Ctrl_in ='Z'else'1'； --条件表达式中应避免使用"Z"状态
+	案例代码-2:
+	entity top_ent is 
+	port( 
+		 D_in : in std_logic; 
+		 D_out : out std_logic) ; 
+	end top_ent; 
+	signal S_Ctrl_in : std_logic_vector(2 downto 0);
+	D_out &lt;= D_in when S_Ctrl_in = "1?0" else '1'; --条件表达式中应避免使用"?"状态
+  </specification>
+   </rule>
+   <rule category="C012" conLevel="L001" enable="true" id="CID12341" name="在用于综合的代码中应避免使用不可综合的代码。" priority="P001">
+      <description>VHDL_R_5_12_1在用于综合的代码中应避免使用不可综合的代码。</description>
+      <message>在用于综合的代码中应避免使用不可综合的代码。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	--非整型generic不可综合
+	entity DCVHDL_2159 is 
+	generic(delay : string : = "temp")； --错误
+	port( 
+		 B : in std_logic; 
+		 A : out std_logic_vector (1 downto 0)); 
+	end DCVHDL_2159; 
+	--空字符串常量不可综合
+	architecture DCVHDL_2159_arch of DCVHDL_2159 is 
+	constant N : string : = "";  --错误
+	constant B : integer : = 4;  --正确
+	begin 
+	......
+	end DCVHDL_2159_arch;
+  </specification>
+   </rule>
+   <rule category="C009" conLevel="L001" enable="true" id="CID12318" name="对跨时钟域信号应采取同步处理措施。" priority="P001">
+      <description>VHDL_R_5_9_6对跨时钟域信号应采取同步处理措施。</description>
+      <message>对跨时钟域信号应采取同步处理措施。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity example_ent is 
+	port( 
+		 a_in : in std_logic; -- a_in为外部的异步信号 
+		 clk : in std_logic; 
+		 d_out : out std_logic_vector (1 downto 0)); 
+	end example_ent; 
+	architecture behave_arc of example_ent is 
+	signal S_cnt : std_logic_vector(l downto 0); 
+	begin 
+	process (clk) 
+	  begin 
+	    if clk'event and clk ='1'then
+		  if(a_in ='1') then     --a_in为外部的异步信号，此处未经同步化直接使用
+			S_cnt &lt;= S_cnt + 1; 
+		  end if; 
+		end if;
+	  end process;
+	d_out &lt;= S_cnt; 
+	end behave_arc; 
+  </specification>
+   </rule>
+   <rule category="C002" conLevel="L001" enable="true" id="CID12280" name="设计模块划分应以功能独立性为原则，一个文件宜对应一个设计模块" priority="P001">
+      <description>VHDL_R_5_2_7设计模块划分应以功能独立性为原则，一个文件宜对应一个设计模块</description>
+      <message>设计模块划分应以功能独立性为原则，一个文件宜对应一个设计模块</message>
+      <language>VHDL</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C002" conLevel="L001" enable="true" id="CID12275" name="除双向端口外，输出信号不应直接用于驱动同一模块内部的逻辑" priority="P001">
+      <description>VHDL_R_5_2_2除双向端口外，输出信号不应直接用于驱动同一模块内部的逻辑</description>
+      <message>除双向端口外，输出信号不应直接用于驱动同一模块内部的逻辑</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	-－输出信号反馈驱动同模块内部逻辑
+	entity top_ent is 
+	port( 
+		 A_in : in std_logic; 
+		 B_in : in std_logic; 
+		 Clk : in std_logic; 
+		 A_r_out : out std_logic; 
+		 B_out : out std_logic) ; 
+	end top_ent; 
+	architecture behave_arc of top_ent is 
+	begin
+	B_out (= B_in and A_r_out; --输出端口A_r_out直接用千驱动模块内部逻辑B_out 
+	process (clk) 	
+	  begin
+	    if clk'event and clk='l' then
+		  A_r_out (= A_in; end if; 
+	end process; 
+	end behave_arc; 
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID12295" name="信号应在赋值后使用。" priority="P001">
+      <description>VHDL_R_5_6_1信号应在赋值后使用。</description>
+      <message>信号应在赋值后使用。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity example_ent is 
+	port( 
+		 SEL_in : in std_logic; 
+		 DAT A_out : out std_logic ) ; 
+	end example_ent; 
+	architecture behave_arc of example_ent is 
+	signal S_tmp : std_logic; 
+	begin 
+	process (SEL_in, S_tmp) 
+	  begin
+		if(SEL_in ='1') then	
+		  DATA_out &lt;= S_tmp; --S_tmp信号在使用前没有赋值
+		else 
+		  DATA_out &lt;= '0';
+		end if;
+	  end process;
+	end behave_arc;    
+  </specification>
+   </rule>
+   <rule category="C005" conLevel="L001" enable="true" id="CID12293" name="命名宜符合规则要求" priority="P001">
+      <description>VHDL_R_5_5_6命名宜符合规则要求</description>
+      <message>命名宜符合规则要求</message>
+      <language>VHDL</language>
+      <specification>
+
+  </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID12296" name="运算符两端信号或参数位宽应相等。" priority="P001">
+      <description>VHDL_R_5_6_2运算符两端信号或参数位宽应相等。</description>
+      <message>运算符两端信号或参数位宽应相等。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity basic_ent is
+	port (A, B: in std_logic_vector (3 downto 0);
+	  Q: out std_logic_vector(2 downto 0));
+	end basic_ent;
+	architecture basic of basic_ent is
+	begin
+	  basic_block: block is begin
+	process ( A ) is
+	variable T: std_logic_vector ( 5 downto 1 );
+	variable W: std_logic_vector ( 15 downto 1 );
+	variable R: boolean;
+	variable E: std_logic_vector ( 10 downto 1 );
+	begin
+	if ( T = E ) then          --关系操作符“=”右边的10位与左边5位宽度不一致
+	  Q &lt;= "11";            --赋值语句左边3位与右边2位宽度不一致
+	else
+	  Q &lt;= Q;           
+	end if;
+	end process;
+	end block;
+	end basic;
+  </specification>
+   </rule>
+   <rule category="C010" conLevel="L001" enable="true" id="CID12329" name="在同一时刻使用同一个复位域对所有模块进行复位。" priority="P001">
+      <description>VHDL_R_5_10_6在同一时刻使用同一个复位域对所有模块进行复位。</description>
+      <message>在同一时刻使用同一个复位域对所有模块进行复位。</message>
+      <language>VHDL</language>
+      <specification>
+	
+  </specification>
+   </rule>
+   <rule category="C007" conLevel="L001" enable="true" id="CID12304" name="用于控制循环终止条件的参数应为常量。" priority="P001">
+      <description>VHDL_R_5_7_1用于控制循环终止条件的参数应为常量。</description>
+      <message>用于控制循环终止条件的参数应为常量。</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	signal count : integer 0 to 3;
+	SUM: for i in 1 to count loop    --用于控制循环终止条件的参数应为常量
+	sum = sum+ i; 
+	end loop SUM; 
+  </specification>
+   </rule>
+   <rule category="C009" conLevel="L001" enable="true" id="CID12315" name="不宜使用组合逻辑产生的时钟" priority="P001">
+      <description>VHDL_R_5_9_3不宜使用组合逻辑产生的时钟</description>
+      <message>不宜使用组合逻辑产生的时钟</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码:
+	entity example_ent is 
+	port( 
+		 a_in : in std_logic;
+		 b_in : in std_logic; 
+		 d_in : in std_logic; 
+		 d_out : out std_logic);
+	end example_ent; 
+	architecture behave_arc of example_ent is 
+	signal clk : in std_logic; 
+	begin 
+	  clk &lt;= a_in and b_in;  --组合逻辑产生时钟
+	process (clk) 
+	  begin
+	    if clk'event and clk ='1' then  --使用组合逻辑产生的时钟
+		  d_out &lt;= d_in; 
+		end if;
+	  end if;
+	  end process; 
+	end behave_arc;
+  </specification>
+   </rule>
+   <rule category="C001" conLevel="L001" enable="true" id="CID12271" name="例化时不应输入端口悬空" priority="P001">
+      <description>VHDL_R_5_1_2例化时不应输入端口悬空</description>
+      <message>例化时不应输入端口悬空</message>
+      <language>VHDL</language>
+      <specification>
+	案例代码：
+	--例化时不应输入端口悬空
+	example_ent_inst:example_ent
+	port map(a_in =&gt; open,
+			 b_in =&gt; s_b,
+			 c_out =&gt; s_c);
+	entity example_ent is
+	port(
+		 a_in: in std_logic;
+		 b_in: in std_logic;
+		 c_out:out std_logic);
+	end example_ent;	
+  </specification>
+   </rule>
+   <rule category="C011" conLevel="L001" enable="true" id="CID12340" name="状态机的状态数量及编码方式要求。" priority="P001">
+      <description>VHDL_R_5_11_6状态机的状态数量及编码方式要求。</description>
+      <message>状态机的状态数量及编码方式要求。</message>
+      <language>VHDL</language>
+      <specification>
+
+  </specification>
+   </rule>
+</ruleset>

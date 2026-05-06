@@ -1,0 +1,1088 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ruleset description="" id="" name="Verilog_STARC规则集" type="1">
+   <categories>
+      <category id="C003" name="03 复位" parent=""/>
+      <category id="C018" name="编译错误" parent=""/>
+      <category id="C015" name="15 有限状态机" parent=""/>
+      <category id="C016" name="16 可测试设计" parent=""/>
+      <category id="C009" name="09 三态缓冲器" parent=""/>
+      <category id="C007" name="07 组合逻辑" parent=""/>
+      <category id="C002" name="02 基本设计单元" parent=""/>
+      <category id="C017" name="17 版面书写" parent=""/>
+      <category id="C011" name="11 IF语句描述" parent=""/>
+      <category id="C012" name="12 CASE语句描述" parent=""/>
+      <category id="C014" name="14 操作符" parent=""/>
+      <category id="C005" name="05 异步电路处理" parent=""/>
+      <category id="C008" name="08 时序逻辑" parent=""/>
+      <category id="C001" name="01 命名" parent=""/>
+      <category id="C010" name="10 进程" parent=""/>
+      <category id="C013" name="13 循环语句描述" parent=""/>
+      <category id="C004" name="04 时钟" parent=""/>
+      <category id="C006" name="06 语法约束" parent=""/>
+   </categories>
+   <conLevels>
+      <conLevel id="L001" name="严重错误"/>
+      <conLevel id="L002" name="一般性错误"/>
+   </conLevels>
+   <priorities>
+      <priority id="P002" name="中" value="3"/>
+      <priority id="P001" name="高" value="1"/>
+   </priorities>
+   <rule category="C002" conLevel="L001" enable="true" id="CID9567" name="不要使用基本单元（如AND、OR）创建RS锁存器" priority="P001">
+      <description>STARC02-1.2.1.2 不要使用基本单元（如AND、OR）创建RS锁存器。</description>
+      <message>不要使用基本单元（如AND、OR）创建RS锁存器</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	......
+	//违反
+	nand and1(tem1,d,c);
+	nand and2(tem2,tem1,c);
+	nand and3(q,tem1,tem3);
+	nand and4(tem3,tem2,q);
+	......
+    </specification>
+   </rule>
+   <rule category="C004" conLevel="L002" enable="true" id="CID9591" name="不要使用相反边沿儿的触发器" priority="P002">
+      <description>STARC02-1.4.3.6 不要使用相反边沿儿的触发器。</description>
+      <message>不要使用相反边沿儿的触发器。</message>
+      <language>Verilog</language>
+      <specification>
+	  案例代码：
+	  always@(posedge clk)//违反
+	    begin
+			......
+	    end 
+	
+		always@(negedge clk)//违反
+		begin
+			......
+		end   
+    </specification>
+   </rule>
+   <rule category="C018" conLevel="L001" enable="true" id="CID555" name="编译错误" priority="P001">
+      <description>编译错误</description>
+      <message>编译错误</message>
+      <language>Verilog</language>
+      <specification>
+		</specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9515" name="敏感度列表中指定的变量必须在包含的块中读取" priority="P001">
+      <description>STARC02-2.2.2.2a 敏感度列表中指定的变量必须在包含的块中读取</description>
+      <message>敏感度列表中指定的变量必须在包含的块中读取。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码: 
+	module fd31(
+		input wire a_1,
+		input wire b_1,
+		input wire sl_1,
+		output reg q_1 
+	);
+
+	always@(a_1 or b_1,sl,q_1)         //避免敏感信号列表中出现不必要的信号q_1
+		begin
+			if(!sl) 
+				q_1 = a_1;
+			else    
+				q_1 = b_1;
+		end 
+	endmodule  
+    </specification>
+   </rule>
+   <rule category="C004" conLevel="L001" enable="true" id="CID9511" name="不在敏感度列表中定义常量" priority="P001">
+      <description>STARC02-2.2.2.2b 不在敏感度列表中定义常量</description>
+      <message>不在敏感度列表中定义常量</message>
+      <language>Verilog</language>
+      <specification> 	
+	案例代码-25		
+	module fd32(
+		input wire [31:0] d_1,
+		input wire ce,
+		input wire clk1,
+		input wire clk2,
+		input wire clr,
+		output reg [31:0] q_1 
+	);
+	wire clk_n,clk;
+	assign clk_n = ~clk1;		  //不应将经过不同路径后进行组合逻辑输出的时钟信号作为时钟
+	assign clk = clk_n &amp; clk2;
+
+	always@(posedge clk)
+	  begin
+	  ......
+	  end 	
+	endmodule	
+	</specification>
+   </rule>
+   <rule category="C002" conLevel="L001" enable="true" id="CID9505" name="避免包含锁存器的组合循环" priority="P001">
+      <description>STARC02-2.4.1.4 避免包含锁存器的组合循环</description>
+      <message>避免包含锁存器的组合循环</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码:
+	module fd32(
+		input wire [1:0] data,
+		input wire sel,
+		output reg Q 	
+	);
+	 reg temp_1,temp_2,temp_3;
+
+	always @(data or sel)
+	 begin
+			temp_1 = data(0) &amp; temp_3;    //不应在组合逻辑电路中使用反馈
+			temp_2 =  temp_1 ^ data(1);
+			if(sel == 1'b0)
+				temp_3 = data(0);
+			else
+				temp_3 =  temp_2;
+			Q = temp_3;	
+	 end 	
+	endmodule  
+    </specification>
+   </rule>
+   <rule category="C009" conLevel="L001" enable="true" id="CID9545" name="INOUT端口不应直接连接到输入/输出" priority="P001">
+      <description>STARC02-2.5.1.6 INOUT端口不应直接连接到输入/输出。</description>
+      <message>INOUT端口不应直接连接到输入/输出。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+
+	module top  (
+		input wire clk,
+		input wire rst,
+		input wire w_en,
+		input wire [31:0] d_1,
+		inout reg [31:0] q_1
+
+	);
+	fd32 inst_fd32(
+		.d_1(d_1),
+		.ce (w_en),
+		.clk(clk),
+		.clr(rst),
+		.q_1(q_1) //违反
+	);
+	module fd32(
+		input wire [31:0] d_1,
+		input wire ce,
+		input wire clk,
+		input wire clr,
+		output reg [31:0] q_1 
+	);
+    </specification>
+   </rule>
+  <rule category="C009" conLevel="L001" enable="true" id="CID9546" name="三态输出不应在if语句的条件表达式中使用" priority="P001">
+      <description>STARC02-2.5.1.7 三态输出不应在if语句的条件表达式中使用。</description>
+      <message>三态输出不应在if语句的条件表达式中使用。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+
+	bufif1 bf_1(out_1,in_1,ce);
+
+	always@(posedge clk)
+	  begin
+		if(clr)
+			begin
+			q_1 &lt;= 32'h00000000;
+			end	 
+		else 
+			if(out_1)  //违反
+				begin
+				q_1 &lt;= d_1;
+				end
+			else 
+				q_1 &lt;= 32'hffffffff;
+	  end 
+    </specification>
+   </rule>
+   <rule category="C016" conLevel="L001" enable="true" id="CID9560" name="时钟不得连接到触发器的（数据）D输入端" priority="P001">
+      <description>STARC02-3.3.3.1 时钟不得连接到触发器的（数据）D输入端。</description>
+      <message>时钟不得连接到触发器的（数据）D输入端。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	module fd32(
+		input wire d_1,
+		input wire clk0,
+		input wire clk,
+		input wire clr,
+		output reg q_1 
+	);
+
+	wire c_g;
+	
+   always@(posedge clk  )
+	begin
+	......
+	end 
+	
+	assign c_g = clk &amp; d_1;
+
+	always@(posedge clk0)
+		begin
+			if(clr)
+				mux_out &lt;= 1'b0;
+			else 
+				mux_out &lt;= c_g;   //违反
+		end 
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C016" conLevel="L001" enable="true" id="CID9562" name="不应混合使用时钟和复位。" priority="P001">
+      <description>STARC02-3.3.6.2 不要混合时钟线和复位线。</description>
+      <message>不要混合时钟线和复位线。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	module top  (
+		input wire clk1,
+		input wire clk2,
+		input wire rst,
+		input wire sel,
+		input wire d_1,
+		input wire d_2,
+		input wire d_3,
+		output reg q_1,
+		output reg q_2
+	);
+	wire mux_to_ff1, mux_to_ff2;
+	fd32 inst1_fd32(
+		.d_1(d_1),
+		.clk(clk2),
+		.clr(mux_to_ff1),//违反
+		.q_1(q_1) 
+	);
+	fd32 inst2_fd32(
+		.d_1(d_1),
+		.clk(mux_to_ff2),//违反
+		.clr(rst),
+		.q_1(q_2) 
+	);
+	fd31 inst1_fd31(
+		.a_1 (clk1),
+		.b_1 (d_3),
+		.sl_1(sel),
+		.q_1 (mux_to_ff1)
+		);   
+	fd31 inst2_fd31(
+		.a_1 (clk1),
+		.b_1 (d_2),
+		.sl_1(sel),
+		.q_1 (mux_to_ff2)
+		);   	
+	endmodule
+
+
+	module fd31(
+		input wire a_1,
+		input wire b_1,
+		input wire sl_1,
+		output reg  q_1
+	);
+	always@(sl_1 or a_1 or b_1)
+		begin
+			if(!sl) q_1 = a_1;
+			else q_1 = b_1;
+		end 
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C001" conLevel="L001" enable="true" id="CID9502" name="不要使用保留的Verilog、SystemVerilog或VHDL关键字" priority="P001">
+      <description>STARC05-1.1.1.3 不要使用保留的Verilog、SystemVerilog或VHDL关键字</description>
+      <message>不要使用保留的Verilog、SystemVerilog或VHDL关键字</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	module test (VCC, test_en, out);
+	  input VCC,test_en; 
+	  output out;  //示例中输入端口命名为“VCC”，输出端口命名为“out”，违反了基本命名规则
+	  ......
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C001" conLevel="L001" enable="true" id="CID9501" name="主端口名称或模块名称必须遵循建议的命名约定" priority="P001">
+      <description>STARC05-1.1.1.6 主端口名称或模块名称必须遵循建议的命名约定</description>
+      <message>主端口名称或模块名称必须遵循建议的命名约定</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	module fd32(
+		input [31:0] d,
+		input 1ce,        //首字符应是字母
+		input clk,
+		input clr,
+		output reg [31:0] q
+	);
+		......
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C017" conLevel="L002" enable="true" id="CID9605" name="低电平有效的信号必须遵循建议的命名约定" priority="P002">
+      <description>STARC05-1.1.1.7  低电平有效的信号必须遵循建议的命名约定。</description>
+      <message>低电平有效的信号必须遵循建议的命名约定。</message>
+      <language>Verilog</language>
+      <specification>
+	  案例代码:
+	  always@(posedge clk)
+	  begin 
+	  if(clr==1'b0)//违反
+			begin
+				q_1 &lt;= 32'h00000000;
+			end	 
+		else 
+	  ...
+	  end 
+	
+    </specification>
+   </rule>
+   <rule category="C001" conLevel="L002" enable="true" id="CID9587" name="顶级模块名称的长度应小于或等于16个字符" priority="P002">
+      <description>Verilog_1_1_2_1 顶级模块名称的长度应小于或等于16个字符。</description>
+      <message>顶级模块名称的长度应小于或等于16个字符。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+		module dddd_dddd_gvbv_bvvv_vbtop(//违反
+		input [31:0] d_1444_44444_44444_44444444,//违反
+		input ce,
+		input clk,
+		input rst,
+		output [31:0] q_1 
+	   );
+	   
+	 ...
+	 
+	endmodule
+	
+    </specification>
+   </rule>
+   <rule category="C001" conLevel="L002" enable="true" id="CID9504" name="模块名称的字符长度应为[2,32]" priority="P002">
+      <description>STARC05-1.1.2.1a 模块名称的字符长度应为[2,32]</description>
+      <message>模块名称的字符长度应为[2,32]</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：  
+	module f(  //实体名的字符长度应为[2,32]
+		input [31:0] d_1,
+		input ce,
+		input clk,
+		input clr,
+		output reg [31:0] q_1 
+	);
+		......
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C001" conLevel="L002" enable="true" id="CID9606" name="参数名称应遵循建议的命名约定" priority="P002">
+      <description>STARC05-1.1.4.2a 参数名称应遵循建议的命名约定。</description>
+      <message>参数名称应遵循建议的命名约定。</message>
+      <language>Verilog</language>
+      <specification>
+	  案例代码：
+		module emp  (
+			 parameter FAST_TRAIN_MODE11111111111111111111111141 = 1'b0;//违反
+		);
+    </specification>
+   </rule>
+   <rule category="C008" conLevel="L002" enable="true" id="CID9612" name="固定值不应连接到输入端口" priority="P002">
+      <description>STARC05-1.1.4.6b 固定值不应连接到输入端口。</description>
+      <message>固定值不应连接到输入端口。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码:
+	module top (
+	input wire clk,
+	input wire rst,
+	input wire w_en,
+	input wire [31:0] d_1,
+	output reg [31:0] q_1 
+   );
+
+	fd22 inst_fd22(
+		.d_1(1'b1),//违反
+		.ce (w_en),
+		.clk(clk),
+		.clr(rst),
+		.q_1(q_1) 
+	);
+   endmodule
+    </specification>
+   </rule>
+   <rule category="C004" conLevel="L002" enable="true" id="CID9510" name="时钟不应有门控" priority="P002">
+      <description>STARC05-1.4.3.1b 时钟不应有门控</description>
+      <message>时钟不应有门控</message>
+      <language>Verilog</language>
+      <specification> 	
+	案例代码:	
+	module fd32(
+		input wire [31:0] d_1,
+		input wire ce,
+		input wire clk,
+		input wire ctrl,
+		input wire clr,
+		output reg [31:0] q_1 
+	);
+	wire clk_g;
+	assign clk_g = clk &amp; ctrl;          //FPGA设计不应使用门控时钟clk_g
+
+	always@(posedge clk_g)
+	  begin
+	  ......
+	  end 
+	endmodule	
+	</specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9530" name="不要在函数描述中使用非阻塞赋值" priority="P001">
+      <description>STARC05-2.1.2.2 不要在函数描述中使用非阻塞赋值</description>
+      <message>不要在函数描述中使用非阻塞赋值</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码:
+	module fd32(
+		input wire [31:0] d_1,
+		input wire [31:0] d_2,
+		input wire ce,
+		input wire clk,
+		input wire clr,
+		output reg [31:0] q_1 
+	);
+	function [31:0]fun_1;
+		input [31:0] d_1;
+		input [31:0] d_2;
+	begin
+		fun_1 &lt;= d_1 &amp; d_2;                     //函数中不应使用非阻塞赋值
+	end	
+	endfunction
+
+	always@(posedge clk)
+	  begin
+		if(clr)
+			begin
+			q_1 &lt;= 32'h00000000;
+			end	 
+		else 
+			if(ce)
+				begin
+				q_1 &lt;= fun_1(d_1,d_2);
+				end
+			else 
+				q_1 &lt;= 32'hffffffff;
+	  end 	
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9535" name="只应将三态总线用于外部接口。" priority="P001">
+      <description>Verilog_2_1_1_32 只应将三态总线用于外部接口。</description>
+      <message>只应将三态总线用于外部接口</message>
+      <language>Verilog</language>
+      <specification>
+    </specification>
+   </rule>
+   <rule category="C016" conLevel="L001" enable="true" id="CID9560" name="时钟不应直接连接至触发器的数据端。" priority="P001">
+      <description>Verilog_2_9_1_3 时钟不应直接连接至触发器的数据端。</description>
+      <message>时钟不应直接连接至触发器的数据端。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码-1：
+	module fd32(
+		input wire d_1,
+		input wire sel,
+		input wire clk,
+		input wire clr,
+		input wire g_1,
+		output reg q_1 
+	);
+
+	wire c_g;
+	reg mux_out;
+
+	assign c_g = clk &amp; g_1;
+
+	always@(sel or d_1 or c_g)
+		begin
+			if(sel)
+				mux_out = d_1;
+			else 
+				mux_out = c_g;   //违反
+		end 
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9531" name="不得在函数描述中读取全局信号" priority="P001">
+      <description>STARC05-2.1.2.3 不得在函数描述中读取全局信号</description>
+      <message>不得在函数描述中读取全局信号</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码:
+	
+	module fd32(
+		input wire [31:0] d_1,
+		input wire [31:0] d_2,
+		input wire ce,
+		input wire clk,
+		input wire clr,
+		output reg [31:0] q_1 
+	);
+	function [31:0]fun_1;           
+		input [data_size:0] d_22;
+	begin
+		fun_1 = d_1 &amp; d_22;//应使用函数内部定义的信号，不应使用全局信号
+	end
+	endfunction
+
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L002" enable="true" id="CID9597" name="不应在设计中使用任务语句（task）" priority="P002">
+      <description>STARC05-2.1.2.4 不应在设计中使用任务语句（task）。</description>
+      <message>不应在设计中使用任务语句（task）。</message>
+      <language>Verilog</language>
+      <specification>
+	  案例代码:
+	  task my_task;//不宜使用任务
+	  ......
+	  endtask
+	  
+    </specification>
+   </rule>
+   <rule category="C014" conLevel="L001" enable="true" id="CID9553" name="信号不得与X或Z进行比较" priority="P001">
+      <description>STARC05-2.10.1.4a 信号不得与X或Z进行比较。</description>
+      <message>信号不得与X或Z进行比较。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+
+	if(ce == 1'bz)//违反
+
+    </specification>
+   </rule>
+   <rule category="C014" conLevel="L001" enable="true" id="CID9555" name="关系运算符的操作数的位宽应匹配" priority="P001">
+      <description>STARC05-2.10.3.1 关系运算符的操作数的位宽应匹配。</description>
+      <message>关系运算符的操作数的位宽应匹配。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	...
+	
+	wire ce;
+	wire [31:0]d_2;
+	
+	always@(posedge clk)
+	  begin
+		if(clr)
+			begin
+			q_1 &lt;= 32'h00000000;
+			end	 
+		else 
+			if(ce &lt;= d_2 )//违反
+				begin
+				q_1 &lt;= d_1 ;
+				end
+			else 
+				q_1 &lt;= 32'hffffffff;
+	  end 
+	  ...
+	  
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9534" name="不要使用reg、wire、tri和integer以外的数据类型" priority="P001">
+      <description>STARC05-2.10.4.1  不要使用reg、wire、tri和integer以外的数据类型</description>
+      <message>不要使用reg、wire、tri和integer以外的数据类型</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	real rx,ry,x2y2;//违反
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9577" name="设计不应有锁存器" priority="P001">
+      <description>STARC05-2.2.1.2 设计不应有锁存器。</description>
+      <message>设计不应有锁存器。</message>
+      <language>Verilog</language>
+      <specification>
+	
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9539" name="不要使用deassign语句" priority="P001">
+      <description>STARC05-2.3.1.2b 不要使用deassign语句。</description>
+      <message>不要使用deassign语句。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	always@(sl_1 or a_1 or b_1)
+	begin
+		if(!sl) q_1 = a_1;
+		else assign q_1 = b_1;//违反
+	end
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9519" name="不要在同一个always中同时使用阻塞和非阻塞赋值" priority="P001">
+      <description>STARC05-2.3.2.2  不要在同一个always中同时使用阻塞和非阻塞赋值。</description>
+      <message>不要在同一个always中同时使用阻塞和非阻塞赋值。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码-41
+	module fd32(
+		input wire [31:0] d_1,
+		input wire [31:0] d_2,
+		input wire ce,
+		input wire clk,
+		input wire clr,
+		output reg [31:0] q_1,
+		output reg [31:0] q_2 
+	);
+
+	always@(posedge clk or d_2)
+	  begin
+		if(clr)
+			begin
+			q_1 &lt;= 32'h00000000;
+			q_2 &lt;= 32'h00000000;
+			end	 
+		else 
+			q_1 &lt;= d_1;
+			q_2 = ~d_2;            //不应在一个always块中同时采用阻塞赋值语句和非阻塞赋值语句
+	  end 	
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9575" name="避免描述不会执行的条件" priority="P001">
+      <description>STARC05-2.7.2.2 避免描述不会执行的条件。</description>
+      <message>避免描述不会执行的条件。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	     ...
+	reg [1:0] current_state;
+    always @ (current_state or condition)
+	begin
+		case(current_state)
+			1'b1:
+				
+				...
+				
+			2'b11://违反
+				...
+		endcase
+	end
+
+		...
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9525" name="实例化中的端口连接必须通过名字关联而不是位置关联" priority="P001">
+      <description>STARC05-3.2.3.1 实例化中的端口连接必须通过名字关联而不是位置关联</description>
+      <message>实例化中的端口连接必须通过名字关联而不是位置关联</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码:
+	module top  (
+		input wire clk,
+		input wire rst,
+		input wire w_en,
+		input wire [31:0] d_1,
+		output reg [31:0] q_1 
+	);
+	fd32 inst_fd32(d_1,w_en,clk,rst,q_1);  //端口连接应通过名字描述连接而不应通过位置连接
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C001" conLevel="L002" enable="true" id="CID9588" name="源文件名应与文件中模块的名称相同" priority="P002">
+      <description>STARC-1.1.1.1 源文件名应与文件中模块的名称相同。</description>
+      <message>源文件名应与文件中模块的名称相同。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+   //....................................
+   
+	// FILE_NAME: temp.v    
+	//AUTHOR: Robrrl 
+	// TYPE : Circuit 
+	//EDIT: Bob 
+	// REV _DATE : 1.0  04/01/08 
+	 //            1.1  02/02/08 
+   
+	  
+		module emp  (//违反
+
+		);
+
+		endmodule
+		
+    </specification>
+   </rule>
+   <rule category="C017" conLevel="L002" enable="true" id="CID9599" name="时钟信号名称应遵循建议的命名约定" priority="P002">
+      <description>STARC-1.1.5.2a 时钟信号名称应遵循建议的命名约定。</description>
+      <message>时钟信号名称应遵循建议的命名约定。</message>
+      <language>Verilog</language>
+      <specification>
+	 案例代码:
+	module fd32(
+		input wire  d_1,
+		input wire clr,
+		output reg  q_1 
+	);
+    
+	always@(posedge clr )//违反
+	  begin
+		   ... 
+	  end  
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C008" conLevel="L001" enable="true" id="CID9542" name="设计应仅使用时钟的一个边缘" priority="P001">
+      <description>STARC-1.2.1.1a 设计应仅使用时钟的一个边缘。</description>
+      <message>设计应仅使用时钟的一个边缘。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码 ：
+	always@(posedge clk or negedge clk)//违反
+	  begin
+		if(clr)
+			begin
+			q_1 &lt;= 32'h00000000;
+			end	 
+		else 
+			if(ce)
+				begin
+				q_1 &lt;= d_1;
+				end
+			else 
+				q_1 &lt;= 32'hffffffff;
+	  end 
+    </specification>
+   </rule>
+   <rule category="C003" conLevel="L001" enable="true" id="CID9506" name="信号不得同时用作异步复位和同步复位" priority="P001">
+      <description>STARC-1.3.1.6 信号不得同时用作异步复位和同步复位</description>
+      <message>信号不得同时用作异步复位和同步复位</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码:
+	module fd32(
+		input wire [31:0] d_1,
+		input wire [31:0] d_2,
+		input wire ce,
+		input wire clk,
+		input wire rst_n,
+		output reg [31:0] q_1 
+	);
+
+	always@(posedge clk)
+	  begin
+		if(rst_n == 1'b0)       //不应将同一个复位信号同时作为同步复位和异步复位使用
+		   begin
+		   ...
+		   end
+		else 
+		   ...
+	  end
+
+	always@(posedge clk or negedge rst_n)
+	  begin
+		if(rst_n == 1'b0)       //不应将同一个复位信号同时作为同步复位和异步复位使用
+		   begin
+		   ...
+		   end	 
+		else 
+		   ... 
+	  end  
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C003" conLevel="L001" enable="true" id="CID9508" name="触发器输出不得用作复位信号" priority="P001">
+      <description>STARC-1.3.2.2 触发器输出不得用作复位信号</description>
+      <message>触发器输出不得用作复位信号</message>
+      <language>Verilog</language>
+      <specification>  
+	案例代码:
+	module fd32(
+		input wire [31:0] d_1,
+		input wire ce,
+		input wire clk,
+		input wire clr,
+		output reg [31:0] q_1 
+	);
+
+	always@(posedge clk)
+	  begin
+		if(clr &amp; d_1(0))      //寄存器的输出不应反馈至寄存器的复位（置位）端
+		   begin
+			q_1 &lt;= 32'h00000000;
+			end	 
+		else if(ce)
+		   begin
+			q_1 &lt;= d_1;
+			end
+		else q_1 &lt;= 32'hffffffff;
+	  end 
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C005" conLevel="L001" enable="true" id="CID9513" name="在两个时钟域之间交换数据时，不要在数据获取端放置逻辑" priority="P001">
+      <description>STARC-1.5.1.2 在两个时钟域之间交换数据时，不要在数据获取端放置逻辑</description>
+      <message>在两个时钟域之间交换数据时，不要在数据获取端放置逻辑</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码:
+	module fd32(
+		input wire d_1,
+		input wire clk_1,
+		input wire clk_2,
+		input wire clr,
+		output reg q_1 
+	);
+	reg in_1,in_2,in_3;
+
+	always@(posedge clk_1)
+	  begin
+		if(clr)
+			begin
+			in_1 &lt;= 1'b0;
+			end	 
+		else 
+			in_1 &lt;= d_1;
+	  end 
+	  
+	always@(posedge clk_2)
+	  begin
+		if(clr)
+			begin
+			in_2 &lt;= 1'b0;
+			in_3 &lt;= 1'b0;
+			end	 
+		else
+			in_2 &lt;= in_1;
+			in_3 &lt;= ~in_2;       //不应在同步器的两级触发器之间放置逻辑
+			q_1 &lt;= in_3;
+	  end 
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C014" conLevel="L001" enable="true" id="CID9554" name="不要赋值X，除非case语句的默认子句" priority="P001">
+      <description>STARC-2.10.1.5c 不要赋值X，除非case语句的默认子句。</description>
+      <message>不要赋值X，除非case语句的默认子句。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+
+	q_1 &lt;= 32'hxxxxxxxx;//违反
+    </specification>
+   </rule>
+   <rule category="C015" conLevel="L002" enable="true" id="CID9603" name="应使用参数或宏定义状态值" priority="P002">
+      <description>STARC-2.11.4.2 应使用参数或宏定义状态值。</description>
+      <message>应使用参数或宏定义状态值。</message>
+      <language>Verilog</language>
+      <specification>
+	  案例代码：
+	  ...
+	reg [1:0]current_state;
+	reg [1:0] next_state;
+	//parameter STATE_0=2'b00,STATE_1=2'b01, STATE_2=2'b10;
+	
+	
+	always @( current_state)
+		begin
+			case(current_state)
+				2'b00: result &lt;= 1'b0;
+				2'b01: result  &lt;= 1'b1;
+				default: result  &lt;= 1'b0;
+			endcase
+		end
+	
+	always @(posedge clk or negedge rst)
+		begin
+			if(rst==1'b0)
+				current_state &lt;= 2'b00;
+			else
+				current_state  &lt;= next_state;
+		end
+	
+	always @ (current_state or condition)
+		begin
+			case(current_state)
+				2'b00: //违反
+					begin
+						if(condition)
+							next_state = 2'b01;
+						else
+							next_state =2'b00;
+					end
+				2'b01:
+					begin
+						if(condition)
+							next_state =2'b10;
+						else
+							next_state =2'b01;
+					end
+					
+				...
+				
+			endcase
+		end
+
+	  ...
+    </specification>
+   </rule>
+   <rule category="C007" conLevel="L002" enable="true" id="CID9540" name="if子句在描述组合电路时必须具有相应的else子句" priority="P002">
+      <description>STARC-2.7.1.3a if子句在描述组合电路时必须具有相应的else子句。</description>
+      <message>if子句在描述组合电路时必须具有相应的else子句。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	always@(sl_1 or a_1 or b_1)
+		begin
+			if(sl == 2'b00) q_1 = a_1;
+			else if (sl == 2'b11) q_1 = b_1;  //违反
+		end 
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9523" name="不要使用fork-join" priority="P001">
+      <description>STARC-2.7.4.3  不要使用fork-join</description>
+      <message>不要使用fork-join</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码:
+	module fd32(
+		input wire d_1,
+		input wire d_2,
+		output reg [1:0] q_1,
+		output reg [1:0] q_2 
+	);
+
+	initial 
+	fork        //在RTL描述中，不应使用fork-join语句
+
+		q_1 = {d_1,d_2};
+		q_2 = {d_2,d_1};
+
+	join 	
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C012" conLevel="L001" enable="true" id="CID9548" name="case语句必须具有默认子句（default）" priority="P001">
+      <description>STARC-2.8.1.4 case语句必须具有默认子句（default）。</description>
+      <message>case语句必须具有默认子句（default）。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	case(state)//违反
+		2'b00: 
+			z_out &lt;=3'b001;
+		2'b01: 
+			z_out &lt;=3'b010;
+		2'b10:
+			z_out &lt;=3'b100;
+	endcase
+    </specification>
+   </rule>
+   <rule category="C012" conLevel="L002" enable="true" id="CID9549" name="不要使用full_case指令" priority="P002">
+      <description>STARC-2.8.1.5 不要使用full_case指令。</description>
+      <message>不要使用full_case指令。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	always@(posedge clk)
+		if(rst)
+			z_out &lt;= 3'b000;
+		else
+		  begin
+			case(state)//synthesis full_case //违反
+				2'b00: 
+					z_out &lt;=3'b001;
+				2'b01: 
+					z_out &lt;=3'b010;
+				2'b10:
+					z_out &lt;=3'b100;
+			endcase
+		  end 
+    </specification>
+   </rule>
+   <rule category="C012" conLevel="L002" enable="true" id="CID9547" name="设计不应使用casex或casez语句" priority="P002">
+      <description>STARC-2.8.4.3 设计不应使用casex或casez语句。</description>
+      <message>设计不应使用casex或casez语句。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+    ...
+	casex(state)//违反
+		2'b0x: 
+			z_out &lt;=3'b001;
+		2'b1x:
+			z_out &lt;=3'b100;
+		default:
+			z_out &lt;=3'b111;
+	...
+    </specification>
+   </rule>
+   <rule category="C013" conLevel="L001" enable="true" id="CID9551" name="循环变量的值不得在for语句中修改" priority="P001">
+      <description>STARC-2.9.1.2c 循环变量的值不得在for语句中修改。</description>
+      <message>循环变量的值不得在for语句中修改。</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	for(i=0,i&lt;8,i=i+1)
+		begin
+			q_1[i] &lt;= d_1[i];
+			i = i+1;//违反
+		end	
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L002" enable="true" id="CID9596" name="不应在一行中进行多个任务" priority="P002">
+      <description>STARC-3.1.4.4 不应在一行中进行多个任务。</description>
+      <message>不应在一行中进行多个任务。</message>
+      <language>Verilog</language>
+      <specification>
+	    案例代码:
+	    wire rst_n;  assign rst_n=d_1 &amp;d_2;//违反
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9526" name="component端口及其连接网络的位宽必须匹配" priority="P001">
+      <description>STARC-3.2.3.2 component端口及其连接网络的位宽必须匹配</description>
+      <message>component端口及其连接网络的位宽必须匹配</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码:
+	module top  (
+		input wire clk,
+		input wire rst,
+		input wire w_en,
+		input wire [31:0] d_1,            
+		output reg [31:0] q_1
+	);
+	fd32 inst_fd32(
+		.d_1(d_1),//违反
+		.ce (w_en),
+		.clk(clk),
+		.clr(rst),
+		.q_1(q_1) //违反
+	);
+	endmodule
+	module fd32(
+		input wire [15:0] d_1,
+		input wire ce,
+		input wire clk,
+		input wire clr,
+		output reg [15:0] q_1 
+	);
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9533" name="不要使用defparam语句" priority="P001">
+      <description>STARC-3.2.4.3 不要使用defparam语句</description>
+      <message>不要使用defparam语句</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码 ：
+	defparam inst_fd32.z_1 = 32'0000ffff;//违反
+    </specification>
+   </rule>
+   <rule category="C001" conLevel="L002" enable="true" id="CID9607" name="VDD/VSS/VCC/GND/VREF用作模块/实例/网络/端口（modules/instances/nets/ports）的名称" priority="P002">
+      <description>RESERVE_NAME  VDD/VSS/VCC/GND/VREF用作模块/实例/网络/端口（modules/instances/nets/ports）的名称。</description>
+      <message>VDD/VSS/VCC/GND/VREF用作模块/实例/网络/端口（modules/instances/nets/ports）的名称。</message>
+      <language>Verilog</language>
+      <specification>
+	  案例代码：
+	   ...
+	   reg temp_vcc;//违反
+	   ...
+    </specification>
+   </rule>
+</ruleset>

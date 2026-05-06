@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href=".config/chart.xsl"?>
+<SpecChecker  timestamp="2026-04-17T11:45:06.454" xmlns="http://www.sunwiseinfo.com/xsd/violation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sunwiseinfo.com/xsd/violation violation.xsd">
+<metrics fileCount="76"  prjName="hdl" version="SunwiseHDLChecker 2.00" srcfileCount="76" headfileCount="0" loc="2457" vioSize="0" errorSize="0" ruleEnable="1" runtimeEnable="0" faultEnable="0" startTime="1776397505939" startDate="2026年 04月 17日  11时 45分 05秒 " endTime="1776397505944" ruleset="new_CAST规则集" author="admin"  >
+<time name="startTime" takes="0" />
+<time name="endTime" takes="-3" />
+</metrics>
+
+</SpecChecker>

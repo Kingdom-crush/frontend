@@ -1,0 +1,1439 @@
+{
+    "Registered Events": [
+        {
+            "ID": "DefaultStructReturnAsArgument",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1) get the return value of function call",
+            "Translation": "函数的返回值赋值给$(1)"
+        },
+        {
+            "ID": "DefaultMemoryConstruct",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Construct a $(1) object",
+            "Translation": "创建一个$(1)类的对象"
+        },
+        {
+            "ID": "DefaultMemoryDestruct",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "The memory pointed by $(1) is destructed",
+            "Translation": "$(1)指向的内存被析构"
+        },
+        {
+            "ID": "DefaultCallSiteFinishWithName",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Function $(1) executes and returns",
+            "Translation": "函数$(1)执行完成并返回调用者"
+        },
+        {
+            "ID": "DefaultCallInstNoGettingIn",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Call $(1)",
+            "Translation": "调用函数$(1)"
+        },
+        {
+            "ID": "DefaultSelectWithNoTarget",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Take $(1) condition, choose value $(2)",
+            "Translation": "选择$(2)的值($(1)分支)"
+        },
+        {
+            "ID": "DefaultSelect",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "Take $(1) condition, assign $(2) to $(3)",
+            "Translation": "选择$(1)条件分支，$(2)赋值给$(3)."
+        },
+        {
+            "ID": "PSADBZSrcAppend",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": ", where $(1) may be @EMPH@0@/EMPH@ by the previous computation",
+            "Translation": ",其中$(1)的值在之前的计算中可能为@EMPH@0@/EMPH@"
+        },
+        {
+            "ID": "DefaultTrueOrFalseBranch",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Select the $(1) branch at this point",
+            "Translation": "这里选择$(1)分支"
+        },
+        {
+            "ID": "SSUResourceLeakResourceNoAction",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "$(1) is not $(2) in function $(3)",
+            "Translation": "$(1)在$(3)中没有被$(2)"
+        },
+        {
+            "ID": "PSATRAPDesc",
+            "Description": "Description of 'Trap' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Trap, Call to llvm.trap@/KEY@)",
+            "Translation": " (@KEY@程序运行崩溃@/KEY@)"
+        },
+        {
+            "ID": "DefaultCallsiteVaArg",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "$(1) is passed to function $(2) as a variadic argument",
+            "Translation": "$(1)通过变长参数传递给函数$(2)"
+        },
+        {
+            "ID": "PSABMVDesc",
+            "Description": "Description of 'Tainted Buffer/Memory Length Vulnerability' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Tainted Buffer/Memory Length Vulnerability, CWEs-130@/KEY@)",
+            "Translation": " (@KEY@外部可控缓冲区长度引起的安全问题, CWEs-130@/KEY@)"
+        },
+        {
+            "ID": "PSADBZSrcIndependant",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1) may be @EMPH@0@/EMPH@ by the previous computation",
+            "Translation": "$(1)的值在之前的计算中可能为@EMPH@0@/EMPH@"
+        },
+        {
+            "ID": "DefaultTrueAndFalseBranch",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "Select either branch at this point",
+            "Translation": "在这里可以选任意分支"
+        },
+        {
+            "ID": "PSAUUV457Desc",
+            "Description": "Description of 'Use of Uninitialized Variable' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Use of Uninitialized Variable, CWE-457@/KEY@)",
+            "Translation": " (@KEY@使用未初始化的变量, CWE-457@/KEY@)"
+        },
+        {
+            "ID": "DefaultCalleeToCaller",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Return to the caller function $(1)",
+            "Translation": "返回到调用者，函数$(1)"
+        },
+        {
+            "ID": "PSANPDFdAllocStatistics",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": " (lacking failure check, $(2) out of $(1) file openings checked failures)",
+            "Translation": " (缺少文件打开失败检查, $(1)次文件打开中的$(2)次有是否失败的检查)"
+        },
+        {
+            "ID": "PSAFNHMDesc",
+            "Description": "Description of 'Free of Memory Not on the Heap' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Free of Memory Not on the Heap, CWE-590@/KEY@)",
+            "Translation": " (@KEY@释放栈内存, CWE-590@/KEY@)"
+        },
+        {
+            "ID": "SSUResourceLeakDefaultDelete",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "released",
+            "Translation": "释放"
+        },
+        {
+            "ID": "SSUFDLDesc",
+            "Description": "Description of 'File Descriptor Leak' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@File Descriptor Leak, CWE-775@/KEY@)",
+            "Translation": " (@KEY@文件描述符泄漏, CWE-775@/KEY@)"
+        },
+        {
+            "ID": "PSANPDFunctionPseudoRetOnGlobal",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Program reaches the return point, modifying the value $(1) to null, where $(2) is a global variable",
+            "Translation": "函数返回,修改$(1)为空指针,其中$(2)是一个全局变量"
+        },
+        {
+            "ID": "PSANPDCallSitePseudoRetOnUnknownSource",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Function $(2) modifies the value $(1) to null",
+            "Translation": "函数$(2)修改$(1)为空指针"
+        },
+        {
+            "ID": "DefaultFunctionCommonRet",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Return $(1) to caller",
+            "Translation": "返回$(1)到调用者"
+        },
+        {
+            "ID": "PSICBMemoryAlloca",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": " with buffer size $(1)",
+            "Translation": ",容器大小为$(1)"
+        },
+        {
+            "ID": "DefaultProgramExit",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "Program reaches an exit point",
+            "Translation": "程序在这里退出"
+        },
+        {
+            "ID": "PSAUUVAllocaInst",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": " $(1) is defined here but not initialized",
+            "Translation": "$(1)在这里定义，但没有初始化"
+        },
+        {
+            "ID": "DefaultVirtualFunctionRetAsNoun",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "the return value of virtual call $(1)",
+            "Translation": "虚函数$(1)的返回值"
+        },
+        {
+            "ID": "DefaultPhiReachableOnUndef",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "an uninitialized value reaches here",
+            "Translation": "一个未初始化的值传到这里"
+        },
+        {
+            "ID": "DefaultStructCopyFrom",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Copy data from $(1)",
+            "Translation": "从$(1)复制数据"
+        },
+        {
+            "ID": "PSICBMemoryDeref",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": ", where the index $(1) may be outside the buffer",
+            "Translation": ", 其中$(1)可能超出容器大小"
+        },
+        {
+            "ID": "PSANPDFunctionPseudoRetOnUnknownSource",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Program reaches the return point, modifying the value $(1) to null",
+            "Translation": "函数返回，修改$(1)为空指针"
+        },
+        {
+            "ID": "DefaultCallsitePsdudoArgOnUnknownSource",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "The value $(1) is passed to function $(2)",
+            "Translation": "$(1)被传递给了函数$(2)"
+        },
+        {
+            "ID": "PSABCCIDesc",
+            "Description": "Description of 'Buffer Copy without Checking Size of Input' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Buffer Copy without Checking Size of Input, CWE-120@/KEY@)",
+            "Translation": " (@KEY@缓冲区复制时未检查大小, CWE-120@/KEY@)"
+        },
+        {
+            "ID": "SSUMLDesc",
+            "Description": "Description of 'Memory Leak' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Memory Leak, CWE-401@/KEY@)",
+            "Translation": " (@KEY@内存泄漏, CWE-401@/KEY@)"
+        },
+        {
+            "ID": "SSUResourceLeakTrunc",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "The pointer is $(1) in this instruction. the truncated value cannot preserve the full address information of $(2)",
+            "Translation": "指针在函数中被$(1)了，新的值无法保留$(2)的所有信息"
+        },
+        {
+            "ID": "PSANPD690Desc",
+            "Description": "Description of 'Unchecked Return Value to NULL Pointer Dereference' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Unchecked Return Value to NULL Pointer Dereference, CWE-690@/KEY@)",
+            "Translation": " (@KEY@解引用可能为空指针的函数返回值, CWE-690@/KEY@)"
+        },
+        {
+            "ID": "DefaultValueAlive",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1) is unchanged at this point",
+            "Translation": "这里$(1)没有改变"
+        },
+        {
+            "ID": "SSUFDLDelete",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "closed",
+            "Translation": "关闭"
+        },
+        {
+            "ID": "PSAUUV824Desc",
+            "Description": "Description of 'Access of Uninitialized Pointer' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Access of Uninitialized Pointer, CWE-824@/KEY@)",
+            "Translation": " (@KEY@使用未初始化的堆内存, CWE-824@/KEY@)"
+        },
+        {
+            "ID": "PSANPDFunctionUndefRet",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "Return an undefined value to its caller, which can be null",
+            "Translation": "返回未初始化的值，可能默认为空指针"
+        },
+        {
+            "ID": "PSAUUVCallSitePseudoRetOnCommonRet",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "Calling to function $(2) leaving $(1) uninitialized, where $(3) gets the return value",
+            "Translation": "调用函数$(2),其中的$(1)没有被初始化，其中$(3)是函数$(2)的返回值"
+        },
+        {
+            "ID": "PSARaceDesc",
+            "Description": "Description of 'Data Race' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Data Race, CWE-362@/KEY@)",
+            "Translation": " (@KEY@数据竞争, CWE-362@/KEY@)"
+        },
+        {
+            "ID": "PSAMLDesc",
+            "Description": "Description of 'Memory Leak' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Memory Leak, CWE-401@/KEY@)",
+            "Translation": " (@KEY@内存泄漏, CWE-401@/KEY@)"
+        },
+        {
+            "ID": "SSUCNDCallsiteNullReturnNoTarget",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Null pointer is returned from function $(1)",
+            "Translation": "函数$(1)返回空指针"
+        },
+        {
+            "ID": "DefaultFunctionPseudoArgOnCommonArg",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "$(1) gets the value from caller of the function, where $(2) is the $(3) parameter",
+            "Translation": "$(1)的值来自调用者，其中$(2)是第$(3)个参数"
+        },
+        {
+            "ID": "PSAICBDesc",
+            "Description": "Description of 'Incorrect Calculation of Buffer Size' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Incorrect Calculation of Buffer Size, CWE-131@/KEY@)",
+            "Translation": " (@KEY@数组越界, CWE-131@/KEY@)"
+        },
+        {
+            "ID": "PSAIOWSink",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "The computation of $(1) here may trigger an Integer Overflow",
+            "Translation": "这里计算$(1)的时候可能触发整数溢出"
+        },
+        {
+            "ID": "PSAUUVFunctionPseudoRetOnCommonRet",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Return to caller, leaving $(1) uninitialized, where $(2) is the return value",
+            "Translation": "函数返回, $(1)没有被初始化，其中$(3)是函数返回值"
+        },
+        {
+            "ID": "SSUResourceLeakDefaultCreate",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "created",
+            "Translation": "创建"
+        },
+        {
+            "ID": "DefaultCallsiteThisPointerArg",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "$(1) is passed as the @EMPH@this@/EMPH@ pointer to function $(2)",
+            "Translation": "调用$(1)的$(2)方法"
+        },
+        {
+            "ID": "PSAUUVCallSitePseudoRetOnCommonArg",
+            "Description": "",
+            "NumberArgs": 5,
+            "Pattern": "Calling to function $(2) leaving $(1) uninitialized, where $(3) is used as the $(4) parameter ($(5))",
+            "Translation": "调用函数$(2),其中的$(1)没有被初始化，其中$(3)是函数$(2)的第$(4)个参数($(5))"
+        },
+        {
+            "ID": "SSUFDLObj",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "file descriptor",
+            "Translation": "文件描述符"
+        },
+        {
+            "ID": "SSUResourceLeakResourceRetActionFromFuncNoTarget",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "A $(1) is $(2) in function $(3)",
+            "Translation": "函数$(3)$(2)了$(1)"
+        },
+        {
+            "ID": "DefaultMemoryAllocaNoTarget",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "Memory allocation here",
+            "Translation": "这里有内存分配"
+        },
+        {
+            "ID": "PSAUUVFunctionPseudoRetOnUnknownSource",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Return to caller, leaving $(1) uninitialized",
+            "Translation": "函数返回,其中的$(1)没有被初始化"
+        },
+        {
+            "ID": "PSANPDCallSitePseudoRetOnCommonArg",
+            "Description": "",
+            "NumberArgs": 5,
+            "Pattern": "Function $(2) modifies the value $(1) to null, where $(3) is used as the $(4) parameter ($(5))",
+            "Translation": "函数$(2)修改$(1)为空指针,其中$(3)是函数$(2)的第$(4)个参数($(5))"
+        },
+        {
+            "ID": "PSATAINTMAYBESANITIZERAction",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "@KEY@Sanitizer found: $(1) might be a defensive check of the untrusted data@/KEY@",
+            "Translation": "@KEY@可能的清洁处理: $(1)可能是一个对不信任数据的危险性检查@/KEY@"
+        },
+        {
+            "ID": "SSUCNDStart",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Select the $(1) branch at this point, variable $(2) must contain null value",
+            "Translation": "选择$(1)分支，$(2)有可能为null"
+        },
+        {
+            "ID": "PSANPDFunctionPseudoRetOnCommonArg",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "Program reaches the return point, modifying the value $(1) to null, where $(2) is used as the $(3) parameter",
+            "Translation": "函数返回,修改$(1)为空指针,其中$(2)是函数第$(3)个参数"
+        },
+        {
+            "ID": "SSUResourceLeakDefaultObj",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "resource",
+            "Translation": "资源"
+        },
+        {
+            "ID": "SSUResourceLeakResourceActionRightValue",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "A $(1) is $(2) from $(3)",
+            "Translation": "通过$(3)$(2)$(1)"
+        },
+        {
+            "ID": "DefaultPhiPathList",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Possible Paths: \n $(1)\n",
+            "Translation": "可选路径: \n $(1)\n"
+        },
+        {
+            "ID": "PSAUUVCallSitePseudoRetOnGlobal",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "Calling to function $(2) leaving $(1) uninitialized, where $(3) is a global variable",
+            "Translation": "调用函数$(2),其中的$(1)没有被初始化，其中$(3)是一个全局变量"
+        },
+        {
+            "ID": "PSAUMADesc",
+            "Description": "Description of 'Uncontrolled Memory Allocation Vulnerability' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Uncontrolled Memory Allocation Vulnerability, CWE-789@/KEY@)",
+            "Translation": " (@KEY@不可控内存分配漏洞, CWE-789@/KEY@)"
+        },
+        {
+            "ID": "SSUDBFDesc",
+            "Description": "Description of 'Double Free' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Double Free, CWE-415@/KEY@)",
+            "Translation": " (@KEY@内存重复释放, CWE-415@/KEY@)"
+        },
+        {
+            "ID": "PSAFSVDesc",
+            "Description": "Description of 'Format String Vulnerability' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Format String Vulnerability, CWE-134@/KEY@)",
+            "Translation": " (@KEY@格式化数据引起的安全漏洞, CWE-134@/KEY@)"
+        },
+        {
+            "ID": "PSADefaultSideEffect",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": " (Passing sensitive data reachable from argument $(1))",
+            "Translation": " (通过参数$(1)间接传递数据)"
+        },
+        {
+            "ID": "DefaultNewMemAsNoun",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "the allocated object",
+            "Translation": "被分配的对象"
+        },
+        {
+            "ID": "DefaultFunctionUndefRet",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "Return an uninitialized value to its caller",
+            "Translation": "返回一个未初始化的值给调用者"
+        },
+        {
+            "ID": "PSASCSVDesc",
+            "Description": "Description of 'System/Configuration Setting Vulnerability' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@System/Configuration Setting Vulnerability, CWE-15@/KEY@)",
+            "Translation": " (@KEY@系统设置类漏洞, CWE-15@/KEY@)"
+        },
+        {
+            "ID": "DefaultCallsitePsdudoArgOnCommonArg",
+            "Description": "",
+            "NumberArgs": 4,
+            "Pattern": "The value $(1) is passed to function $(2), where $(3) is the $(4) parameter",
+            "Translation": "$(1)被传给函数$(2), 其中$(3)是第$(4)个参数"
+        },
+        {
+            "ID": "DefaultExecuteThrough",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "Program execution passes through this point",
+            "Translation": "程序执行经过这里"
+        },
+        {
+            "ID": "DefaultUndefValue",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "an uninitialized value",
+            "Translation": "一个未初始化的值"
+        },
+        {
+            "ID": "PSAIOWSinkAppend",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": ", where the computation of $(1) here may trigger an Integer Overflow",
+            "Translation": ", 这里计算$(1)的时候可能触发整数溢出"
+        },
+        {
+            "ID": "PSAFDL2Desc",
+            "Description": "Description of 'File Descriptor Leak' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@File Descriptor Leak, CWEs: 773, 775@/KEY@)",
+            "Translation": " (@KEY@文件描述符泄漏, CWEs: 773, 775@/KEY@)"
+        },
+        {
+            "ID": "PSATSIDesc",
+            "Description": "Description of 'Sensitive Data Transmission/Storage Vulnerability' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Sensitive Data Transmission/Storage Vulnerability, CWEs-319@/KEY@)",
+            "Translation": " (@KEY@明文传递或存储敏感数据, CWEs-319@/KEY@)"
+        },
+        {
+            "ID": "PSABOP1Desc",
+            "Description": "Description of 'Buffer Overflow 1st Trace' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Buffer Overflow 1st Trace@/KEY@)",
+            "Translation": " (@KEY@数组越界(越界数据1)@/KEY@)"
+        },
+        {
+            "ID": "PSANPDFunctionPseudoRetOnCommonRet",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Program reaches the return point, modifying the value $(1) to null, where $(2) is the return value",
+            "Translation": "函数返回,修改$(1)为空指针,其中$(2)是函数的返回值"
+        },
+        {
+            "ID": "DefaultCallsiteCommonArg",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "$(1) is used as the $(2) parameter in function $(3)",
+            "Translation": "$(1)作为第$(2)个参数传递给$(3)"
+        },
+        {
+            "ID": "PSANPDReturnMaybeNull",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": " (The return value can be null)",
+            "Translation": " (返回值可以为空指针)"
+        },
+        {
+            "ID": "SSUCNDNullDeref",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Null pointer dereferenced in $(1)",
+            "Translation": "$(1)里使用空指针"
+        },
+        {
+            "ID": "PSAFDUACDesc",
+            "Description": "Description of 'Use of Expired File Descriptor' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Use of Expired File Descriptor, CWE-910@/KEY@)",
+            "Translation": " (@KEY@使用被释放的文件描述符, CWE-910@/KEY@)"
+        },
+        {
+            "ID": "DefaultAllocMemAsNoun",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "the allocated memory",
+            "Translation": "被分配的内存"
+        },
+        {
+            "ID": "DefaultCommonFunctionRetAsNoun",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "the return value of function $(1)",
+            "Translation": "函数$(1)的返回值"
+        },
+        {
+            "ID": "DefaultValueUsedInFunction",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "$(1) is used in function $(2)",
+            "Translation": "变量$(1)在函数$(2)中被使用"
+        },
+        {
+            "ID": "PSADBZDesc",
+            "Description": "Description of 'Divide by Zero' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Divide by Zero, CWE-369@/KEY@)",
+            "Translation": " (@KEY@除零错误, CWE-369@/KEY@)"
+        },
+        {
+            "ID": "PSATAINTMAYBESANITIZERBrInstAction",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "@KEY@Sanitizer found: $(1) is used as a branch condition, which might be a defensive check of the untrusted data@/KEY@",
+            "Translation": "@KEY@可能的清洁处理: $(1)被用作分支条件，这可能是一个对不信任数据的危险性检查@/KEY@"
+        },
+        {
+            "ID": "PSAUUVCallInstAppend",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": " (the value pointed by $(1) is not initialized)",
+            "Translation": " ($(1)指向的内存没有被初始化)"
+        },
+        {
+            "ID": "PSANPD476Desc",
+            "Description": "Description of 'NULL Pointer Dereference' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@NULL Pointer Dereference, CWE-476@/KEY@)",
+            "Translation": " (@KEY@空指针解引用, CWE-476@/KEY@)"
+        },
+        {
+            "ID": "PSATAINTGEPAction",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Access an element in $(1)",
+            "Translation": "访问$(1)中的元素"
+        },
+        {
+            "ID": "SSUCNDDesc",
+            "Description": "Description of 'Checked Null Dereference' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Checked Null Dereference, CWE-476, CWE-690@/KEY@)",
+            "Translation": " (@KEY@空指针解引用, CWE-476, CWE-690@/KEY@)"
+        },
+        {
+            "ID": "PSATraceStart",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": " (Trace staring point)",
+            "Translation": " (触发路径起点)"
+        },
+        {
+            "ID": "SSUFDLCreate",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "created",
+            "Translation": "创建"
+        },
+        {
+            "ID": "PSAPCVDesc",
+            "Description": "Description of 'Process Control Vulnerability' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Process Control Vulnerability, CWE-114@/KEY@)",
+            "Translation": " (@KEY@进程控制类安全问题, CWE-114@/KEY@)"
+        },
+        {
+            "ID": "SSUResourceLeakResourceRetActionFromFunc",
+            "Description": "",
+            "NumberArgs": 4,
+            "Pattern": "The $(1) $(2) in function $(3) is assigned to $(4)",
+            "Translation": "函数$(3)中$(2)的$(1)被赋值给$(4)。"
+        },
+        {
+            "ID": "SSUMLDelete",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "freed",
+            "Translation": "释放"
+        },
+        {
+            "ID": "SSUCNDFunctionNullReturn",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "A potential null pointer $(1) is returned to the caller",
+            "Translation": "一个可能为null的指针$(1)被返回给调用者"
+        },
+        {
+            "ID": "PSAUUVCallSitePseudoRetOnCommonRetRightValue",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Calling to function $(2) leaving $(1) uninitialized",
+            "Translation": "调用函数$(2),其中的$(1)没有被初始化"
+        },
+        {
+            "ID": "PSATaintDesc",
+            "Description": "Description of 'Taint-Style Vulnerability' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Taint-Style Vulnerability, CWEs: 15, 23, 78, 89, 90, 114, 119, 123, 130, 134, 256, 319, 426, 427, 591, 789@/KEY@)",
+            "Translation": " (@KEY@使用被污染的数据@/KEY@)"
+        },
+        {
+            "ID": "PSAUUVCallSitePseudoRetOnUnknownSource",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Calling to function $(2) leaving $(1) uninitialized",
+            "Translation": "调用函数$(2),其中的$(1)没有被初始化"
+        },
+        {
+            "ID": "PSATAINTGEPIndexAction",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Access an element via index $(1)",
+            "Translation": "访问容器的第$(1)个变量"
+        },
+        {
+            "ID": "DefaultComplexReturn",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Return $(1) to caller",
+            "Translation": "返回$(1)到函数调用者"
+        },
+        {
+            "ID": "PSANPDCallSitePseudoRetOnGlobal",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "Function $(2) modifies the value $(1) to null, where $(3) is a global variable",
+            "Translation": "函数$(2)修改$(1)为空指针,其中$(3)是一个全局变量"
+        },
+        {
+            "ID": "PSAUUVValueMaybeUndefined",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": " ($(1) is uninitialized)",
+            "Translation": "($(1)未初始化)"
+        },
+        {
+            "ID": "PSAIOWDesc",
+            "Description": "Description of 'Integer Overflow' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Integer Overflow, CWE-190@/KEY@)",
+            "Translation": " (@KEY@整数溢出, CWE-190@/KEY@)"
+        },
+        {
+            "ID": "DefaultCommonReturnRightValue",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Function $(1) executes and returns",
+            "Translation": "函数$(1)执行并返回"
+        },
+        {
+            "ID": "PSANPDHeapAllocStatistics",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": " (lacking failure check, $(2) out of $(1) memory allocations checked failures)",
+            "Translation": " (缺少内存分配失败检查, $(1)次内存分配中的$(2)次有是否失败的检查)"
+        },
+        {
+            "ID": "DefaultArithmeticAction",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1) is used in the arithmetic operation",
+            "Translation": "$(1)被用在算术运算中"
+        },
+        {
+            "ID": "PSAXSSDesc",
+            "Description": "Description of 'XSS Vulnerability' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@XSS Vulnerability, CWE-79@/KEY@)",
+            "Translation": " (@KEY@跨站攻击类安全问题, CWE-79@/KEY@)"
+        },
+        {
+            "ID": "PSANPDCallSitePseudoRetOnCommonArgNoFormal",
+            "Description": "",
+            "NumberArgs": 4,
+            "Pattern": "Function $(2) modifies the value $(1) to null, where $(3) is used as the $(4) parameter",
+            "Translation": "函数$(2)修改$(1)为空指针,其中$(3)是函数$(2)的第$(4)个参数"
+        },
+        {
+            "ID": "PSAUUVFunctionPseudoRetOnGlobal",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Return to caller, leaving $(1) uninitialized, where $(2) is a global variable",
+            "Translation": "函数返回,其中的$(1)没有被初始化，其中$(2)是一个全局变量"
+        },
+        {
+            "ID": "PSANPDCallSitePseudoRetOnCommonRet",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "Function $(2) modifies the value $(1) to null, where $(3) gets the return value",
+            "Translation": "函数$(2)修改$(1)为空指针,其中$(3)是函数的返回值"
+        },
+        {
+            "ID": "PSARSADesc",
+            "Description": "Description of 'Return of Stack Address' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Return of Stack Address, CWE-562@/KEY@)",
+            "Translation": " (@KEY@返回栈内存, CWE-562@/KEY@)"
+        },
+        {
+            "ID": "DefaultStructCopyTo",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Copy data to $(1)",
+            "Translation": "复制数据到$(1)"
+        },
+        {
+            "ID": "DefaultTraceStart",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "The bug trace start from this point",
+            "Translation": "Bug报告从这里开始"
+        },
+        {
+            "ID": "SSUMLCreate",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "allocated",
+            "Translation": "分配"
+        },
+        {
+            "ID": "PSANPDCallSitePseudoRetOnCommonRetRightValue",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Function $(2) modifies the value $(1) to null",
+            "Translation": "函数$(2)修改$(1)为空指针"
+        },
+        {
+            "ID": "PSASIVDesc",
+            "Description": "Description of 'SQL Injection Vulnerability' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@SQL Injection Vulnerability, CWE-89@/KEY@)",
+            "Translation": " (@KEY@SQL注入类安全问题, CWE-89@/KEY@)"
+        },
+        {
+            "ID": "PSALIVDesc",
+            "Description": "Description of 'LDAP Injection Vulnerability' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@LDAP Injection Vulnerability, CWE-90@/KEY@)",
+            "Translation": " (@KEY@LDAP注入类安全问题, CWE-90@/KEY@)"
+        },
+        {
+            "ID": "SSUResourceLeakResourceAction",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "A $(1) is $(2) and stored to $(3)",
+            "Translation": "一个$(1)被$(2)了，并赋值给$(3)"
+        },
+        {
+            "ID": "SSUDBFSecondFree",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Variable $(1) is freed the second time here.",
+            "Translation": "$(1)第二次被释放"
+        },
+        {
+            "ID": "SSUResourceLeakNonNullBranch",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "Take $(1) branch at Line $(2) to make sure $(3) is not null",
+            "Translation": "为确保$(3)不是空指针，在第$(2)行需选择$(1)分支"
+        },
+        {
+            "ID": "PSAUUVReturnMaybeUndefined",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": " (The return value is uninitialized)",
+            "Translation": "(返回值未初始化)"
+        },
+        {
+            "ID": "DefaultIndirectFunctionRetAsNoun",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "the return value of indirect call $(1)",
+            "Translation": "间接函数调用$(1)的返回值"
+        },
+        {
+            "ID": "SSUResourceLeakGeneralBranch",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "From line $(1), program reaches here",
+            "Translation": "程序从第$(1)行执行到这里"
+        },
+        {
+            "ID": "SSUResourceLeakValueUsedInFunc",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1) is used as a function parameter",
+            "Translation": "$(1)作为函数参数被使用"
+        },
+        {
+            "ID": "DefaultAllocaAction",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1) is defined here",
+            "Translation": "$(1)在这里定义"
+        },
+        {
+            "ID": "DefaultPhiCondDesc",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": " ($(1) is $(2))",
+            "Translation": "($(1) 为 $(2))"
+        },
+        {
+            "ID": "DefaultPhiActionWithInitLine",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "$(1) defined on line $(2) reaches here and is assigned to $(3)",
+            "Translation": "第$(2)定义的$(1)被赋值给$(3)"
+        },
+        {
+            "ID": "SSUResourceLeakConditionalBranch",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "On line $(1), take the $(2) branch, program reaches here",
+            "Translation": "在第$(1)行选择$(2)分支，程序执行经过这里"
+        },
+        {
+            "ID": "SSUResourceLeakValueReturn",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "$(1) is returned to $(2)'s caller",
+            "Translation": "$(1)返回给$(2)的调用者"
+        },
+        {
+            "ID": "SSUResourceLeakFinish",
+            "Description": "",
+            "NumberArgs": 4,
+            "Pattern": "The $(1) pointed by $(2) in function $(3) is not $(4) properly after this statement",
+            "Translation": "在这条指令后，函数$(3)中$(2)指向的$(1)没有被正确$(4)"
+        },
+        {
+            "ID": "SSUResourceLeakFinishRightValueSource",
+            "Description": "",
+            "NumberArgs": 5,
+            "Pattern": "The $(1) $(2) from $(3) in function $(4) is not $(5) properly after this statement",
+            "Translation": "这条指令后，函数$(4)中从$(3)$(2)的$(1)没有被正确$(5)"
+        },
+        {
+            "ID": "PSAMSBOInfo",
+            "Description": "Description of 'The buffer size of 2nd parameter is larger than that of the 1st' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@The buffer size of 2nd parameter is larger than that of the 1st@/KEY@)",
+            "Translation": " (@KEY@数组越界，从一个比较大的数组复制数据到小数组@/KEY@)"
+        },
+        {
+            "ID": "SSUResourceLeakResourceRetAction",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "The $(1) $(2) is assigned to variable $(3)",
+            "Translation": "$(2)的$(1)被赋值给了$(3)"
+        },
+        {
+            "ID": "DefaultPhiPathBranchChoice",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Taking $(1) branch at line $(2), ",
+            "Translation": "在第$(2)行选择$(1)分支"
+        },
+        {
+            "ID": "DefaultEmptyPhiPath",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "",
+            "Translation": ""
+        },
+        {
+            "ID": "PSANPDValueMaybeNull",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": " ($(1) can be null)",
+            "Translation": " ($(1)可能为空指针)"
+        },
+        {
+            "ID": "SSUResourceLeakResourceRetActionRightValue",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "A $(1) is $(2) from $(3)",
+            "Translation": "通过$(3)$(2)$(1)"
+        },
+        {
+            "ID": "DefaultNumST",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1)st",
+            "Translation": "$(1)"
+        },
+        {
+            "ID": "PSAUAFDesc",
+            "Description": "Description of 'Use After Free' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Use After Free, CWEs: 415, 416, 910@/KEY@)",
+            "Translation": " (@KEY@使用释放过的内存, CWEs: 415, 416, 910@/KEY@)"
+        },
+        {
+            "ID": "PSANPDFunctionCommonRet",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Return $(1) to caller, which can be null",
+            "Translation": "函数返回，返回值$(1)可能为空指针"
+        },
+        {
+            "ID": "DefaultNumND",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1)nd",
+            "Translation": "$(1)"
+        },
+        {
+            "ID": "DefaultLoadVirtualCall",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Call a virtual function on $(1)",
+            "Translation": "通过$(1)调用虚函数"
+        },
+        {
+            "ID": "DefaultNumRD",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1)rd",
+            "Translation": "$(1)"
+        },
+        {
+            "ID": "DefaultLoadInstWithoutTarget",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Load value from $(1)",
+            "Translation": "从$(1)读取数据"
+        },
+        {
+            "ID": "DefaultNumTH",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1)th",
+            "Translation": "$(1)"
+        },
+        {
+            "ID": "PSABOP2Desc",
+            "Description": "Description of 'Buffer Overflow 2nd Trace' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Buffer Overflow 2nd Trace@/KEY@)",
+            "Translation": " (@KEY@数组越界(越界数据2)@/KEY@)"
+        },
+        {
+            "ID": "DefaultCallsiteUnknownArg",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "$(1) is passed as a parameter to function $(2)",
+            "Translation": "$(1)作为参数传递给$(2)"
+        },
+        {
+            "ID": "DefaultCallsitePsdudoArgOnGlobal",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "The value $(1) is passed to function $(2), where $(3) is a global variable",
+            "Translation": "$(1)被传递给函数$(2),其中$(3)是一个全局变量。"
+        },
+        {
+            "ID": "DefaultEnterFunction",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "Enter function call",
+            "Translation": "进入函数。"
+        },
+        {
+            "ID": "DefaultEnterFunctionWithName",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Enter function $(1)",
+            "Translation": "进入函数$(1)"
+        },
+        {
+            "ID": "SSUDBFFirstFree",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Variable $(1) is first freed here.",
+            "Translation": "内存$(1)第一次释放"
+        },
+        {
+            "ID": "DefaultCommonReturn",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Function $(2) executes and stores the return value to $(1)",
+            "Translation": "函数$(2)执行，返回值被存入$(1)"
+        },
+        {
+            "ID": "DefaultSelectCond",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Take $(1) condition",
+            "Translation": "选择$(1)分支"
+        },
+        {
+            "ID": "SSUResourceLeakDefaultTrunc",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "truncated",
+            "Translation": "截取"
+        },
+        {
+            "ID": "DefaultCallSitePseudoRetOnCommonArg",
+            "Description": "",
+            "NumberArgs": 5,
+            "Pattern": "Calling to function $(2) modified $(1), where $(3) is used as the $(4) parameter ($(5))",
+            "Translation": "函数$(2)修改了$(1),其中$(3)是函数$(2)的第$(4)个参数($(5))"
+        },
+        {
+            "ID": "DefaultCallSitePseudoRetOnCommonArgNoFormal",
+            "Description": "",
+            "NumberArgs": 4,
+            "Pattern": "Calling to function $(2) modified $(1), where $(3) is used as the $(4) parameter",
+            "Translation": "函数$(2)修改了$(1),其中$(3)是函数$(2)的第$(4)个参数"
+        },
+        {
+            "ID": "DefaultValueUsed",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1) is used in this statement",
+            "Translation": "$(1)被用在了这里"
+        },
+        {
+            "ID": "DefaultCallSitePseudoRetOnGlobal",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "Calling to function $(2) modified $(1), where $(3) is a global variable",
+            "Translation": "函数$(2)修改了$(1),其中$(3)是一个全局变量"
+        },
+        {
+            "ID": "DefaultPhiFlowToCurrent",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Program flows from line $(1) to this point",
+            "Translation": "程序从第$(1)行执行到这里"
+        },
+        {
+            "ID": "DefaultCallSitePseudoRetOnCommonRet",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "Calling to function $(2) modified $(1), where $(3) gets the return value",
+            "Translation": "函数$(2)修改了$(1),其中$(3)是函数返回值"
+        },
+        {
+            "ID": "DefaultFunctionPseudoArgOnUnknownSource",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1) gets the value from caller of the function",
+            "Translation": "$(1)的值来自调用者"
+        },
+        {
+            "ID": "DefaultFunctionEmptyRet",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "Return to caller",
+            "Translation": "函数返回"
+        },
+        {
+            "ID": "DefaultPhiNoNameWithLineOnUndef",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "uninitialized value on line $(1) reaches here",
+            "Translation": "一个未初始化的值传到这里"
+        },
+        {
+            "ID": "SSUCNDCallsiteNullReturn",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Null pointer is returned from function $(1) and is assigned to $(2)",
+            "Translation": "空指针从函数$(1)返回并赋值给$(2)"
+        },
+        {
+            "ID": "DefaultCallSitePseudoRetOnCommonRetRightValue",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Calling to function $(2) modified $(1)",
+            "Translation": "函数$(2)修改了$(1)"
+        },
+        {
+            "ID": "DefaultMemoryAlloca",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Allocate memory to $(1)",
+            "Translation": "分配内存到$(1)"
+        },
+        {
+            "ID": "SSUMLObj",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": "memory",
+            "Translation": "内存"
+        },
+        {
+            "ID": "DefaultCallSitePseudoRetOnUnknownSource",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Calling to function $(2) modified $(1)",
+            "Translation": "函数$(2)修改了$(1)"
+        },
+        {
+            "ID": "DefaultFunctionCommonArg",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Argument $(1) gets the value from its caller",
+            "Translation": "参数$(1)的值来自调用者"
+        },
+        {
+            "ID": "DefaultFunctionPseudoArgOnGlobal",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "$(1) gets the value from caller of the function, where $(2) is a global variable",
+            "Translation": "$(1)的值来自调用者，其中$(2)是一个全局变量"
+        },
+        {
+            "ID": "DefaultPhiReachable",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "value of $(1) reaches here",
+            "Translation": "$(1)的值达到这里"
+        },
+        {
+            "ID": "PSARaceDerefSite",
+            "Description": "",
+            "NumberArgs": 0,
+            "Pattern": " (Dereference Site)",
+            "Translation": " (使用点)"
+        },
+        {
+            "ID": "DefaultFunctionVaArg",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1) gets the value from a variadic argument given by its caller",
+            "Translation": "$(1)来自变长参数传递的值"
+        },
+        {
+            "ID": "DefaultFunctionPseudoRetOnCommonArg",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "Return with value $(1) modified, where $(2) is used as the $(3) parameter",
+            "Translation": "函数返回，修改$(1),其中$(2)是函数的第$(3)个参数"
+        },
+        {
+            "ID": "PSABBSFDesc",
+            "Description": "Description of 'Bad Buffer Size from System Function' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Bad Buffer Size from System Function, CWE-131@/KEY@)",
+            "Translation": " (@KEY@数组越界, CWE-131@/KEY@)"
+        },
+        {
+            "ID": "DefaultValueAliveAndUsed",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1) is used in this statement",
+            "Translation": "$(1)在这里被使用"
+        },
+        {
+            "ID": "DefaultPhiFlowGeneral",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Program flows from line $(1) to Line $(2)",
+            "Translation": "程序从第$(1)行执行到第$(2)行"
+        },
+        {
+            "ID": "DefaultProgramConditionalExit",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Taking $(1) branch, program reaches an exit point",
+            "Translation": "选择$(1)分支，程序退出"
+        },
+        {
+            "ID": "DefaultFunctionPseudoRetOnGlobal",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Return with value $(1) modified, where $(2) is a global variable",
+            "Translation": "函数返回，修改$(1),其中$(2)是一个全局变量"
+        },
+        {
+            "ID": "DefaultFunctionPseudoRetOnCommonRet",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Return with value $(1) modified, where $(2) is the return value",
+            "Translation": "函数返回，修改$(1),其中$(2)是函数的返回值"
+        },
+        {
+            "ID": "DefaultFunctionPseudoRetOnUnknownSource",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Return with value $(1) modified",
+            "Translation": "函数返回，修改变量$(1)"
+        },
+        {
+            "ID": "DefaultCallerToCallee",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "Enter into the callee function $(1)",
+            "Translation": "进入函数$(1)"
+        },
+        {
+            "ID": "DefaultCallerToIndirectCallee",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Program goes into its callee function $(1) through value $(2)",
+            "Translation": "通过$(2)调用$(1)函数"
+        },
+        {
+            "ID": "DefaultGlobalInit",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "The global variable $(1) is initialized as $(2)",
+            "Translation": "全局变量$(1)被初始化为$(2)"
+        },
+        {
+            "ID": "PSASMVDesc",
+            "Description": "Description of 'String Manipulation Vulnerability' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@String Manipulation Vulnerability, CWE-119@/KEY@)",
+            "Translation": " (@KEY@字符串操作类安全问题, CWE-119@/KEY@)"
+        },
+        {
+            "ID": "DefaultLoadInstWithTarget",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Load value from $(1) and assign to $(2)",
+            "Translation": "从$(1)读取数据并赋值给$(2)"
+        },
+        {
+            "ID": "DefaultStoreValue",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "Store $(1) to $(2)",
+            "Translation": "$(1)被写入$(2)"
+        },
+        {
+            "ID": "DefaultPhiActionWithInitLineOnUndef",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "uninitialized value on line $(1) reaches here and is assigned to $(2)",
+            "Translation": "第$(1)行未初始化的值传到这里并赋值给$(2)"
+        },
+        {
+            "ID": "PSACIVDesc",
+            "Description": "Description of 'Command Injection Vulnerability' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Command Injection Vulnerability, CWE-78@/KEY@)",
+            "Translation": " (@KEY@指令注入类漏洞, CWE-78@/KEY@)"
+        },
+        {
+            "ID": "DefaultCompareAction",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1) is used in the compare operation",
+            "Translation": "$(1)被用在了比较操作中"
+        },
+        {
+            "ID": "DefaultPhiActionConstant",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "$(1) assigned to $(2) reaches here",
+            "Translation": "$(1)赋值给$(2)并传递到这里"
+        },
+        {
+            "ID": "DefaultPhiNoNameWithLine",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "$(1) on line $(2) reaches here",
+            "Translation": "第$(2)行的$(1)流到这里"
+        },
+        {
+            "ID": "PSAFDLDesc",
+            "Description": "Description of 'File Descriptor Leak' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@File Descriptor Leak, CWEs: 773, 775@/KEY@)",
+            "Translation": " (@KEY@文件描述符泄漏, CWEs: 773, 775@/KEY@)"
+        },
+        {
+            "ID": "DefaultPhiActionUndef",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1) gets uninitialized value",
+            "Translation": "$(1)未初始化"
+        },
+        {
+            "ID": "DefaultConstValueInit",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "$(1) is defined here",
+            "Translation": "$(1)在这里定义赋值"
+        },
+        {
+            "ID": "DefaultMemoryRelease",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": "The memory pointed by $(1) is freed",
+            "Translation": "$(1)指向的内存被释放了"
+        },
+        {
+            "ID": "DefaultPhiActionNonConstant",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "$(1) defined on line $(2) reaches here",
+            "Translation": "$(2)行定义的$(1)流到这里"
+        },
+        {
+            "ID": "DefaultPhiPathListItem",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "\t $(1). $(2)\n",
+            "Translation": "\t $(1). $(2)\n"
+        },
+        {
+            "ID": "PSAUUVFunctionPseudoRetOnCommonArg",
+            "Description": "",
+            "NumberArgs": 3,
+            "Pattern": "Return to caller, leaving $(1) uninitialized, where $(2) is used as the $(3) parameter",
+            "Translation": "函数返回,其中的$(1)没有被初始化，其中$(2)是第$(3)个参数"
+        },
+        {
+            "ID": "DefaultPhiPathListInternalItem",
+            "Description": "",
+            "NumberArgs": 1,
+            "Pattern": " or $(1),",
+            "Translation": "或$(1)"
+        },
+        {
+            "ID": "PSAPTVDesc",
+            "Description": "Description of 'Path Traversal Vulnerability' bug",
+            "NumberArgs": 0,
+            "Pattern": " (@KEY@Path Traversal Vulnerability, CWE-23@/KEY@)",
+            "Translation": " (@KEY@路径遍历类安全问题, CWE-23@/KEY@)"
+        },
+        {
+            "ID": "DefaultPhiInst",
+            "Description": "",
+            "NumberArgs": 2,
+            "Pattern": "$(1)$(2)",
+            "Translation": "$(1)$(2)"
+        }
+    ]
+}

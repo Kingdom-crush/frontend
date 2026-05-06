@@ -1,0 +1,1052 @@
+# sunwise-expression-cast-ftoi
+MESSAGE_STRING(ExprFloat2Int_WARNING, "不应有浮点和整数之间的隐式转换")
+
+# sunwise-expression-cast-wtot
+MESSAGE_STRING(Wide2Tight_WARNING, "表达式 %4 从 '%0'(%2bit) 到 '%1'(%3bit) 的隐式类型转换缩小了类型大小")
+
+# sunwise-expression-condition-expression 
+# sunwise-expression-condition-operand
+MESSAGE_STRING(CondExpr_WARNING, "Controlling expression is not an essentially Boolean expression")
+
+# sunwise-expression-unsequenced
+MESSAGE_STRING(Unseq_WARNING_VV, "Modify or access more than one volatile-qualified object ('%0' and '%1') between sequence points - evaluation order unspecified")
+MESSAGE_STRING(Unseq_WARNING_MM, "'%0' is modified more than once between sequence points - evaluation order unspecified")
+MESSAGE_STRING(Unseq_WARNING_MU, "'%0' is modified and accessed between sequence points - evaluation order unspecified")
+
+# sunwise-expression-unsequenced-call
+MESSAGE_STRING(Unseq_WARNING_FF, "表达式的副作用与函数调用次序相关")
+
+# sunwise-expression-pointer-nesting
+MESSAGE_STRING(PtrNest_WARNING, "%0 has more than two levels of indirection")
+
+# sunwise-library-jumpfunction
+MESSAGE_STRING(Longjmp_WARNING, "'longjmp' shall not be used")
+MESSAGE_STRING(Setjmp_WARNING, "'setjmp' shall not be used")
+MESSAGE_STRING(jumpinclude_WARNING, "The standard header file <setjmp.h> shall not be used")
+
+# sunwise-library-dynamicmemory
+MESSAGE_STRING(Dynmem_WARNING, "Function '%0' shall not be used")
+
+# sunwise-macro-hash
+MESSAGE_STRING(hash_WARNING, "# 或者 ## 预处理符号只能使用一次，且不能同时使用")
+MESSAGE_STRING(doublehash_WARNING, "%0 ## %1 预处理的结果等于一个宏参数 %2，结果可能非预期")
+
+# sunwise-preprocess-filepatternafterinclude
+MESSAGE_STRING(IncludeFilePattern_WARNING, "#include 指令应该跟有 <filename> 或 "filename" 序列")
+
+# sunwise-preprocess-macroarginparen
+MESSAGE_STRING(macroarginparen_WARNING, "存在未括到括号中的宏参数")
+MESSAGE_STRING(macroarginparen_NOTE, "宏参数 %0 应该被括到括号中")
+
+# sunwise-statement-loop-compound
+MESSAGE_STRING(whilebody_WARNING, "The body of while statement is not enclosed within braces")
+MESSAGE_STRING(dowhilebody_WARNING, "The body of do-while statement is not enclosed within braces")
+MESSAGE_STRING(forbody_WARNING, "The body of for statement is not enclosed within braces")
+MESSAGE_STRING(switchbody_WARNING, "The body of switch statement is not enclosed within braces")
+
+# sunwise-statement-if-compound
+MESSAGE_STRING(ifbody_WARNING, "if 语句体必须括在大括号中")
+MESSAGE_STRING(elsebody_WARNING, "else 语句体必须括在大括号中或者是 if 语句")
+
+# sunwise-statement-jump-back
+MESSAGE_STRING(JumpBack_WARNING, "The goto statement jump backward")
+MESSAGE_STRING(JumpBack_NOTE, "Target label")
+
+# sunwise-library-reservedid
+MESSAGE_STRING(buildinmacroredef_WARNING, "内建宏被重定义")
+MESSAGE_STRING(buildinmacroundef_WARNING, "内建宏定义被取消")
+MESSAGE_STRING(reservedidreuse_WARNING, "%0 是 C/C++ 的保留标识符, 重新定义或者取消定义可能导致意外结果")
+
+# sunwise-expression-cast-cstyle
+MESSAGE_STRING(CstyleCast_WARNING_C, "不应使用 C 风格的类型转换(%0 -> %1)")
+MESSAGE_STRING(CstyleCast_WARNING_F, "不应使用函数记号型转换(%0 -> %1)")
+
+# sunwise-expression-cast-qualifier
+MESSAGE_STRING(DropQualifier_WARNING_V, "Dangerous pointer cast results in loss of volatile qualification ('%0')")
+MESSAGE_STRING(DropQualifier_WARNING_C, "Dangerous pointer cast results in loss of const qualification ('%0')")
+MESSAGE_STRING(DropQualifier_NOTE, "Declared here")
+
+# sunwise-statement-switch-atleastonecase
+MESSAGE_STRING(nocase_WARNING, "每个 switch 语句都应有至少一个 case 子句")
+
+# sunwise-statement-switch-condboolcheck
+MESSAGE_STRING(switchcondbool_WARNING, "The switch-expression is of essentially Boolean type")
+
+# sunwise-statement-if-noelse
+MESSAGE_STRING(noelsebranch_WARNING_1, "No concluding else exists in the if-else-if statement")
+MESSAGE_STRING(noelsebranch_WARNING_2, "The final else statement does not contain any side effects or comments")
+
+# sunwise-statement-loop-termination
+MESSAGE_STRING(LoopTermination_WARNING, "%0 statements has been used to terminate this iteration statement")
+MESSAGE_STRING(LoopTermination_NOTE_B, "Terminate with 'break'")
+MESSAGE_STRING(LoopTermination_NOTE_G, "Terminate with 'goto'")
+
+# sunwise-statement-function-exit
+MESSAGE_STRING(FunctionExit_WARNING_G, "Function %0 has more than one 'return' path")
+MESSAGE_STRING(FunctionExit_WARNING_AND, ". ")
+MESSAGE_STRING(FunctionExit_WARNING_E, "The return statement is not the last statement of function %0")
+MESSAGE_STRING(FunctionExit_NOTE_R, "The return statement")
+MESSAGE_STRING(FunctionExit_NOTE_E, "The last statement of the %0")
+MESSAGE_STRING(FunctionExit_PART_FUNC, "function")
+MESSAGE_STRING(FunctionExit_PART_TRY, "function-try-block")
+MESSAGE_STRING(FunctionExit_PART_CATCH, "catch block of function-try-block")
+
+# sunwise-expression-pointer-arithmetic
+# sunwise-expression-pointer-arithmetic-cpp
+MESSAGE_STRING(PtrArithmetic_WARNING, "Performing pointer arithmetic with %0 operator")
+MESSAGE_STRING(PtrArithmetic_WARNING_U, "Performing non-array pointer arithmetic with ++/-- operator")
+MESSAGE_STRING(PtrArithmetic_WARNING_S, "Performing non-array pointer arithmetic with [] operator")
+
+# sunwise-statement-switch-wellformed
+MESSAGE_STRING(SwitchWell_WARNING, "The switch statement is not well-formed")
+MESSAGE_STRING(SwitchWell_NOTE, "Not well-formed")
+
+# sunwise-preprocess-includepos
+MESSAGE_STRING(IncludePos_WARNING, "Use of #include directive after code fragment")
+MESSAGE_STRING(UnitName_NOTE, "当前翻译单元：%0")
+MESSAGE_STRING(Usercode_NOTE, "用户代码在第 %0 行(文件 %1)：%2")
+MESSAGE_STRING(Include_NOTE, "include 指令在第 %0 行(文件 %1)")
+
+# sunwise-preprocess-headername
+MESSAGE_STRING(headername_WARNING, "Using any of characters ', \", /* or // in a header file name gives undefined behaviour")
+
+# sunwise-preprocess-headernamehasbackslash
+MESSAGE_STRING(headernamebackslash_WARNING, "Using any of characters \\ in a header file name gives undefined behaviour")
+
+# sunwise-preprocess-hashifpos
+MESSAGE_STRING(HashIfPos_WARNING_I, "The #elif and #if is not resided in the same file")
+MESSAGE_STRING(HashIfPos_WARNING_E, "The #else and #if is not resided in the same file")
+MESSAGE_STRING(HashIfPos_WARNING_N, "The #endif and #if is not resided in the same file")
+MESSAGE_STRING(HashIfPos_WARNING_NoEndIf, "#if command")
+
+# sunwise-statement-forloop-counter
+MESSAGE_STRING(forloopcounter_zero_WARNING, "for 循环没有循环计数器(注意:循环计数器必须是标量类型,在迭代中有增减,参与了循环结束的判断过程)")
+MESSAGE_STRING(forloopcounter_more_WARNING, "for 循环的循环计数器多于1个: %0, %1 ...")
+MESSAGE_STRING(forloopcounter_float_WARNING, "for 循环的循环计数器 %0 是浮点类型")
+
+# sunwise-expression-operator-bitwise
+MESSAGE_STRING(BitwiseOP_WARNING, "位运算的操作数只能是无符号整形，但 %0 是 %1 类型")
+
+# sunwise-expression-cast-fptr
+# sunwise-expression-cast-fptr-f2o
+MESSAGE_STRING(FptrCase_WARNING_F, "'%0' is being cast between '%1' and a function pointer ('%2')")
+MESSAGE_STRING(FptrCase_WARNING_B, "'%0' is being cast between '%1' and a function pointer ('%2')")
+
+# sunwise-preprocess-vaildpptoken
+MESSAGE_STRING(VaildPPToken_WARNING, "'%1' is not a valid preprocessing directive")
+
+# sunwise-literal-suffix-unsigned
+MESSAGE_STRING(LitSuffix_WARNING_I, "Integer literal constant is of an unsigned type but does not include a 'U' suffix")
+MESSAGE_STRING(LitSuffix_WARNING_L, "Long integer literal constant is of an unsigned type but does not include a 'U' suffix")
+MESSAGE_STRING(LitSuffix_WARNING_LL, "Long long integer literal constant is of an unsigned type but does not include a 'U' suffix")
+
+# sunwise-declararation-func-prototype
+MESSAGE_STRING(FuncProto_WARNING_VOID, "'void' has been omitted when defining '%0' with no parameters")
+MESSAGE_STRING(FuncProto_WARNING_OLD, "Defining '%0()' with an identifier list and separate parameter declarations is an obsolescent feature")
+MESSAGE_STRING(FuncProto_WARNING_NAME, "parameter identifiers missing in declaration of '%0'")
+MESSAGE_STRING(FuncProto_NOTE_NAME, "Parameter '%0' shall have a identifier")
+MESSAGE_STRING(FuncProto_WARNING_VOID_NULL, "'void' has been omitted when defining a function with no parameters")
+
+# sunwise-template-primary-specialization
+MESSAGE_STRING(TemlPrimSpec_WARNING, "函数模板的特例化和原始模板声明在不同文件")
+MESSAGE_STRING(TemlPrimSpec_NOTE, "原始模板")
+
+# sunwise-template-instantiation
+MESSAGE_STRING(CLASSTEMPL_WARNING, "在源代码文件 %0 内，类模板应该至少被实例化一次")
+MESSAGE_STRING(CLASSTEMPL_MEMFUN_WARNING, "在源代码文件 %0 内，类模板的非模板成员函数应该至少被实例化一次")
+MESSAGE_STRING(FUNCTEMPL_WARNING, "在源代码文件 %0 内，函数模板应该至少被实例化一次")
+
+# sunwise-template-resovedfunction
+MESSAGE_STRING(ResovedFunction_WARNING, "通过重载解析选定的函数解析为在翻译单元没有先声明过的函数")
+MESSAGE_STRING(ResovedFunction_NOTE, "被选定的函数声明")
+
+# sunwise-template-explicitcopyassignment
+MESSAGE_STRING(ExplicitCopyAssignment_WARNING, "重载单模板参数拷贝赋值操作符时，应显式定义另一个拷贝赋值操作符重载函数")
+MESSAGE_STRING(ExplicitCopyAssignment_NOTE, "拷贝赋值操作符位置"
+
+# sunwise-template-explicitcopyctor
+MESSAGE_STRING(ExplicitCopyCtor_WARNING, "定义单参数的模板构造函数时，需显式定义另一个拷贝构造函数")
+MESSAGE_STRING(ExplicitCopyCtor_NOTE, "拷贝构造函数位置"
+
+# sunwise-class-abstractclass-copyassignment
+MESSAGE_STRING(AbsClassCopyAssign_WARNING_I, "抽象类 %0 隐式声明的拷贝赋值操作符不应声明为 public")
+MESSAGE_STRING(AbsClassCopyAssign_WARNING, "抽象类 %0 的拷贝赋值操作符不应声明为 public")
+
+# sunwise-class-copyctorinit
+MESSAGE_STRING(CopyCtorInit_WARNING_STATIC, "在拷贝构造函数中不应修改静态成员变量 %0")
+MESSAGE_STRING(CopyCtorInit_WARNING_GLOBLE, "在拷贝构造函数中不应全局变量 %0")
+MESSAGE_STRING(CopyCtorInit_NOTE, "拷贝构造函数 %0")
+
+# sunwise-class-explicitctor
+MESSAGE_STRING(ExplicitCtor_WARNING, "参数只有一个且为基本类型的构造函数都应声明为 explicit")
+MESSAGE_STRING(ExplicitCtor_NOTE, "函数声明")
+
+# sunwise-class-ctor-basectorinvoke
+MESSAGE_STRING(BaseCtorInvoke_WARNING, "构造函数初始化器必须显式调用虚基类和直接基类的构造函数")
+
+# sunwise-class-ctordtor-dynamictype
+MESSAGE_STRING(CtorDtorDynamicType_WARNING_TPYE, "不允许在多态类型的构造和析构中对本类使用 typeid 运算符")
+MESSAGE_STRING(CtorDtorDynamicType_WARNING_DYNC, "构造或者析构函数中不要对 this 指针用 dynamic_cast")
+MESSAGE_STRING(CtorDtorDynamicType_WARNING_VITU, "构造或者析构函数中不要调用虚函数")
+
+# sunwise-class-purevirtualfunc
+MESSAGE_STRING(PureVirtualFunc_WARNING, "纯虚函数数只能被纯虚函数重写")
+
+# sunwise-class-virtualfunction-virtualkeyword
+MESSAGE_STRING(VirtualFunctionVitrual_WARNINT, "虚函数的声明必须明确标明 virtual 关键字")
+
+# sunwise-class-datamember-private
+MESSAGE_STRING(DataMemberPrivate_WARNING, "数据成员应该被声明为私有")
+
+# sunwise-class-virtualfunction-definition
+MESSAGE_STRING(VirFuncDef_WARNING, "虚函数 %0 在继承路径中被定义多次")
+MESSAGE_STRING(VirFuncDef_NOTE, "重复定义位置")
+
+# sunwise-class-different-derived
+MESSAGE_STRING(DiffDerived_WARNING, "类 %0 的基类 %1 同时虚继承和非虚继承")
+
+# sunwise-class-diamond-hierarchy
+MESSAGE_STRING(DiamondHierarchy_WARNING, "类 %0 菱形继承 %1 必须均为虚继承")
+
+# sunwise-class-virtual-inheritance
+MESSAGE_STRING(VirtualInheritance_WARNING, "类不应派生自虚基类")
+
+# sunwise-template-resovedfunction
+MESSAGE_STRING(TempResovedFunc, "%0 是可以在依赖基类中找到的名字，应使用一个 qualified-id 或 this-> 来引用")
+
+# sunwise-template-instantiation-illformed
+MESSAGE_STRING(IllFormedInstantation_WARNING, "特化的类型 %0 不是结构体或联合")
+MESSAGE_STRING(IllFormedInstantation_NOTE, "特化: %0")
+
+# sunwise-class-inheritance-unique
+MESSAGE_STRING(InheritanceUnique_WARNING, "不同基类中存在同名成员 %0 ")
+MESSAGE_STRING(InheritanceUnique_NOTE, "不同类型声明位置")
+
+# sunwise-template-genericfunction
+MESSAGE_STRING(GenericFunction_WARNING, "非成员泛型函数不能声明在特定名字空间中")
+MESSAGE_STRING(GenericFunction_NOTE, "名字空间声明位置")
+
+# sunwise-exception-throwzero
+MESSAGE_STRING(ThrowZero_WARNING, "不能显式抛出 NULL 或 0")
+
+# sunwise-exception-catchanythinginmain
+MESSAGE_STRING(CatchAny_WARNING_TRY, "main 函数的可执行代码，建议都包含在 try 代码块中")
+MESSAGE_STRING(CatchAny_WARNING_CATCH, "main 函数建议有一个 catch ... 异常处理器")
+
+# sunwise-exception-catchclassobjorder
+MESSAGE_STRING(CatchChaine_WARNING, "子类异常对象的处理器应该放在基类异常对象处理器前面")
+MESSAGE_STRING(CatchChaine_NOTE, "基类异常处理器")
+
+# sunwise-exception-catchallintheend
+MESSAGE_STRING(CatchAll_WARNING, "catch ... 必须放在 catch 序列最后")
+
+# sunwise-exception-functiontryblock
+MESSAGE_STRING(FuncTryBlock_WARNING, "禁止在形式为 function-try-block 的构造函数或析构函数的异常处理器中引用该类或其基类的非静态成员")
+MESSAGE_STRING(FuncTryBlock_NOTE, "成员定义")
+
+# sunwise-exception-control
+MESSAGE_STRING(ControlBeTransfer_WARNING, "不能使用 %0 语句把控制流传递到 try 块中")
+MESSAGE_STRING(TryCatchLoc_WARNING, "%0 块的位置")
+
+# sunwise-exception-destructor
+# sunwise-exception-uncatched
+MESSAGE_STRING(UnCatchedException_WARNING, "%select{函数|析构函数}0抛出了非预期的异常 %1，预期为 '%2'")
+MESSAGE_STRING(UnCatchedException_NOTE, "此处抛出了异常")
+
+# sunwise-namespace-global
+MESSAGE_STRING(GlobalNamespace_WARNING, "全局名字空间只能包含 main、名字空间声明和 extern C 声明")
+
+# sunwise-namespace-unnamednamespacesinheader
+MESSAGE_STRING(NamespaceInHeader_WARNING, "在头文件中不能有未命名的名字空间")
+
+# sunwise-namespace-globalmain
+MESSAGE_STRING(GlobalMain_WARNING, "main 标识符只能用作全局入口函数")
+
+# sunwise-namespace-nousing
+MESSAGE_STRING(NoUsing_WARNING, "禁止使用 using 指令")
+
+# sunwise-exception-classtypecatchbyref
+MESSAGE_STRING(CatchClassRef_WARNING, "类类型的异常对象应该通过引用接收")
+
+# sunwise-template-functemplates-specilized
+MESSAGE_STRING(FuncTemplSpec_WARNING, "重载的函数模板不能显式特化")
+MESSAGE_STRING(FuncTemplSpec_NOTE, "显式特化的函数")
+
+# sunwise-identifiers-literalsuffix
+MESSAGE_STRING(LowCaseLiteralSuffix_WARNING, "字面量 %0 使用了小写后缀")
+
+# sunwise-literal-escapeseq
+MESSAGE_STRING(EscapSeq_WARNING_Octalnum, "八进制转义字符序列超过表达范围")
+MESSAGE_STRING(EscapSeq_WARNING_Hexnum, "十六进制转义字符序列超过表达范围")
+MESSAGE_STRING(EscapSeq_WARNING_U, "转义字符: \\u 后面没有十六进制数字")
+MESSAGE_STRING(EscapSeq_WARNING_Undefine, "未定义的转义字符序列: %0 ")
+
+# sunwise-literal-charwcharconcatenated
+MESSAGE_STRING(CharWCharConc_WARNING_KZ, "不应该连接宽字符串和窄字符串")
+MESSAGE_STRING(CharWCharConc_WARNING_ZK, "不应该连接窄字符串和宽字符串")
+
+# sunwise-namespace-nousinginheader
+MESSAGE_STRING(NoUsingInHeader_WARNING, "禁止在头文件中使用作用与全局的 using 指令或声明")
+
+# sunwise-exception-beyondmain
+MESSAGE_STRING(BeyondMain_WARNING, "异常只能出现在程序开始之后结束之前")
+
+# sunwise-exception-pointer
+MESSAGE_STRING(PointerException_WARNING, "异常对象不应该是指针类型")
+
+# sunwise-exception-in-throw
+MESSAGE_STRING(ThrowException_WARNING, "throw 抛出的表达式不能再次抛出异常")
+
+# sunwise-exception-rethrow
+MESSAGE_STRING(Rethrow_WARNING, "空 throw 语句只应该出现在 catch 子句中")
+
+# sunwise-library-clibrary
+MESSAGE_STRING(NoUseCLibrary_WARNING, "禁止使用 C 的库 %0")
+
+# sunwise-library-cstdlib
+MESSAGE_STRING(NoUseCstdlib_WARNING, "禁止使用 cstdlib 库中的 %0 函数")
+MESSAGE_STRING(NoUseCstdlib_WARNING_MACRO, "禁止使用 cstdlib 库中的 %0 宏")
+
+# sunwise-library-cstdlib2
+MESSAGE_STRING(NoUseCstdlib2_WARNING, "禁止使用 cstdlib 库中的 %0 函数")
+MESSAGE_STRING(NoUseCstdlib2_WARNING_MACRO, "禁止使用 cstdlib 库中的 %0 宏")
+
+# sunwise-library-ctime
+MESSAGE_STRING(NoUseCtime_WARNING, "禁止使用 ctime 库中的时间处理函数 %0")
+MESSAGE_STRING(NoUseCtime_WARNING_MACRO, "禁止使用 ctime 库中的时间处理宏 %0")
+
+# sunwise-library-cstring
+MESSAGE_STRING(NoUseCstring_WARNING, "禁止使用 cstring 库中的函数 %0")
+MESSAGE_STRING(NoUseCstring_WARNING_MACRO, "禁止使用 cstring 库中的时间处理宏 %0")
+
+# sunwise-indentifier-reuse-static-name
+MESSAGE_STRING(ReuseStaticName_WARNING, "不应该重用非成员静态对象的名字 %0")
+MESSAGE_STRING(ReuseStaticName_REF, "名字重用的位置：")
+
+# sunwise-comment-commentcodebycstyle
+MESSAGE_STRING(CStyleComment_WARNING1, "C 风格的注释中不应该有源代码(函数)")
+MESSAGE_STRING(CStyleComment_WARNING2, "C 风格的注释中不应该有源代码")
+MESSAGE_STRING(CStyleComment_WARNING3, "C 风格的注释中不应该有源代码(宏指令)")
+
+# sunwise-comment-commentcodebycppstyle
+MESSAGE_STRING(CPPStyleComment_WARNING1, "C++ 风格的注释中不应该有源代码(函数)")
+MESSAGE_STRING(CPPStyleComment_WARNING2, "C++ 风格的注释中不应该有源代码")
+MESSAGE_STRING(CPPStyleComment_WARNING3, "C++ 风格的注释中不应该有源代码(宏指令)")
+
+# sunwise-statement-forloop-loopcountermodifed
+MESSAGE_STRING(forloopcountermodified_WARNING, "for 循环的循环计数器 %0 不能在条件判断部分或者循环体中被修改")
+MESSAGE_STRING(forloopcountermodified_Note, "其所对应的 for 循环")
+
+#sunwise-statement-forloop-ctrvarmodifed
+MESSAGE_STRING(forloopctrvarmodified_WARNING, "for 循环的循环控制变量 %0 不能在条件判断部分或者增量部分中被修改")
+
+#sunwise-statement-forloop-ctrvarbool
+MESSAGE_STRING(forloopctrvarbool_WARNING, "如果 for 循环的循环控制变量 %0 在循环体中被修改，它必须是布尔类型")
+
+# sunwise-identifiers-samescope
+MESSAGE_STRING(ReferToFuncOrOjBType_WARNING, "%0 已经表示类型，不能再表示对象或函数")
+MESSAGE_STRING(ReferToTypeBFuncOrOb_WARNING, "%0 已经表示对象或函数，不能再表示类型")
+MESSAGE_STRING(ReferToTypeDecl_Note, "%0 已经表示类型")
+MESSAGE_STRING(ReferToObjectOrFunc_Note, "%0 已经表示对象或函数")
+
+# sunwise-namespace-samedeclstraddleusing
+MESSAGE_STRING(CrossNamespace_WARNING, "同一个名字空间的重载函数标识符的声明不能跨越对此标识符的 using 指令")
+
+# sunwise-expression-unsignedwraparound
+MESSAGE_STRING(UnsignedWrapAround_WARNING, "运算 %0 可能会导致无符号整数的溢出,结果值 %1 超出无符号整形( %2 )范围[0,%3]")
+MESSAGE_STRING(MinusUnsigned_WARNING, "不应该对无符号整数常量 %0 用负号")
+
+# sunwise-expression-unary-sizeof
+MESSAGE_STRING(SizeofCallFunc_WARNING, "不应在 sizeof 操作数中调用函数 %0")
+MESSAGE_STRING(SizeOfUseOper_WARNING, "不应在 sizeof 操作数中使用存在副作用的操作符 %0")
+MESSAGE_STRING(SizeofUseVolatile_WARNING, "sizeof 操作数中使用 volatile 变量 %0 存在副作用")
+MESSAGE_STRING(SizeOfSideEffect_WARNING, "sizeof 操作数 %0 不应存在副作用")
+
+# sunwise-expression-logicalop
+MESSAGE_STRING(LogicOpSideEffects_MSg, "在逻辑运算 && 或 || 的右操作数中, ")
+MESSAGE_STRING(LogicOpSideEffects_InFunc, "在被调函数中, ")
+MESSAGE_STRING(LogicOpCallFunc_WARNING, "调用函数 %0 存在副作用")
+MESSAGE_STRING(LogicOpUseOp_WARNING, "使用了存在持久副作用的操作符 %0")
+MESSAGE_STRING(LogicOpUseVoltile_WARNING, "访问了存在持久副作用的 volatile 变量 %0")
+MESSAGE_STRING(LogicOpMoreThanNestedLevel, ", 函数嵌套层次过多")
+MESSAGE_STRING(LogicOpNotFindCallee, ", 未找到被调函数体")
+MESSAGE_STRING(SideEffectsExpr_Warning, "表达式 %0 存在副作用")
+
+# sunwise-identifier-record-enum-name-unique
+MESSAGE_STRING(ReuseRecordEnumName_WARNING, "此类/联合/枚举的名字被重复使用")
+MESSAGE_STRING(ReuseRecordEnumName_REF, "重复使用的位置：")
+# sunwise-expression-cast-object
+MESSAGE_STRING(CastObject_WARNING, "Casting to different object pointer type ('%1' and '%2'")
+
+# sunwise-library-nouse-errno
+MESSAGE_STRING(NoUseErrno_WARNING, "不能使用 cerrno 库中的 %0 变量")
+MESSAGE_STRING(NoUseErrno_WARNING_MACRO, "不能使用 cerrno 库中的 %0 宏")
+
+# sunwise-library-nouse-iostream
+MESSAGE_STRING(NoUseCstdio_WARNING, "不能使用 cstdio 库")
+
+# sunwise-library-nouse-signalhandle
+MESSAGE_STRING(NoUseSingle_WARNING, "不能使用 csignal 库中的函数 %0")
+MESSAGE_STRING(NoUseSingle_WARNING_MACRO, "不能使用 csignal 库中的宏 %0")
+
+# sunwise-library-nouse-offsetof
+MESSAGE_STRING(NoUseOffset_WARNING, "不能使用函数 offsetof")
+MESSAGE_STRING(NoUseOffset_WARNING_MACRO, "不能使用宏 offsetof")
+
+# sunwise-identifier-no-shadow
+MESSAGE_STRING(NoShadow_WARNING, "内部范围声明的标识符 %0 隐藏了外部范围内声明的同名标识符")
+MESSAGE_STRING(NoShadow_REF, "标识符 %0 在外部范围中声明的位置")
+
+# sunwise-bitfields-signedfieldbitlen
+MESSAGE_STRING(BitFieldLen_WARNING, "有符号整型的命名位域的长度应该多于1位")
+
+# sunwise-bitfields-enumtype
+MESSAGE_STRING(BitFieldEnum_WARNING, "位域不能是枚举类型")
+
+# sunwise-bitfields-boolsignedunsigned
+MESSAGE_STRING(BitFieldBoolInt_WARNING, "位域 %0 的类型必须显式写明 signed/unsigned 或者是布尔类型")
+
+# sunwise-union-donotuse
+MESSAGE_STRING(UnionDecl_WARNING, "不要定义或者声明联合类型")
+MESSAGE_STRING(UnionVarDecl_WARNING, "不要定义或者声明联合类型的变量或者指针变量")
+MESSAGE_STRING(UnionTypedef_WARNING, "类型定义中不要定义联合的别名(不建议使用联合类型)")
+MESSAGE_STRING(UnionField_WARNING, "成员变量不要使用联合类型")
+MESSAGE_STRING(Unionretype_WARNING, "函数返回值不应该是联合类型")
+MESSAGE_STRING(Unioncast_WARNING, "%0 不应被强制类型转换(显式或者隐式)为联合类型")
+
+# sunwise-declararation-initbraces
+MESSAGE_STRING(InitBrace_subzero_WARNING, "子数组不能用空初始化")
+MESSAGE_STRING(InitBrace_bracenum_WARNING, "数组初始化时大括号个数应该匹配数组的结构")
+MESSAGE_STRING(InitBrace_partial_WARNING, "只显式初始化了部分的数组元素")
+MESSAGE_STRING(InitBrace_strusubzero_WARNING, "结构体的部分元素不能使用空初始化")
+MESSAGE_STRING(InitBrace_strubracenum_WARNING, "结构体初始化时大括号个数应该匹配结构体的结构")
+
+# sunwise-identifier-typographically-unambigous
+MESSAGE_STRING(TypographicallyUnambigous_WARNING, "发现与容易与标识符 %0 混淆的标识符 %1")
+MESSAGE_STRING(TypographicallyUnambigous_REF, "容易混淆的标识符定义在此处")
+
+# sunwise-declaration-static-link-storage-class
+MESSAGE_STRING(StaticLinkStorageClassCheck_WARNING, "具有内部链接的函数的每一个声明都不应缺少 static 限定符")
+MESSAGE_STRING(StaticLinkStorageClassCheck_REF, "相应的 static 声明在此处")
+
+# sunwise-expression-cast-int2ptr
+MESSAGE_STRING(Int2Ptr_WARNING_INT, "禁止将 %0 从整数类型 %1 转化为指针 %2")
+MESSAGE_STRING(Int2Ptr_WARNING_VOID, "禁止将 %0 从指向 void 的指针 %1 转化为指针 %2")
+
+# sunwise-expression-cast-ptr2int
+MESSAGE_STRING(Ptr2Int_WARNING, "禁止将 %0 从指针 %1 转化为整数类型 %2")
+
+# sunwise-identifier-typedef-name-unique
+MESSAGE_STRING(TypedefNameUnique_WARNING, "标识符 %0 与已知 typedef 的标识符重名")
+MESSAGE_STRING(TypedefNameUnique_REF, "名为为 %0 的 typedef 定义于此处")
+
+# sunwise-function-fallthrough
+MESSAGE_STRING(FallThrough_WARNING, "Some exit paths of this function do not have an explicit return statements")
+
+# sunwise-declaration-array-need-size
+MESSAGE_STRING(ArrayNeedSize_WARNING, "数组被声明时，其大小应该显式声明，或者通过初始化隐式地定义")
+
+# sunwise-expression-literal-zero-pointer-constant
+MESSAGE_STRING(LiteralZeroPointerConstant_WARNING, "字面量 0 不应用做空指针常数");
+
+# sunwise-expression-avoid-enum-in-particular-operators
+MESSAGE_STRING(AvoidEnumInParticularOperators_WARNING, "不应该在此使用 enum 类型的操作数")
+
+# sunwise-expression-avoid-bool-in-particular-operators
+MESSAGE_STRING(AvoidBoolInParticularOperators_WARNING, "不应该在此使用 bool 类型的操作数")
+
+# sunwise-unnecessary-unused-function
+MESSAGE_STRING(UnUsedFunction_WARNING, "函数 %0 定义未使用")
+
+# sunwise-preprocess-macrorealargs
+MESSAGE_STRING(MacroRealArgs_WARNING, "Macro argument '%0' contains a sequence of tokens that has form of a preprocessing directive (#%1)")
+MESSAGE_STRING(MArgGuess_WARNING, "Arguments to a function-like macro shall not contain tokens that look like preprocessing directives")
+
+# sunwise-expression-binbitwise
+MESSAGE_STRING(BinaryBitWiseOp_WARNING, "二元位操作运算符 %0 的操作数 %1(%2) 和操作数 %3(%4) 的基础类型不同")
+
+# sunwise-expression-shiftop
+MESSAGE_STRING(ShiftOP_WARNING_L, "Right hand operand ('%0') of shift operator is negative")
+MESSAGE_STRING(ShiftOP_WARNING_G, "Right hand operand ('%0') of shift operator is greater than or equal to the width ('%1') of the essential type of the left operand ('%2')")
+
+# sunwise-literal-octal
+MESSAGE_STRING(OctalNum_WARNING, "不应使用以 0 开头的8进制数：%0...")
+MESSAGE_STRING(OctalNumMacro_WARNING, "不应使用以 0 开头的8进制数：%0...， 这个数字经由标识符 %1 展开得到")
+MESSAGE_STRING(OctalSeq_WARNING, "不应使用8进制转义序列：%0...")
+
+# sunwise-experssion-commaoperator-donotuse
+MESSAGE_STRING(CommaOperatorUsed_WARNING, "The comma operator has been used")
+
+# sunwise-expression-no-overload-comma-logic-and-or
+MESSAGE_STRING(NoOverloadCommaLogicAndOr_WARNING, "不应该重载逗号运算符、&& 运算符和 || 运算符")
+
+# sunwise-declaration-enum-member-init
+MESSAGE_STRING(EnumMemberInit_WARNING, "在枚举列表中，= 构造不能使用在首元素之外的元素上，除非所有元素都进行显式初始化")
+
+# sunwise-expression-no-float-bit-usage
+MESSAGE_STRING(NoFloatBitUsage_WARNING, "不应该尝试转换浮点数指针来使用浮点值的位表示法")
+
+# sunwise-function-potential-static-or-const-method
+MESSAGE_STRING(PotentialStatic_WARNING, "此方法可以标记为 static 方法")
+MESSAGE_STRING(PotentialConst_WARNING, "此方法可以标记为 const 方法")
+MESSAGE_STRING(PotentialStaticOrConst_WARNING, "此方法可以标记为 static 方法，或者标记为 const 方法")
+
+# sunwise-declaration-funcdeclinblock
+MESSAGE_STRING(FuncInBlock_WARNING, "函数声明不能放在代码块中")
+
+#sunwise-statement-switch-default
+MESSAGE_STRING(SwitchDefaultClause_WARNING, "switch 语句的最后一个子语句应该是 default 子语句")
+
+# sunwise-inclusion-include-guard
+MESSAGE_STRING(IncludeGuard_wrong_ig, "文件 %0 没有正确使用 include guard，%1")
+MESSAGE_STRING(IncludeGuard_wrong_def_id, "include guard 定义的 id 错误，应使用 %0")
+MESSAGE_STRING(IncludeGuard_no_def_id, "include guard 定义的 id 为空")
+MESSAGE_STRING(IncludeGuard_no_if_id, "文件 %0 没有定有有效的文件 ID")
+MESSAGE_STRING(IncludeGuard_wrong_if_id, "%0 不包含文件名或文件 %1 中不存在 include guard")
+MESSAGE_STRING(IncludeGuard_imcom_ig, "文件 %0 没有完整的 include guard")
+MESSAGE_STRING(IncludeGuard_used_id, "include guard 使用的 ID %0 在其他文件被定义")
+MESSAGE_STRING(IncludeGuard_code_brefore, "include guard 前有其他代码导致其失效")
+MESSAGE_STRING(IncludeGuard_code_brefore_note, "include guard 开始位置")
+MESSAGE_STRING(IncludeGuard_code_after, "include guard 前后其他代码导致其失效")
+MESSAGE_STRING(IncludeGuard_code_after_note, "include guard 结束位置")
+MESSAGE_STRING(IncludeGuard_ifndef, "除 include guard 外不应使用 #ifndef")
+MESSAGE_STRING(IncludeGuard_if, "除 include guard 外不应使用 #if")
+MESSAGE_STRING(IncludeGuard_defined, "除 include guard 外不应使用 defined")
+MESSAGE_STRING(IncludeGuard_add_define, "除 include guard、类限定符、存储限定符外不应使用 #define")
+MESSAGE_STRING(IncludeGuard_pp, "在 C++ 中更安全的方式等替代 %0")
+
+# sunwise-library-stdnamereuse
+MESSAGE_STRING(StdNameReuse_WARNING, "标准库 %0 中的宏名或者对象名 %1 不能被重复定义")
+
+# sunwise-library-stdfuncoverride
+MESSAGE_STRING(StdFuncOverride_WARNING, "标准库 %0 中的函数 %1 不能被重新定义")
+
+# sunwise-unnecessary-funcparam
+MESSAGE_STRING(FuncParm_WARNING, "函数参数 %0 在函数体内没有被使用")
+MESSAGE_STRING(FuncParmUn_WARNING, "函数(非回调函数) %0 存在未命名参数")
+MESSAGE_STRING(FuncParmUn2_WARNING, "函数(非回调函数)存在未命名参数")
+
+# sunwise-function-ellipsis
+MESSAGE_STRING(ParmEllipsis_WARNING, "函数参数不能使用省略号")
+
+# sunwise-function-edit-default-arg-in-override-method
+MESSAGE_STRING(EditDefaultArgInOverrideMethod_WARNING, "此参数的缺省值与被重写的函数中的值不同")
+MESSAGE_STRING(EditDefaultArgInOverrideMethod_REF, "被重写的函数中的值")
+
+# sunwise-expression-signednessofcvalue
+MESSAGE_STRING(SofCValue_WARNING, "整型转换表达式 %0 将 cvalue 表达式从 %1 转换到 %2, 改变了符号")
+
+# sunwise-expression-minusop
+MESSAGE_STRING(MinusOP_WARNING, "一元运算 - 的操作数的基础类型应为 unsigned, %0 的基础类型为 %1")
+
+# sunwise-expression-bitwiseconv
+MESSAGE_STRING(BitwiseConv_WARNING, "表达式 %0 的结果应立即转换成操作数的类型 %1")
+
+# sunwise-expression-cvalue-float2integral
+MESSAGE_STRING(CValueI2F_WARNING, "整数类型的 cvalue 表达式 %0 不应显式转换为浮点类型")
+MESSAGE_STRING(CValueF2I_WARNING, "浮点类型的 cvalue 表达式 %0 不应显式转换为整数类型")
+
+# sunwise-postfixexpression-andor
+MESSAGE_STRING(AndOrleft_WARNING, "操作符 %0 左边的表达式应该用括号括起来以明确优先级")
+MESSAGE_STRING(AndOrright_WARNING, "操作符 %0 右边的表达式应该用括号括起来以明确优先级")
+
+# sunwise-expression-nullasint
+MESSAGE_STRING(NullAsInt_WARNING, "NULL 应该用做空指针值，不能用作整形值，请用 0 替代")
+
+# sunwise-declarator-single-declarator
+MESSAGE_STRING(SingleDeclarator_WARNING, "在初始化声明列表或成员声明列表中应该分别包含单一的初始化声明或成员声明")
+
+# sunwise-declaration-functioncall
+MESSAGE_STRING(Recursive_WARNING, "Recursive call to function containing this call ('%0')")
+MESSAGE_STRING(Recursive_NOTE, "funcion: %0 ")
+MESSAGE_STRING(Recursive_E_NOTE, "function: %0, ...")
+
+# sunwise-expression-increment-unique
+MESSAGE_STRING(CCE_IncrementUnique_WARNING, "在一个表达式中，不要把自增和自减运算符同其他运算符混合")
+
+# sunwise-expression-change-signedness-in-implicit-convert
+MESSAGE_STRING(ChangeSignednessInImplicitConvert_WARNING, "不应该使用有符号整数和无符号整数之间的隐式转换")
+# sunwise-comments-special-charseq
+MESSAGE_STRING(SlashStarInCstyleComment_WARNING, "%0 类型的注释中，不应该出现 %1")
+
+# sunwise-expression-chartypevalue
+MESSAGE_STRING(CharTypeValue_WARNING, "只能把字符值赋值给 char 类型的对象")
+
+# sunwise-expression-signedunsignedchartypevalue
+MESSAGE_STRING(SUCharTypeValue_WARNING, "字符类型的值不能存放到 unsigned char 类型的对象中")
+MESSAGE_STRING(SUCharTypeValueDetail_WARNING, "变量 %0 (类型 %1) 不应该存放到 %2 类型的对象中")
+MESSAGE_STRING(SUCharTypeValueTem_WARNING, "字符类型的值不能存放到 unsigned char 类型的对象中，其所在的模板被使用于文件：%0")
+MESSAGE_STRING(SUCharTypeValueDetailTem_WARNING, "变量 %0 (类型 %1) 不应该存放到 %2 类型的对象中，其所在的模板被使用于文件：%3")
+MESSAGE_STRING(SUCharTemplate_NOTE, "模板实例化点")
+
+# clang-analyzer-sunwise.misra.OverlapStorage
+MESSAGE_STRING(OverlapStorage_ASSIGN, "Assign between overlapping objects")
+MESSAGE_STRING(OverlapStorage_FUNC_B, "Copy between overlapping object by function '")
+MESSAGE_STRING(OverlapStorage_FUNC_A, "'")
+
+# sunwise-expression-and-overload
+MESSAGE_STRING(AndOpOverload_WARNING, "一元运算符 & 不应被重载")
+
+# sunwise-expression-basetoderivedcast
+MESSAGE_STRING(BaseToDerivedCast_WARNING, "应该使用 dynamic_cast 将虚基类对象转换为子类对象")
+
+ang-analyzer-sunwise.uninitialized.Branch
+MESSAGE_STRING(UninitializedBranch_WARNING, "Branch condition evaluates to a garbage value")
+
+# clang-analyzer-sunwise.uninitialized.UndefReturn
+MESSAGE_STRING(UninitializedReturn_WARNING, "Undefined or garbage value returned to caller")
+
+# clang-analyzer-sunwise.uninitialized.Assign
+MESSAGE_STRING(UninitializedAssign_WARNING_D, "Assigned value is garbage or undefined")
+MESSAGE_STRING(UninitializedAssign_WARNING_L, "The left expression of the compound assignment is an uninitialized value. The computed value will also be garbage")
+MESSAGE_STRING(UninitializedAssign_WARNING_S, "The expression is an uninitialized value. The computed value will also be garbage")
+
+# clang-analyzer-sunwise.uninitialized.ArraySubscript
+MESSAGE_STRING(UninitializedArray_WARNING, "Array subscript is undefined")
+
+# sunwise-tokens-digraphs-used
+MESSAGE_STRING(Digraphs_WARNING, "使用两字母词 %0 可能导致非预期的结果")
+
+# sunwise-expression-use-length-signedness-specific-typedef-numericals
+MESSAGE_STRING(UseLengthSignednessSpecificTypedefNumericals_WARNING, "应该使用指示位宽和符号的类型别名代替基本类型（如：int32_t 代替 int、float64_t 代替 double）")
+
+#  clang-analyzer-sunwise.DeadCode
+MESSAGE_STRING(DeadCode_VAL_B, "Value stored to '")
+MESSAGE_STRING(DeadCode_VAL_A, "' is never read")
+MESSAGE_STRING(DeadCode_EXP, "The expression has no side effect")
+MESSAGE_STRING(DeadCode_CALL, "The function has no side effect")
+MESSAGE_STRING(DeadCode_INIT, "' during its initialization is never read")
+
+# sunwise-preprocess-defined-wellformed
+MESSAGE_STRING(WellFormedDefined_W, "defined 后只能使用标识符")
+MESSAGE_STRING(WellFormedDefined_P, "defined 后使用了非法标识符")
+MESSAGE_STRING(WellFormedDefined_U, "使用宏定义的 defined 可能引发非预期的结果")
+
+# sunwise-declarator-funcid
+MESSAGE_STRING(FuncIdent_WARNING, "函数标识符 %0 不为函数调用，应在 %0 之前添加 &")
+
+# sunwise-expression-precedence
+MESSAGE_STRING(OperatorPrecedence_WARNING_E, "Extra parentheses recommended to clarify the ordering of '%0'")
+MESSAGE_STRING(OperatorPrecedence_WARNING_S, "Extra parentheses recommended to clarify the ordering of '%0'")
+
+# sunwise-expression-cvalue-implicitcast
+MESSAGE_STRING(CValueCast_WARNING, "不应隐式转换 cvalue 表达式 '%0' 的类型（%1 <- %2）")
+
+sunwise-expression-cvalue-size
+MESSAGE_STRING(CValueSize_WARNING, "显式转换不应扩大 cvalue 表达式 '%0' 的类型宽度（%1:%2 <- %3:%4）")
+
+# sunwise-function-const-method-return-non-const-pointer-reference-members
+MESSAGE_STRING(ConstMethodReturnNonConstPointerReferenceMembers_WARNING, "const 成员函数不应以非 const 指针或引用成员作为返回值")
+
+# sunwise-expression-cvalue-size
+MESSAGE_STRING(CValueSize_WARNING, "显式转换不应扩大 cvalue 表达式 '%0' 的类型宽度（%1:%2 <- %3:%4）")
+
+# clang-analyzer-sunwise.ReturnAutoVar
+MESSAGE_STRING(ReturnAutoVar_F, "函数不能返回定义在函数内部的自动变量 ")
+MESSAGE_STRING(ReturnAutoVar_P_R, " 的引用或指针")
+
+# sunwise-statement-switch-uncondbreak
+MESSAGE_STRING(UncondBreak_WARNING_C, "The switch-clause does not end with an unconditional break statement")
+MESSAGE_STRING(UncondBreak_WARNING_CPP, "The switch-clause does not end with an unconditional break or throw statement")
+
+# sunwise-statement-forloop-condstyle
+MESSAGE_STRING(CondStyle_WARNING, "循环计数器 %0 不是以 ++ 或 -- 的方式被修改时, 条件部分应该以计数器作为操作数进行 >、>=、<、<= 的判断")
+MESSAGE_STRING(CondStyle_Note, "所对应的 for 循环")
+
+# sunwise-statement-forloop-howcountermodified
+MESSAGE_STRING(LCMS_WARNING, "循环计数器 %0 只能使用 ++、--、+=n、-=n 方式修改")
+MESSAGE_STRING(LCMS2_WARNING, "循环计数器 %0 在使用 +=n, -=n 方式修改时，n 应该是一个不变量")
+MESSAGE_STRING(LCMS_NOTE, "报警所对应的 for 循环")
+
+# sunwise-expression-arraytopointer-decay
+MESSAGE_STRING(ArrayToPointerDecay_WARNING, "数组 %0 在用作函数参数时退化成一个指针")
+
+# sunwise-function-return-pointer-ref-to-ref-parameter
+MESSAGE_STRING(ReturnPointerToRefParameter_WARNING, "不应返回指向引用参数的指针")
+MESSAGE_STRING(ReturnRefToRefParameter_WARNING, "不应返回指向引用参数的引用")
+
+# sunwise-function-virtual-function-unused-parameters
+MESSAGE_STRING(VirtualFunctionUnusedParameters_WARNING, "此参数在所属虚函数的整个重写函数集合中均没有引用")
+MESSAGE_STRING(VirtualFunctionUnusedParameters_WARNING_WITHNAME, "参数 %0 在所属虚函数的整个重写函数集合中均没有引用")
+
+# sunwise-statement-forloop-mcontinue
+MESSAGE_STRING(FLC_WARNING, "for 循环不具有良好结构，不应该使用 continue 关键字")
+MESSAGE_STRING(FLC_651_NOTE, "for 循环只能有一个循环计数器，计数器不能是浮点类型")
+MESSAGE_STRING(FLC_652_NOTE, "当循环计数器没有用 ++、-- 修改时，在条件判断部分计数器只能用做 <=、<、>、>= 的操作数")
+MESSAGE_STRING(FLC_653_NOTE, "循环计数器不能在条件判断部分和循环体中被修改")
+MESSAGE_STRING(FLC_654_NOTE, "循环计数器应该通过 ++、--、+=n、-=n 修改，且 n 要保持为常量")
+MESSAGE_STRING(FLC_655_NOTE, "循环控制变量不能在条件部分和增量部分被修改")
+MESSAGE_STRING(FLC_656_NOTE, "循环控制变量如果在循环体中被修改，其类型应该是布尔类型")
+MESSAGE_STRING(FLC_NOTE, "报警所对应的 for 循环")
+
+# sunwise-scope-visibility
+MESSAGE_STRING(MinVisibility_WARNING_VAR, "变量 %0 可以声明在更小的范围内")
+MESSAGE_STRING(MinVisibility_WARNING_STATIC, "标识符 %0 仅出现在一个函数 %1 中，应定义在函数内部")
+MESSAGE_STRING(MinVisibility_WARNING_NONAME, "标识符可以声明在更小的范围内")
+MESSAGE_STRING(MinVisibility_NOTE, "在此范围声明可以减少其被误用的可能")
+
+# sunwise-function-method-return-non-const-data-handle
+MESSAGE_STRING(MethodReturnNonConstDataHandle_WARNING, "不应该返回类数据的非 const 句柄")
+
+# sunwise-expression-charcalc
+MESSAGE_STRING(CharCalcPlusZeroDetail_WARNING, "当和 '0' 做加法运算的时候，操作数的值应该为 0 到 9 之间的整数，%0 的当前值为 %1")
+MESSAGE_STRING(CharCalcPlusZero_WARNING, "当和 '0' 做加法运算的时候，操作数的值应该为 0 到 9 之间的整数，%0 的值无法预估，可能不满足条件")
+MESSAGE_STRING(CharCalcMinusZero_WARNING, "当和 '0' 做减法运算的时候，操作数应该是 char 类型，%0 的类型为 %1")
+MESSAGE_STRING(CharCalcComp_WARNING, "当和 '0' 到 '9' 做比较运算的时候，操作数应该是字符类型( char 或 wchar_t )，%0 的类型为 %1")
+MESSAGE_STRING(CharCalcOp_WARNING, "表达式 %0 是 %1 类型，不能用作内建操作符 %2 的操作数")
+
+# sunwise-statement-gotolabel
+MESSAGE_STRING(GotoCase_WARNING, "禁止在 switch 语句中使用 goto 跳转到 case 外的位置")
+MESSAGE_STRING(GotoCase_NOTE, "goto 跳转的标号处于原 case 外")
+MESSAGE_STRING(Goto_WARNING, "goto 跳转的标号不在同代码块或父代码块")
+MESSAGE_STRING(Goto_NOTE, "goto 跳转的标号不在同代码块或父代码块")
+
+# sunwise-declaration-constparm
+MESSAGE_STRING(ConstParm_WARNING_V, "Parameter ")
+MESSAGE_STRING(ConstParm_WARNING_D," in a function shall be declared as pointer to const or reference to const if the corresponding object is not modified.")
+
+# sunwise-expression-operand-type
+MESSAGE_STRING(NOT_Opearnd_WARNING, "运算符 %0 的操作数 %1 不是 bool 类型")
+
+# sunwise-unnecessary-unused-returnvalue
+MESSAGE_STRING(UnsedReturnValue_WARNING, "Function %0 returns a value with the type %1 which is not being used")
+
+# sunwise-unnecessary-voidreturn
+MESSAGE_STRING(VoidReturn_WARNING, "函数 %0 返回类型为 void, 但没有外部副作用")
+
+# sunwise-expression-enum-expression-value
+MESSAGE_STRING(EnumExpressionValue_WARNING, "这个表达式没有根据相应的 Enum 类型的枚举元素取值")
+
+
+# sunwise-expression-cast-to-derived-class
+MESSAGE_STRING(CastToDerivedClassRef_WARNING, "不应该将基类引用转换为派生类引用")
+MESSAGE_STRING(CastToDerivedClassPointer_WARNING, "不应该将基类指针转换为派生类指针")
+
+# sunwise-statement-null-statement
+MESSAGE_STRING(NullStatement_WARNING_BF, "空语句应该单独一行，在其前面除了空白字符不应该有其他内容")
+MESSAGE_STRING(NullStatement_WARNING_WB, "空语句之后的第一个字符应该是空白字符")
+MESSAGE_STRING(NullStatement_WARNING_COMMENT, "空语句后面存在非注释内容")
+
+# sunwise-declaration-constqualifier
+MESSAGE_STRING(ConstQual_WARNING, "变量 %0 在函数体内没有被修改过，建议声明为 const 类型")
+# clang-analyzer-sunwise.AutoStorage
+MESSAGE_STRING(AutoStorage_RETURN_V, "函数返回自动变量 ")
+MESSAGE_STRING(AutoStorage_RETURN_P, " 指向的指针")
+MESSAGE_STRING(AutoStorage_AutoVar, "自动变量 ")
+MESSAGE_STRING(AutoStorage_Assign, " 的地址赋值给当它消失后仍将存在的对象 ")
+MESSAGE_STRING(AutoStorage_Throw, " 抛出")
+
+# sunwise-declaration-asmmark
+MESSAGE_STRING(asmmark_WARNING, "汇编指令只能用 asm 标识符引入")
+
+# sunwise-preprocess-macro-function
+MESSAGE_STRING(MacroFunction_WARNING, "不要使用函数宏")
+
+# sunwise-declaration-asmisolate
+MESSAGE_STRING(AsmIsolate_WARNING, "汇编语句应该被%select{单独封装到独立的函数中|封装隔离}0")
+
+# sunwise-preprocess-macro-global
+MESSAGE_STRING(MacroDefineNotInGlobal_WARNING, "在不属于全局名字空间的位置不应该使用 #define 宏")
+MESSAGE_STRING(MacroUndefNotInGlobal_WARNING, "在不属于全局名字空间的位置不应该使用 #undef 宏")
+
+# sunwise-statement-subassignop
+MESSAGE_STRING(AssignOp_WARNING, "赋值运算 %0 不应为子表达式")
+
+# sunwise-preprocess-undefined-macro
+MESSAGE_STRING(UndefinedMacro_WARNING, "宏 %0 在使用之前没有定义")
+
+# sunwise-lexical-trigraphs-used
+MESSAGE_STRING(TrigraphsUsed_WARNING, "三字母词 ??%0 会被整体替换成其它字符")
+
+# sunwise-preprocess-undef-used
+MESSAGE_STRING(UndefUsed_WARNING, "避免使用 #undef")
+
+# sunwise-directive-libfunc
+MESSAGE_STRING(LibFunc_WARNING, "调用库函数 %0 ，应验证第 %1 个参数的正确性")
+
+# sunwise-preprocess-unused-macro
+MESSAGE_STRING(UnusedMacro_WARNING, "Macro '%0' is never used")
+
+# sunwise-preprocess-unused-tag
+MESSAGE_STRING(UnusedTag_WARNING, "Tag '%0' is never used")
+
+# sunwise-initialization-ayyay-size-specified
+MESSAGE_STRING(ArraySizeSpecified_WARNING_MUL, "The size of array ('%0') is not specified explicitly while using designated initializers")
+
+# sunwise-sunwise-statement-switch-default2
+MESSAGE_STRING(HaveDefault_WARNING, "No default label found in this switch statement")
+
+# sunwise-statement-switch-default-location
+MESSAGE_STRING(DefaultLocation_WARNING, "The default label is not the first or the last switch label")
+
+# sunwise-statement-switch-case
+MESSAGE_STRING(CaseCount_WARNING, "This switch statement contains only %0 switch-claus(es)")
+MESSAGE_STRING(CaseCount_NOTE, "The switch-claus")
+
+# sunwise-statement-nouse-goto
+MESSAGE_STRING(NoUseGoto_WARNING, "A goto statement has been used")
+
+# sunwise-expression-condition-invariant
+MESSAGE_STRING(InvariantCondition_WARNING_I, "The controlling expression of this if statement is invariant %0")
+MESSAGE_STRING(InvariantCondition_WARNING_W, "The controlling expression of this while statement is invariant %0")
+MESSAGE_STRING(InvariantCondition_WARNING_F, "The controlling expression of this for statement is invariant %0")
+MESSAGE_STRING(InvariantCondition_WARNING_D, "The controlling expression of this do statement is invariant %0")
+MESSAGE_STRING(InvariantCondition_WARNING_S, "The controlling expression of this switch statement is invariant %0")
+MESSAGE_STRING(InvariantCondition_WARNING_T, "The controlling expression of this ?: statement is invariant %0")
+
+# sunwise-library-stdarg 
+MESSAGE_STRING(NoUseStdarg_WARNING_H, "Function '%0' in <starg.h> shall not be used")
+MESSAGE_STRING(NoUseStdarg_WARNING_V, "'va_list' in <starg.h> shall not be used")
+
+# sunwise-function-array-argument
+MESSAGE_STRING(ArrayArgument_WARNING_1, "The %1st argument of '%0' is not a array type with the same size as the parameter declared")
+MESSAGE_STRING(ArrayArgument_WARNING_2, "The %1st argument of '%0' is not a array type with the same size as the parameter declared")
+MESSAGE_STRING(ArrayArgument_NOTE, "the parameter is declared here")
+
+# sunwise-function-array-argument-static
+MESSAGE_STRING(ArrayStaticIndex_WARNING, "The declaration of an array parameter shall not contain the static keyword between the [ ]")
+
+# sunwise-expression-cast-intandptr
+MESSAGE_STRING(CastIntAndPtr_WARNING_F, "Cast '%0' form an integer type ('%1') to a pointer to object ('%2')")
+MESSAGE_STRING(CastIntAndPtr_WARNING_B, "Cast '%0' form a pointer to object ('%1') to an integer type ('%2')")
+
+# sunwise-expression-unused-variables
+MESSAGE_STRING(UnusedVariables_WARNING, "变量 %0 从未使用")
+
+# sunwise-statement-forloopcounterfloat
+MESSAGE_STRING(R14_1_WARNING_A, "The third clause ('%0') is a floating expression")
+MESSAGE_STRING(R14_1_WARNING_B, "The second clause ('%0') is a floating expression")
+
+# sunwise-declaration-staticinlinefunc
+MESSAGE_STRING(R8_10_WARNING, "Inline function '%0' is being defined with external linkage")
+
+# sunwise-declaration-linkconflict
+MESSAGE_STRING(R8_8_WARNING, "Identifier '%0' is declared here with '%1' storage class specifier but has previously been declared with different linkage")
+MESSAGE_STRING(R8_8_NOTE, "Identifier '%0' is declared here with '%1' storage class")
+
+# sunwise-declaration-implicittype
+MESSAGE_STRING(R8_1_WARNING, "The type is not explicitly specified")
+
+# sunwise-literal-strlitassign
+MESSAGE_STRING(R7_4_WARNING, "String literal assigned to pointer which is not a 'pointer to const'")
+
+# sunwise-lexical-octalhexescseqtem
+MESSAGE_STRING(R4_1_WARNING_X, "The hexadecimal escape sequences '\\x' shall be terminated by end of literal or another escape")
+MESSAGE_STRING(R4_1_WARNING_0, "The hexadecimal escape sequences '\\0' shall be terminated by end of literal or another escape")
+MESSAGE_STRING(R4_1_WARNING_8, "The hexadecimal escape sequences '\\' shall be terminated by end of literal or another escape")
+
+# sunwise-comment-linesplicingincomment
+MESSAGE_STRING(R3_2_WARNING, "C++ style comment uses line splicing")
+
+# sunwise-comment-commentsignincomment
+MESSAGE_STRING(R3_1_WARNING, "Comment delimiter /* or  // found within comment")
+
+# sunwise-identifier-diffidfrommacro
+# sunwise-identifier-diffidfrommacroc99
+MESSAGE_STRING(R5_5_WARNING, "Identifier '%0' does not differ from other macro(s) within the specified number (%1) of significant characters")
+MESSAGE_STRING(R5_5_NOTE, "Macro '%0'")
+
+# sunwise-identifier-scopediffid
+# sunwise-identifier-scopediffidc99
+MESSAGE_STRING(R5_2_WARNING, "Identifier '%0' does not differ from other identifier(s) within the specified number (%1) of significant characters")
+MESSAGE_STRING(R5_2_NOTE, "Identifier '%0'")
+
+# sunwise-identifier-uniqueextid
+# sunwise-identifier-uniqueextidc99
+MESSAGE_STRING(R5_8_WARNING, "'%0' with external linkage has same identifier as another object with different linkage")
+MESSAGE_STRING(R5_8_NOTE, "Object with different linkage")
+
+# sunwise-identifier-tagname
+MESSAGE_STRING(R5_7_WARNING, "'%0' is not a unique identifier")
+MESSAGE_STRING(R5_7_NOTE, "Another declaration of '%0'")
+
+# sunwise-initialization-array
+MESSAGE_STRING(R9_3_WARNING_MUL, "Array has fewer initializers than its declared size")
+MESSAGE_STRING(R9_3_WARNING_LESS, "'%0' has %1 element(s) but only has %2 initializer(s)")
+
+# sunwise-directive-externalsources
+MESSAGE_STRING(D4_14_WARNING_P, "应检查 printf 的参数 %0 数据的有效性")
+MESSAGE_STRING(D4_14_WARNING_DIV, "应检查除数 %0 数据的有效性")
+MESSAGE_STRING(D4_14_WARNING_A, "应检查数组下标 %0 数据的有效性")
+
+# sunwise-essentialty-operandsty
+MESSAGE_STRING(R10_1_WARNING_1, "An expression of essentially %0 type is being used as the operand of this [] operator and it shall only be used as enum, signed or unsigned")
+MESSAGE_STRING(R10_1_WARNING_2, "An expression of essentially %1 type is being used as the operand of this %0 operator and it shall only be used as signed, unsigned or floating")
+MESSAGE_STRING(R10_1_WARNING_3, "An expression of essentially %1 type is being used as the operand of this %0 operator and it shall only be used as signed or floating")
+MESSAGE_STRING(R10_1_WARNING_4, "An expression of essentially %1 type is being used as the operand of this %0 operator and it shall only be used as character, signed, unsigned or floating")
+MESSAGE_STRING(R10_1_WARNING_5, "An expression of essentially %1 type is being used as the operand of this %0 operator and it shall only be used as Boolean")
+MESSAGE_STRING(R10_1_WARNING_6, "An expression of essentially %1 type is being used as the operand of this %0 operator and it shall only be used as unsigned")
+MESSAGE_STRING(R10_1_WARNING_7, "An expression of an inappropriate essential type is being used as the operands of this %0 operator")
+MESSAGE_STRING(R10_1_NOTE_71, "An expression of essentially %1 type is being used as the left hand operand of this %0 operator and it shall only be character, signed, unsigned or floating")
+MESSAGE_STRING(R10_1_NOTE_72, "An expression of essentially %1 type is being used as the right hand operand of this %0 operator and it shall only be character, signed, unsigned or floating")
+MESSAGE_STRING(R10_1_NOTE_73, "An expression of essentially %1 type is being used as the left hand operand of this %0 operator and it shall only be signed, unsigned or floating")
+MESSAGE_STRING(R10_1_NOTE_74, "An expression of essentially %1 type is being used as the right hand operand of this %0 operator and it shall only be signed, unsigned or floating")
+MESSAGE_STRING(R10_1_NOTE_75, "An expression of essentially %1 type is being used as the left hand operand of this %0 operator and it shall only be signed or unsigned")
+MESSAGE_STRING(R10_1_NOTE_76, "An expression of essentially %1 type is being used as the right hand operand of this %0 operator and it shall only be signed or unsigned")
+MESSAGE_STRING(R10_1_NOTE_77, "An expression of essentially %1 type is being used as the left hand operand of this %0 operator and it shall not be Boolean")
+MESSAGE_STRING(R10_1_NOTE_78, "An expression of essentially %1 type is being used as the right hand operand of this %0 operator and it shall not be Boolean")
+MESSAGE_STRING(R10_1_NOTE_79, "An expression of essentially %1 type is being used as the left hand operand of this %0 operator and it shall only be unsigned")
+MESSAGE_STRING(R10_1_NOTE_7a, "An expression of essentially %1 type is being used as the right hand operand of this %0 operator and it shall only be unsigned or signed with a positive value")
+MESSAGE_STRING(R10_1_NOTE_7b, "An expression of essentially %1 type is being used as the left hand operand of this %0 operator and it shall only be unsigned")
+MESSAGE_STRING(R10_1_NOTE_7c, "An expression of essentially %1 type is being used as the right hand operand of this %0 operator and it shall only be unsigned")
+MESSAGE_STRING(R10_1_NOTE_7d, "二元运算符 %0 的左操作数是 %1(只能为无符号整数类型)")
+MESSAGE_STRING(R10_1_NOTE_7e, "二元运算符 %0 的右操作数是 %1(只能为无符号整数类型)")
+MESSAGE_STRING(R10_1_WARNING_8, "An expression of essentially Boolean type is being used as the first operand of this condition operator ('%0')")
+
+# sunwise-essentialty-charty
+MESSAGE_STRING(R10_2_WARNING_CC, "An operand of essentially character type is being added to another operand of essentially character type")
+MESSAGE_STRING(R10_2_WARNING_SU, "In %0 operation, when an expression of essentially character type is being used as the left hand operand, the right operand shall be only signed or unsigned except %1")
+MESSAGE_STRING(R10_2_WARNING_US, "In %0 operation, when an expression of essentially character type is being used as the right hand operand, the left operand shall be only signed or unsigned except %1")
+MESSAGE_STRING(R10_2_WARNING_NI, "In %0 operation, when an expression of essentially character type is being used as the left hand operand, the right operand shall be only signed, unsigned or character except %1")
+MESSAGE_STRING(R10_2_WARNING_NC, "In %0 operation, when an expression of essentially character type is being used as the right hand operand, the left operand shall be only character except %1")
+
+# sunwise-essentialty-assign
+MESSAGE_STRING(R10_3_WARNING_T, "表达式 %2 从 '%0' 到 '%1' 的赋值转换改变了基本类型类别")
+MESSAGE_STRING(R10_3_WARNING_W, "表达式 %4 从 '%0'(%1bit) 到 '%2'(%3bit) 的赋值类型转换缩小了类型大小")
+
+# sunwise-essentialty-binop
+MESSAGE_STRING(R10_4_WARNING_LR, "In this '%0' statement, the left hand operand ( %1 ) and the right hand operand  ( %2 ) have different essential type category")
+MESSAGE_STRING(R10_4_WARNING_FS, "The 2nd ( %0 ) and 3rd ( %1 ) operands of this conditional operator are of different essentially type")
+
+# sunwise-essentialty-castty
+MESSAGE_STRING(R10_5_WARNING_B, "The expression (%2) of essentially '%0' type casts to '%1' type")
+
+# sunwise-essentialty-composite-assign
+MESSAGE_STRING(R10_6_WARNING_W, "复合表达式 %4 从 '%0'(%1bit) 到 '%2'(%3bit) 的赋值类型转换加大了类型大小")
+
+# sunwise-essentialty-composite-calconv
+MESSAGE_STRING(R10_7_WARNING_W,"复合表达式 %0 的宽度(%1bit) 比另一操作数 %2 的宽度 (%3bit) 更窄")
+
+# sunwise-essentialty-composite-cast
+MESSAGE_STRING(R10_8_WARNING_T, "复合表达式 %2 从 '%0' 到 '%1' 的转换改变了基本类型类别")
+MESSAGE_STRING(R10_8_WARNING_W, "复合表达式 %4 从 '%0'(%1bit) 到 '%2'(%3bit) 的类型转换加宽了类型")
+
+# sunwise-expression-cast-ptr2imcomplete
+MESSAGE_STRING(R11_2_WARNING_F, "'%0' is being cast from '%1' to an incomplete pointer ('%2')")
+MESSAGE_STRING(R11_2_WARNING_B, "'%0' is being cast from an incomplete pointer ('%1') to '%2'")
+
+# sunwise-expression-cast-ptr2void
+MESSAGE_STRING(R11_5_WARNING, "Cast '%0' form a pointer to void to a pointer to object ('%1')")
+
+# sunwise-expression-cast-ptr2arithmetic
+MESSAGE_STRING(R11_6_WARNING_F, "Cast '%0' from an arithmetic type ('%1') to a pointer to 'void'")
+MESSAGE_STRING(R11_6_WARNING_B, "Cast '%0' from a pointer to 'void' to an arithmetic type ('%1')")
+
+# sunwise-expression-cast-ptr2nonint
+MESSAGE_STRING(R11_7_WARNING_F, "Cast '%0' from a non-integer arithmetic type ('%1') to a pointer to object ('%2')")
+MESSAGE_STRING(R11_7_WARNING_B, "Cast '%0' from a pointer to object ('%1') to a non-integer arithmetic type ('%2')")
+
+# sunwise-expression-cast-nullpointer
+MESSAGE_STRING(R11_9_WARNING, "Integer null pointer constant is not in form of 'NULL' or '(void*)0")
+
+# sunwise-library-reserved-defined
+MESSAGE_STRING(R21_1_WARNING_U, "'%0' begins with an underscore")
+MESSAGE_STRING(R21_1_WARNING_R, "'%0' is predefined as a reserved identifier or reserved macro name")
+
+# sunwise-library-signal
+MESSAGE_STRING(R21_5_WARNING_H, "The standard header file <signal.h> shall not be used")
+MESSAGE_STRING(R21_5_WARNING_F, "Function '%0' in <signal.h> shall not be used")
+
+# sunwise-library-stdio
+MESSAGE_STRING(R21_6_WARNING, "Function '%0' in the Standard Library shall not be used")
+
+# sunwise-library-stlib
+MESSAGE_STRING(R21_7_WARNING, "Function '%0' in <stdlib.h> shall not be used")
+
+# sunwise-library-abort
+MESSAGE_STRING(R21_8_WARNING, "The function %0 in <stdlib.h> shall not be used")
+
+# sunwise-library-bsearch
+MESSAGE_STRING(R21_9_WARNING, "Function '%0' in <stdlib.h> shall not be used")
+
+# sunwise-library-time
+MESSAGE_STRING(R21_10_WARNING, "Function '%0' in the Standard Library shall not be used")
+
+# sunwise-library-tgmath
+MESSAGE_STRING(R21_11_WARNING_H, "The standard header file <tgmath.h> shall not be used")
+MESSAGE_STRING(R21_11_WARNING_M, "Macro '%0' in <tgmath.h> shall not be used")
+
+# sunwise-library-ctype
+MESSAGE_STRING(R21_13_WARNING, "The value, passed to a function in <ctype.h>, is not representable as an unsigned char or be the value EOF")
+
+# sunwise-library-memcmparg
+MESSAGE_STRING(R21_16_WARNING_1, "The first argument of 'memcpy' points to a essentially %0 type")
+MESSAGE_STRING(R21_16_WARNING_2, "The second argument of 'memcpy' points to a essentially %0 type")
+
+# sunwise-library-string
+MESSAGE_STRING(R21_17_WARNING_LEN_N, "The argument of 'strlen' is a null terminated string")
+MESSAGE_STRING(R21_17_WARNING_CAT_I, "The first argument of 'strcat' is a literal of string")
+MESSAGE_STRING(R21_17_WARNING_CAT_N, "The first argument of 'strcat' is a null terminated string")
+MESSAGE_STRING(R21_17_WARNING_CAT_O, "The results may be too long to write into the first argument")
+MESSAGE_STRING(R21_17_WARNING_CHR_N, "The first argument of 'strchr' is a null terminated string")
+MESSAGE_STRING(R21_17_WARNING_CPY_I, "The first argument of 'strchr' is a literal of string")
+MESSAGE_STRING(R21_17_WARNING_CPY_N, "The second argument of 'strcpy' is a null terminated string")
+MESSAGE_STRING(R21_17_WARNING_CPY_O, "The results may be too long to write into the first argument")
+MESSAGE_STRING(R21_17_WARNING_RCHR_N, "The first argument of 'strrchr' is a null terminated string")
+MESSAGE_STRING(R21_17_WARNING_N1, "The first argument of  '%0' is a null terminated string")
+MESSAGE_STRING(R21_17_WARNING_N2, "The second argument of  '%0' is a null terminated string")
+
+# sunwise-library-string2
+MESSAGE_STRING(R21_18_WARNING_CHR_N, "The third argument of 'memchr' shall not be less than 0")
+MESSAGE_STRING(R21_18_WARNING_CHR_L, "The third argument of 'memchr' shall not greater than the size of the array")
+MESSAGE_STRING(R21_18_WARNING_L1, "The third argument of '%0' shall not greater than the size of the array")
+MESSAGE_STRING(R21_18_WARNING_L2, "The third argument of '%0' shall not greater than the size ot the array(argument %1)")
+
+# sunwise-expression-non-volatile-pod-ref-once
+MESSAGE_STRING(NonVolatilePodRefOnceCheck_WARNING, "非 volatile 的 POD 变量仅使用了一次")
+
+# sunwise-library-memcmp
+MESSAGE_STRING(R21_14_WARNING_I1, "The first argument of 'memcmp' is a literal of string")
+MESSAGE_STRING(R21_14_WARNING_I2, "The second argument of 'memcmp' is a literal of string")
+MESSAGE_STRING(R21_14_WARNING_N1, "The first argument of 'memcmp' is a null terminated string")
+MESSAGE_STRING(R21_14_WARNING_N2, "The second argument of 'memcmp' is a null terminated string")
+
+# sunwise-declaration-one-declaration-for-trans-file-items
+MESSAGE_STRING(R3_2_3_WARNING, "此对象在多个翻译单元中可用，又被重声明了多次")
+
+# clang-analyzer-sunwise.ModifiyParameter
+MESSAGE_STRING(R17_8_WARNING, "Modified a function parameter ")
+
+# sunwise-declaration-externarraysize
+MESSAGE_STRING(R8_11_WARNING, "Array '%0' declared with unknown size")
+
+# sunwise-sideeffects-initlist
+MESSAGE_STRING(R13_1_WARNING_S, "在初始化列表中使用了有副作用的运算 %0")
+MESSAGE_STRING(R13_1_WARNING_V, "在初始化列表中访问了有副作用的 volatile 变量 %0")
+MESSAGE_STRING(R13_1_NOTE, "volatile 变量声明位置")
+
+# sunwise-sideeffects-incordecop
+MESSAGE_STRING(R13_3_WARNING_F, "An expression containing a ++ of -- operator contains a call expression ('%0') with possible  potential side effects")
+MESSAGE_STRING(R13_3_WARNING_S, "An expression containing a ++ of -- operator contains a %0 operation with possible potential side effects")
+MESSAGE_STRING(R13_3_WARNING_V, "An expression containing a ++ of -- operator contains a volatile qualified object ('%0') with possible potential side effects")
+MESSAGE_STRING(R13_3_WARNING_A, "An expression containing a ++ of -- operator contains a assigning operation with possible potential side effects")
+
+# sunwise-sideeffects-assignres
+MESSAGE_STRING(R13_4_WARNING, "The result of assignment ('%0') is being used in an arithmetic operation or another assigning operation")
+
+# clang-analyzer-sunwise.PtrResFromArithOp
+MESSAGE_STRING(R18_1_WARNING, "The pointer resulting from arithmetic on a pointer operand points to an element of another array")
+
+# clang-analyzer-sunwise.SubBtwPtr
+MESSAGE_STRING(R18_2_WARNING, "Subtract between pointers pointed to different arrays")
+
+# clang-analyzer-sunwise.PtrAndRelationalOp
+MESSAGE_STRING(R18_3_WARNING_B, "Comparing pointers that address different objects in ")
+MESSAGE_STRING(R18_3_WARNING_A, "operation")
+
+# sunwise-array-flexiblemember
+MESSAGE_STRING(R18_7_WARNING, "Flexible array members(like a[]) shall not be declared")
+
+# sunwise-array-variablele
+MESSAGE_STRING(R18_8_WARNING, "The variable-length array type '%0' shall not be used")
+
+# sunwise-preprocess-iforelif
+MESSAGE_STRING(R20_8_WARNING_E, "The controlling expression does not evaluate to 0 or 1")
+MESSAGE_STRING(R20_8_WARNING_I, "The controlling expression does not evaluate to 0 or 1")
+
+# sunwise-library-ptrarg
+MESSAGE_STRING(R21_15_WARNING, "The first argument ponited to '%1' in '%0' is incompatible with the second argument pointed to '%2'")
+
+# sunwise-library-reserved-declare
+MESSAGE_STRING(R21_2_WARNING_U, "'%0' begins with an underscore")
+MESSAGE_STRING(R21_2_WARNING_R, "'%0' is predefined as a reserved identifier or reserved macro name")

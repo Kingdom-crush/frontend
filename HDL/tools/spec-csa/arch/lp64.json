@@ -1,0 +1,30 @@
+{
+  "typeList": {
+    "Half": { "size": 16, "keywords": ["half", "__fp16"] },
+    "Float": { "size": 32, "keywords": ["float"] },
+    "Double": { "size": 64, "keywords": ["double"] },
+    "LongDouble": { "size": 128, "keywords": ["long double"] },
+    "Float16": { "size": 16, "keywords": ["_Float16"] },
+    "Float128": { "size": 128, "keywords": ["__float128"] },
+    "Char_S": { "size": 8, "keywords": ["char"] },
+    "Char_U": { "size": 8, "keywords": ["char"] },
+    "WChar_S": { "size": 8, "keywords": ["wchar_t"] },
+    "WChar_U": { "size": 8, "keywords": ["wchar_t"] },
+    "SChar": { "size": 8, "keywords": ["signed char"] },
+    "UChar": { "size": 8, "keywords": ["unsigned char"] },
+    "Bool": { "size": 1, "keywords": ["bool", "_Bool"] },
+    "Short": { "size": 16, "keywords": ["short", "signed short"] },
+    "Int": { "size": 32, "keywords": ["int", "signed int"] },
+    "Long": { "size": 64, "keywords": ["long", "signed long"] },
+    "LongLong": { "size": 64, "keywords": ["long long", "signed long long"] },
+    "Int128": { "size": 128, "keywords": ["__int128_t"] },
+    "UShort": { "size": 16, "keywords": ["unsigned short", "unsigned short"] },
+    "UInt": { "size": 32, "keywords": ["unsigned int", "unsigned int"] },
+    "ULong": { "size": 64, "keywords": ["unsigned long", "unsigned long"] },
+    "ULongLong": { "size": 64, "keywords": ["unsigned long long", "unsigned long long"] },
+    "UInt128": { "size": 128, "keywords": ["__uint128_t"] },
+    "Char8": { "size": 8, "keywords": ["char8_t"] },
+    "Char16": { "size": 16, "keywords": ["char16_t"] },
+    "Char32": { "size": 32, "keywords": ["char32_t"] }
+  }
+}

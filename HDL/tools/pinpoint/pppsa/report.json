@@ -1,0 +1,55 @@
+{
+    "Target": "F:\\TestCode\\test000.bc",
+    "TotalBugs": 1,
+    "TotalFunc": 4,
+    "ExternalFuncRatio": "75.00",
+    "TotalInst": 5,
+    "AvgInstPerFunc": "5.00",
+    "MaxInstPerFunc": 5,
+    "FuncWithMostInst": "test",
+    "AvgCyclomaticComplexity": "1.00",
+    "MaxCyclomaticComplexity": 1,
+    "FuncWithMaxCyclomaticComplexity": "test",
+    "SrcFiles": [
+        "\\F:\\TestCode\\静态分析\\test\\test000.c"
+    ],
+    "BugTypes": [
+        {
+            "Name": "Incorrect Calculation of Buffer Size",
+            "Description": "CWE-131",
+            "TotalReports": 1,
+            "Reports": [
+                {
+                    "Dominated": false,
+                    "Score": 100,
+                    "Valid": true,
+                    "Bug Type": "Incorrect Calculation of Buffer Size",
+                    "Bug Type Description": "CWE-131",
+                    "Importance": "high",
+                    "Classification": "security",
+                    "DiagSteps": [
+                        {
+                            "File": 0,
+                            "Line": 2,
+                            "Tip": "<b>newArr</b>在这里定义,容器大小为<b>3</b>",
+                            "RawTip": "<b>newArr</b> is defined here with buffer size <b>3</b>",
+                            "Importance": 100,
+                            "FuncKey": "test",
+                            "FuncName": "test"
+                        },
+                        {
+                            "File": 0,
+                            "Line": 3,
+                            "Tip": "<b>0</b>被写入<b>newArr[3]</b>, 其中<b>3</b>可能超出容器大小 (<font color=red>Incorrect Calculation of Buffer Size</font>)",
+                            "RawTip": "Store <b>0</b> to <b>newArr[3]</b>, where the index <b>3</b> may be outside the buffer (<font color=red>Incorrect Calculation of Buffer Size</font>)",
+                            "Importance": 100,
+                            "FuncKey": "test",
+                            "FuncName": "test"
+                        }
+                    ],
+                    "ReportChecker": "PSA Incorrect Calculation of Buffer Size Checker"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ruleset description="" id="" name="Verilog_RMM规则集" type="1">
+   <categories>
+      <category id="C003" name="03 复位" parent=""/>
+      <category id="C018" name="编译错误" parent=""/>
+      <category id="C015" name="15 有限状态机" parent=""/>
+      <category id="C016" name="16 可测试设计" parent=""/>
+      <category id="C009" name="09 三态缓冲器" parent=""/>
+      <category id="C007" name="07 组合逻辑" parent=""/>
+      <category id="C002" name="02 基本设计单元" parent=""/>
+      <category id="C017" name="17 版面书写" parent=""/>
+      <category id="C011" name="11 IF语句描述" parent=""/>
+      <category id="C012" name="12 CASE语句描述" parent=""/>
+      <category id="C014" name="14 操作符" parent=""/>
+      <category id="C005" name="05 异步电路处理" parent=""/>
+      <category id="C008" name="08 时序逻辑" parent=""/>
+      <category id="C001" name="01 命名" parent=""/>
+      <category id="C010" name="10 进程" parent=""/>
+      <category id="C013" name="13 循环语句描述" parent=""/>
+      <category id="C004" name="04 时钟" parent=""/>
+      <category id="C006" name="06 语法约束" parent=""/>
+   </categories>
+   <conLevels>
+      <conLevel id="L001" name="严重错误"/>
+      <conLevel id="L002" name="一般性错误"/>
+   </conLevels>
+   <priorities>
+      <priority id="P002" name="中" value="3"/>
+      <priority id="P001" name="高" value="1"/>
+   </priorities>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9520" name="时序块的敏感列表中应该只能有一个时钟信号（不能多时钟）" priority="P001">
+      <description>G_551_1_H  时序块的敏感列表中应该只能有一个时钟信号（不能多时钟）</description>
+      <message>时序块的敏感列表中应该只能有一个时钟信号（不能多时钟）</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码:
+	module fd32(
+		input wire [31:0] d_1,
+		input wire ce,
+		input wire clk_1,
+		input wire clk_2,
+		input wire clr,
+		output reg [31:0] q_1 
+	);
+
+	always@(posedge clk_1 or posedge clk_2)        //每个always敏感信号列表只应对应一个时钟
+	  begin
+		if(clr)
+			begin
+			...
+			end	 
+		else 
+		...
+	  end 
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9514" name="不要使用initial构造来初始化信号" priority="P001">
+      <description>G_551_1_G 不要使用initial构造来初始化信号</description>
+      <message>不要使用initial构造来初始化信号</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码:
+	module fd32(
+		input wire [31:0] d_1,
+		input wire ce,
+		input wire clk,
+		output reg [31:0] q_1 
+	);
+
+	initial          //RTL级代码中不应使用initial结构，应采用复位的方式进行初始化
+	  begin
+	  ...
+	  end
+
+	always@(posedge clk)
+	  begin 
+	  ...
+	  end 
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L002" enable="true" id="CID9602" name="输出端口应该是寄存器" priority="P002">
+      <description>G_561_1输出端口应该是寄存器。</description>
+      <message>输出端口应该是寄存器。</message>
+      <language>Verilog</language>
+      <specification>
+	  案例代码:
+	  module fd31(
+		input   a_1,
+		input   b_1,
+		
+		output   q_1 
+	);
+	assign q_1=b_1 &amp;a_1//端口输出宜为寄存输出
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C003" conLevel="L002" enable="true" id="CID9509" name="异步复位时，高电平有效应用if （rst_asyn==1’b1）描述，低电平有效应用if（rst_asyn==1’b0）描述" priority="P002">
+      <description>G_551_1 异步复位时，高电平有效应用if （rst_asyn==1’b1）描述，低电平有效应用if（rst_asyn==1’b0）描述</description>
+      <message>异步复位时，高电平有效应用if （rst_asyn==1’b1）描述，低电平有效应用if（rst_asyn==1’b0）描述</message>
+      <language>Verilog</language>
+      <specification>  
+	案例代码:
+	...
+	always@(posedge clk or negedge clr)
+	  begin
+		if(clr)          //异步复位时，高电平有效应用“if （rst_asyn==1’b1）”描述
+		   begin
+				q_1 =1'b0;
+		   end	 
+		else 
+		...
+	  end 	
+	...
+    </specification>
+   </rule>
+   <rule category="C015" conLevel="L002" enable="true" id="CID9603" name="使用参数语句定义状态机的状态向量" priority="P002">
+      <description>G_559_2_A 使用参数语句定义状态机的状态向量。</description>
+      <message>使用参数语句定义状态机的状态向量。</message>
+      <language>Verilog</language>
+      <specification>
+	  案例代码：
+	  ...
+	reg [1:0]current_state;
+	reg [1:0] next_state;
+	//parameter STATE_0=2'b00,STATE_1=2'b01, STATE_2=2'b10;
+	
+	
+	always @( current_state)
+		begin
+			case(current_state)
+				2'b00: result &lt;= 1'b0;
+				2'b01: result  &lt;= 1'b1;
+				default: result  &lt;= 1'b0;
+			endcase
+		end
+	
+	always @(posedge clk or negedge rst)
+		begin
+			if(rst==1'b0)
+				current_state &lt;= 2'b00;
+			else
+				current_state  &lt;= next_state;
+		end
+	
+	always @ (current_state or condition)
+		begin
+			case(current_state)
+				2'b00: //违反
+					begin
+						if(condition)
+							next_state = 2'b01;
+						else
+							next_state =2'b00;
+					end
+				2'b01:
+					begin
+						if(condition)
+							next_state =2'b10;
+						else
+							next_state =2'b01;
+					end
+					
+				...
+				
+			endcase
+		end
+
+	  ...
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9518" name="在时序的always块中应使用非阻塞赋值" priority="P001">
+      <description>R_555_1_A 在时序的always块中应使用非阻塞赋值</description>
+      <message>在时序的always块中应使用非阻塞赋值</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码:
+	...
+	always@(posedge clk)
+	  begin
+		rega = datain; 			//综合前数据datain 在时钟上升沿赋值给regb，但是上述代码会综合成一个移位寄存器
+		regb = rega;            //综合后数据datain 不会在同样的上升沿赋值给regb
+	  end 
+	  ...
+    </specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9517" name="在组合的always块中应使用阻塞赋值" priority="P001">
+      <description>R_555_1_B 在组合的always块中应使用阻塞赋值</description>
+      <message>在组合的always块中应使用阻塞赋值</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码:
+	module fd31(
+		input wire  a_1,
+		input wire  b_1,
+		input wire  sl_1,
+		output reg  q_1 
+	);
+
+	always@(sl_1 or a_1 or b_1)
+		begin
+			if(!sl_1) 
+			     q_1 &lt;= a_1;         //always块中建立组合逻辑模型时，应采用阻塞赋值语句
+			else 
+			    q_1 = b_1;
+		end 
+	endmodule
+    </specification>
+   </rule>
+   
+   <rule category="C015" conLevel="L001" enable="true" id="CID9585" name="将默认状态赋值给状态机" priority="P001">
+      <description>G_559_4 将默认状态赋值给状态机。</description>
+      <message>将默认状态赋值给状态机 </message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+		
+	  ...
+		reg [1:0]current_state;
+		reg [1:0] next_state;
+		parameter STATE_0=2'b00,STATE_1=2'b01, STATE_2=2'b10,STATE_3=2'b11;
+		
+		...
+		
+		always @(posedge clk )//状态机在上电时应进入明确的初始状态
+			begin
+				
+				current_state  &lt;= next_state;
+				
+			end
+		
+		always @ (current_state or condition)
+			begin
+				case(current_state)
+					STATE_0:
+						begin
+							if(condition)
+								next_state = STATE_1;
+							else
+								next_state =STATE_0;
+						end
+					STATE_1:
+						begin
+							if(condition)
+								next_state =STATE_0;
+							else
+								next_state =STATE_1;
+						end
+						
+						...
+						
+				endcase  
+			end
+	
+	  ...
+    </specification>
+   </rule>
+    <rule category="C003" conLevel="L002" enable="true" id="CID9590" name="避免内部生成的复位/置位" priority="P002">
+      <description>G_546_1 避免内部生成的复位/置位</description>
+      <message>避免内部生成的复位/置位</message>
+      <language>Verilog</language>
+      <specification>	
+	  案例代码:
+	module fd32(
+		input wire  d_1,
+		input wire  d_2,
+		input wire clk,
+		output reg  q_1 
+	);
+     wire rst_n;
+	 
+	assign rst_n=d_1 &amp;d_2;
+
+	always@(posedge clk or negedge rst_n)
+	  begin
+		if(rst_n == 1'b0)       //不宜使用内部产生的信号作为复位信号
+		   begin
+		   ...
+		   end	 
+		else 
+		   ... 
+	  end  
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C007" conLevel="L002" enable="true" id="CID9541" name="避免在设计中生成锁存器" priority="P002">
+      <description>R_552_1 避免在设计中生成锁存器</description>
+      <message>避免在设计中生成锁存器</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	always@(state)
+	  begin
+		case(state)//违反
+			2’b00: z_out &lt;=1’b1;
+			2’b01: z_out &lt;=1’b0;
+			2’b10:
+				begin
+					z_out &lt;=1’b1;
+					s_out&lt;=1’b1;
+				end
+		endcase
+	  end 
+    </specification>
+   </rule>
+   <rule category="C001" conLevel="L001" enable="true" id="CID9502" name="VHDL或Verilog保留字不能用作标识符" priority="P001">
+      <description>R_529_1 VHDL或Verilog保留字不能用作标识符</description>
+      <message>VHDL或Verilog保留字不能用作标识符</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码：
+	module test (VCC, test_en, out);
+	  input VCC,test_en; 
+	  output out;  //示例中输入端口命名为“VCC”，输出端口命名为“out”，违反了基本命名规则
+	  ......
+	endmodule
+    </specification>
+   </rule>
+   <rule category="C004" conLevel="L002" enable="true" id="CID9510" name="设计中不允许使用门控时钟" priority="P002">
+      <description>G_543_1 设计中不允许使用门控时钟</description>
+      <message>设计中不允许使用门控时钟</message>
+      <language>Verilog</language>
+      <specification> 	
+	案例代码:	
+	module fd32(
+		input wire [31:0] d_1,
+		input wire ce,
+		input wire clk,
+		input wire ctrl,
+		input wire clr,
+		output reg [31:0] q_1 
+	);
+	wire clk_g;
+	assign clk_g = clk &amp; ctrl;          //FPGA设计不应使用门控时钟clk_g
+
+	always@(posedge clk_g)
+	  begin
+	  ......
+	  end 
+	endmodule	
+	</specification>
+   </rule>
+   <rule category="C006" conLevel="L001" enable="true" id="CID9525" name="实例化设计单元时使用名字关联" priority="P001">
+      <description>R_5211_1 实例化设计单元时使用名字关联</description>
+      <message>实例化设计单元时使用名字关联</message>
+      <language>Verilog</language>
+      <specification>
+	案例代码:
+	module top  (
+		input wire clk,
+		input wire rst,
+		input wire w_en,
+		input wire [31:0] d_1,
+		output reg [31:0] q_1 
+	);
+	fd32 inst_fd32(d_1,w_en,clk,rst,q_1);  //端口连接应通过名字描述连接而不应通过位置连接
+	endmodule
+    </specification>
+   </rule>
+   
+   
+</ruleset>

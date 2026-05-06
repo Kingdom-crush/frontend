@@ -1,0 +1,14 @@
+out/
+workspace/
+workspace-smoke/
+workspace-task-smoke/
+workspace-persist-smoke/
+workspace-static-smoke/
+workspace-report-smoke/
+workspace-validate-smoke/
+workspace-encoding-smoke/
+workspace-metadata-smoke/
+workspace-smoke-run/
+server.*.log
+last-port.txt
+sample-src/*.json

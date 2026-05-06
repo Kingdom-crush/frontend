@@ -1,0 +1,195 @@
+CHECKER_NAME(R2_1, "2.1 禁止出现不可达语句")
+MESSAGE_STRING(R2_1_WARNING, "语句不可达")
+
+CHECKER_NAME(R2_3, "2.3 不应声明未使用的类型")
+MESSAGE_STRING(R2_3_WARNING, "typedef定义的类型名称 %0 没有被使用过")
+
+CHECKER_NAME(R2_6, "2.6 禁止在函数中使用未使用的label")
+MESSAGE_STRING(R2_6_WARNING, "函数 %0 的标签 %1 没有被使用过")
+
+CHECKER_NAME(R5_1, "5.1 外部链接标识名必须具有良好区分")
+MESSAGE_STRING(R5_1_WARNING, "标识符 %0 和其它标识符不容易区分(前%1个字符)")
+MESSAGE_STRING(R5_1_NOTE_BUILTIN, "内建标识符 %0")
+MESSAGE_STRING(R5_1_NOTE_VAR, "标识符 %0")
+
+CHECKER_NAME(R5_3, "5.3 禁止声明与外层变量同名的变量")
+MESSAGE_STRING(R5_3_WARNING_GLOBAL, "标识符 %0 隐藏了同名的全局标识符")
+MESSAGE_STRING(R5_3_WARNING_PARENT, "标识符 %0 隐藏了父代码块中的同名标识符")
+MESSAGE_STRING(R5_3_WARNING_FUNCTION, "标识符 %0 隐藏了函数参数中的同名标识符")
+MESSAGE_STRING(R5_3_WARNING_FUNCDECL, "标识符 %0 隐藏了函数定义中的同名标识符")
+MESSAGE_STRING(R5_3_NOTE, "同名标识符 %0")
+
+CHECKER_NAME(R5_4, "5.4 宏名称必须具有良好区分")
+MESSAGE_STRING(R5_4_WARNING_NAME, "宏名 %0 的前%1个字符应该能和其它宏名容易区分")
+MESSAGE_STRING(R5_4_WARNING_PARA, "宏参数的前%0个字符应该有所区分(%1 和 %2)")
+MESSAGE_STRING(R5_4_NOTE, "宏名 %0")
+
+CHECKER_NAME(R5_6, "5.6 禁止定义相同的类型名")
+MESSAGE_STRING(R5_6_WARNING, "typedef定义的别名 %0 不能被重复使用")
+MESSAGE_STRING(R5_6_NOTE, "%0 的其它定义")
+
+CHECKER_NAME(R5_9, "5.9 不应重复使用相同的内部链接标识符名")
+MESSAGE_STRING(R5_9_WARNING, "具有内部链接的标识符名称 %0 被重复使用")
+MESSAGE_STRING(R5_9_NOTE, "标识符名称 %0 与内部链接的标识符同名")
+
+CHECKER_NAME(R7_1, "7.1 禁止使用八进制常量")
+MESSAGE_STRING(R7_1_WARNING, "不应使用以0开头的8进制数")
+
+CHECKER_NAME(R7_3, "7.3 禁止使用小写L结尾作为数字常量结尾")
+MESSAGE_STRING(R7_3_WARNING, "数字常量不能用小写L结尾，容易和数字1混淆")
+
+CHECKER_NAME(R8_3, "8.3 禁止对同一函数或对象定义不同的类型或名字")
+MESSAGE_STRING(R8_3_WARNING_VAR, "同名全局变量 %0 声明时要保持类型一致")
+MESSAGE_STRING(R8_3_NOTE, "%0 的其它声明")
+MESSAGE_STRING(R8_3_WARNING_FUNC, "同名全局函数 %0 存在不同的声明")
+MESSAGE_STRING(R8_3_STRING_AND, "，且")
+MESSAGE_STRING(R8_3_STRING_NUM, "参数个数不同")
+MESSAGE_STRING(R8_3_STRING_TYPE, "参数类型不同")
+MESSAGE_STRING(R8_3_STRING_NAME, "参数名称不同")
+MESSAGE_STRING(R8_3_STRING_RET, "返回值类型不同")
+
+CHECKER_NAME(R8_4, "8.4 禁止使用未声明的外部链接变量或者函数")
+MESSAGE_STRING(R8_4_WARNING, "%0 定义之前应该先声明")
+
+CHECKER_NAME(R8_5, "8.5 禁止多次声明外部连接的变量或函数")
+MESSAGE_STRING(R8_5_WARNING, "以extern声明的对象 %0 只能在一个文件中声明一次")
+MESSAGE_STRING(R8_5_NOTE_ORI, "引用位置")
+MESSAGE_STRING(R8_5_NOTE_CHK, "重复位置")
+
+CHECKER_NAME(R8_6, "8.6 禁止重复定义外部链接的标识")
+MESSAGE_STRING(R8_6_WARNING, "变量 %0 重复定义")
+MESSAGE_STRING(R8_6_NOTE_NOR, "%0 的其他定义")
+MESSAGE_STRING(R8_6_NOTE_BUILTIN, "%0 的其他定义(内建)")
+
+CHECKER_NAME(R8_12, "8.12 禁止声明重复的枚举值")
+MESSAGE_STRING(R8_12_WARNING, "多个枚举常量被定义成重复值: %0")
+
+CHECKER_NAME(R8_14, "8.14 禁止使用restrict关键字")
+MESSAGE_STRING(R8_14_WARNING, "禁止使用restrict关键字")
+
+CHECKER_NAME(R9_2, "9.2 聚合类型的初始化语句必须放在括号中")
+MESSAGE_STRING(R9_2_WARNING, "子数组 %0 的初始化器应该为下列三种形式之一：(1)放在大括号中{...},(2)为{0},(3)为定向初始化(例如:[3]=1.2)")
+MESSAGE_STRING(R9_2_NOTE, "初始化器容易引起混淆")
+
+CHECKER_NAME(R9_4, "9.4 禁止重复初始化同一对象元素")
+MESSAGE_STRING(R9_4_WARNING_MUL, "子元素不能被多次初始化")
+
+CHECKER_NAME(R12_5, "12.5 sizeof操作符不应该有一个声明为“数组类型”的函数参数作为操作数")
+MESSAGE_STRING(R12_5_WARNING, "sizeof 操作数 %0 不应为数组类型的函数参数")
+MESSAGE_STRING(R12_5_NOTE, "声明位置")
+
+CHECKER_NAME(R13_2, "13.2 表达式的值以及其副作用必须遵顼规则")
+MESSAGE_STRING(R13_2_WARNING_V, "不能访问超过两次volatile变量，访问变量 %0 和 %1")
+MESSAGE_STRING(R13_2_WARNING_S, "表达式的值与变量 %0 的多次修改顺序有关")
+MESSAGE_STRING(R13_2_WARNING_SL, "表达式的值与变量 %0 的修改和读取的顺序有关")
+
+
+CHECKER_NAME(R14_2, "14.2 for 结构必须具有良好的格式")
+MESSAGE_STRING(R14_2_WARNING_1, "for循环条件判断部分应该使用循环计数器进行判断")
+MESSAGE_STRING(R14_2_WARNING_2, "for循环的末尾循环体没有使用循环计数器")
+MESSAGE_STRING(R14_2_WARNING_3, "for循环的初始化部分应声明或者初始化循环计数器，允许为空")
+MESSAGE_STRING(R14_2_WARNING_4, "for循环条件判断部分不应该有任何副作用")
+MESSAGE_STRING(R14_2_WARNING_5, "for循环条件判断部分应该使用循环计数器进行判断")
+MESSAGE_STRING(R14_2_WARNING_6, "for循环条件判断部分不应该有任何副作用")
+MESSAGE_STRING(R14_2_WARNING_7, "for循环应该只使用一个循环计数器")
+MESSAGE_STRING(R14_2_WARNING_8, "for循环的条件判断部分没有使用循环变量进行判断")
+MESSAGE_STRING(R14_2_WARNING_9, "for循环的末尾循环体应该对循环计数器进行增减操作")
+MESSAGE_STRING(R14_2_WARNING_A, "for循环的末尾循环体没有使用循环计数器")
+MESSAGE_STRING(R14_2_WARNING_B, "for循环的末尾循环体应该对循环计数器进行增减操作")
+MESSAGE_STRING(R14_2_WARNING_C, "循环计数器在此语句(语句块)中被修改")
+MESSAGE_STRING(R14_2_WARNING_D, "循环计数器被修改")
+MESSAGE_STRING(R14_2_WARNING_E, "for循环的循环计数器不应该在循环体中进行修改")
+MESSAGE_STRING(R14_2_WARNING_F, "循环计数器被修改")
+MESSAGE_STRING(R14_2_WARNING_G, "for循环的初始化部分应该只做对循环计数器的初始化并且只有一个循环计数器")
+MESSAGE_STRING(R14_2_WARNING_H, "for循环的初始化部分应该只做对循环计数器的初始化并且只有一个循环计数器")
+
+CHECKER_NAME(R16_2, "16.2 switch标签只能在最紧密封闭的复合语句是 switch 语句体时使用")
+MESSAGE_STRING(R16_2_WARNING, "switch 标签只能用在当最紧密封闭的复合语句是 switch 语句体的时候")
+
+CHECKER_NAME(R17_3, "17.3 禁止隐式声明函数")
+MESSAGE_STRING(R17_3_WARNING, "函数 %0 缺少正确的声明(无声明，没有用extern声明，或者空参数没有显示标明void)")
+
+CHECKER_NAME(R20_4, "20.4 禁止使用关键名作为宏名")
+MESSAGE_STRING(R20_4_WARNING, "禁止将关键字 %0 作为宏使用")
+
+CHECKER_NAME(R20_7, "20.7 表达式作为宏参数时必须有括号")
+MESSAGE_STRING(R20_7_WARNING, "宏 %0 的参数表达式应在括号内")
+MESSAGE_STRING(R20_7_NOTE, "宏定义位置")
+MESSAGE_STRING(R20_7_WARNING_I, "宏参数表达式应在括号内")
+MESSAGE_STRING(R20_7_NOTE_I, "宏定义位置")
+
+CHECKER_NAME(R20_9, "20.9 禁止在#if和#elif的条件中使用未定义的宏")
+MESSAGE_STRING(R20_9_WARNING, "#if(#elif)中使用了没有定义的宏标识符")
+  
+CHECKER_NAME(R20_10, "20.10 避免在预处理语句中使用#或##")
+MESSAGE_STRING(R20_10_WARNING_W, "避免使用##预处理操作符")
+MESSAGE_STRING(R20_10_WARNING_O, "避免使用#预处理操作符")
+
+CHECKER_NAME(R20_11, "20.11 禁止将宏参数置于#和##之间")
+MESSAGE_STRING(R20_11_WARNING, "宏参数展开后，不能出现这种模式：...%0...")
+
+CHECKER_NAME(R20_12, "20.12 禁止将宏作为含有#和##操作的宏参数")
+MESSAGE_STRING(R20_12_WARNING, "宏参数 %0 为#和##的操作数，那么此参数本身不能是一个宏")
+MESSAGE_STRING(R20_12_WARNING_I, "宏参数为#和##的操作数，那么此参数本身不能是一个宏")
+
+CHECKER_NAME(R21_12, "21.12 避免使用fenv.h中的宏和函数")
+MESSAGE_STRING(R21_12_WARNING_H, "禁止使用<fenv.h>")
+MESSAGE_STRING(R21_12_WARNING_M, "禁止使用<fenv.h>中的宏 %0")
+
+CHECKER_NAME(R21_19, "21.19 禁止将 localeconv、setlocale、getenv、strerror函数的返回值赋值给指向非常量的指针")
+MESSAGE_STRING(R21_19_WARNING, "函数 %0 的返回值要存储在指向const类型的指针中")
+
+CHECKER_NAME(R21_20, "21.20 asctime、ctime、gmtime、localtime、localeconv、getenv、setlocale以及strerror的返回值必须正确使用")
+MESSAGE_STRING(R21_20_WARNING, "多次调用 %0 函数，%1 指向的值可能已被更改")
+
+CHECKER_NAME(R22_1, "22.1 必须显示释放标准库函数动态分配的资源")
+MESSAGE_STRING(R22_1_ALLOC, "分配资源")
+MESSAGE_STRING(R22_1_MSG_B, "应显示释放指针")
+MESSAGE_STRING(R22_1_MSG_M, "指向的内存区域")
+MESSAGE_STRING(R22_1_MSG_A, "应显示释放标准库函数动态分配的资源")
+
+CHECKER_NAME(R22_2, "22.2 禁止释放不是标准库申请的内存")
+MESSAGE_STRING(R22_2_WARNING_DF, "释放已释放内存")
+MESSAGE_STRING(R22_2_WARNING_FI, "释放非动态分配内存")
+
+CHECKER_NAME(R22_3, "22.3 禁止在不同流中同时对相同文件拥有读和写权限")
+MESSAGE_STRING(R22_3_MODE_R, "只读")
+MESSAGE_STRING(R22_3_MODE_W, "只写")
+MESSAGE_STRING(R22_3_MODE_RW, "读写")
+MESSAGE_STRING(R22_3_MODE_U, "未知")
+MESSAGE_STRING(R22_3_MSG1_B, "文件")
+MESSAGE_STRING(R22_3_MSG1_M, "已以")
+MESSAGE_STRING(R22_3_MSG1_A, "方式打开")
+MESSAGE_STRING(R22_3_MSG2_B, "文件")
+MESSAGE_STRING(R22_3_MSG2_A, "在不同流中分别进行读写操作")
+
+CHECKER_NAME(R22_4, "22.4 禁止对只读的流进行写操作")
+MESSAGE_STRING(R22_4_WARNING_O, "打开只读流")
+MESSAGE_STRING(R22_4_WARNING_W, "对只读流进行写操作")
+
+CHECKER_NAME(R22_5, "22.5 禁止解引用文件指针")
+MESSAGE_STRING(R22_5_WARNING_S, "不应使用操作符 * 解引用指向FILE类型的指针")
+MESSAGE_STRING(R22_5_WARNING_P, "不应使用操作符 -> 解引用指向FILE类型的指针")
+MESSAGE_STRING(R22_5_WARNING_F, "调用函数 %0，间接解引用指向FILE类型的指针")
+
+CHECKER_NAME(R22_6, "22.6 禁止使用已关闭的文件指针")
+MESSAGE_STRING(R22_6_WARNING_C, "关闭流")
+MESSAGE_STRING(R22_6_WARNING_U, "流关闭后再使用")
+
+CHECKER_NAME(R22_7, "22.7 宏 EOF 只能与返回值为 EOF 的标准库函数的非修改的返回值做比较")
+MESSAGE_STRING(R22_7_WARNING, "调用函数 %0 的返回值在与EOF比较前已经修改")
+MESSAGE_STRING(R22_7_NOTE, "调用可能返回EOF的函数 %0")
+
+CHECKER_NAME(R22_8, "22.8 禁止在errno设置为0前调用修改errno的函数")
+MESSAGE_STRING(R22_8_WARNING, "在调用修改errno的函数前不能确保errno为0")
+
+CHECKER_NAME(R22_9, "22.9 调用修改errno的函数后必须检查errno的值")
+MESSAGE_STRING(R22_9_CALL, "调用修改errno的函数")
+MESSAGE_STRING(R22_9_TEST, "在调用修改errno值的函数后没有测试errno的值")
+
+CHECKER_NAME(R22_10, "22.10 禁止在最后调用函数不修改errno时检查errno的值")
+MESSAGE_STRING(R22_10_CALL, "调用可能不修改errno的函数")
+MESSAGE_STRING(R22_10_TEST, "调用可能不修改errno的值后不应测试errno")
+
+CHECKER_NAME(D4_8, "4.8 如果指向结构体或联合体的指针在翻译单元中从未解引用，则对象的实现应该隐藏")
+MESSAGE_STRING(PointerToStruct_WARNING, "指向结构体或者联合体 %0 的指针在该翻译单元未解引用，该结构体的实现应该隐藏")
