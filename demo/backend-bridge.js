@@ -16,6 +16,7 @@
     setStatusValue,
     removeProject,
     saveProject,
+    openProjectReport,
     renderDetail,
     addRuleset
   };
@@ -200,7 +201,7 @@
       S.lastSelected = null;
     }
     if (mapped.length) {
-      renderAll(`已连接后端并加载 ${mapped.length} 个工程`);
+      renderAll(`已从后端刷新工程列表：${mapped.length} 个工程。当前工程：${CP().name}`);
     } else {
       renderAll("已连接后端，尚未创建后端工程");
     }
@@ -554,6 +555,14 @@
       status(`打开报告失败: ${error.message}`);
     }
   }
+
+  openProjectReport = async function openBackendProjectReport() {
+    const project = CP();
+    if (!BACKEND.connected || !isBackendProject(project)) {
+      return originals.openProjectReport();
+    }
+    return openGeneratedReport(true);
+  };
 
   async function generateHtmlReport(project, popup) {
     status("正在生成后端 HTML 报告...");
@@ -1074,6 +1083,7 @@
     status("正在从后端刷新工程列表...");
     try {
       await loadProjects(true);
+      status(`刷新完成：当前后端工程 ${CP().name}`);
     } catch (error) {
       status(`加载后端工程失败: ${error.message}`);
     }
@@ -1089,7 +1099,7 @@
     run.o = "待执行";
     run.pct = 0;
     run.log = ["[analyze] 已提交后端检查任务"];
-    switchPage("rules", "正在执行后端检查...");
+    switchPage("report", "正在执行后端检查...");
     renderRun(run);
     try {
       const created = await api(`/projects/${encodeURIComponent(project.backendId)}/analyze`, {
@@ -1239,7 +1249,7 @@
           analyst: data.project.analyst || "server",
           ruleset: ensureRuleset(data.project.ruleset)
         });
-        renderAll(`已保存后端工程 ${project.name}`);
+        renderAll(`已保存工程属性：${project.name}，分析人 ${project.analyst}，规则集 ${CR().name}`);
       } catch (error) {
         status(`保存后端工程失败: ${error.message}`);
       }
@@ -1331,35 +1341,29 @@
   }
 
   function installBackendEventInterceptors() {
-    interceptClick("menuCreateProjectBtn", () => addProject());
     interceptClick("toolCreateProjectBtn", () => addProject());
-    interceptClick("menuLoadProjectBtn", () => loadNextProject());
     interceptClick("toolLoadProjectBtn", () => loadNextProject());
-    interceptClick("menuSaveProjectBtn", () => saveProject());
     interceptClick("toolSaveProjectBtn", () => saveProject());
     interceptClick("saveProjectBtn", () => saveProject());
     interceptClick("openCircuitBtn", () => openModal());
-    interceptClick("reportSelectedProjectBtn", () => openGeneratedReport());
-    interceptClick("toolReportBtn", () => openGeneratedReport());
-    interceptClick("menuReportBtn", () => openGeneratedReport());
+    interceptClick("toolRunCheckBtn", () => guideProjectAction("run"));
+    interceptClick("runCheckBtn", () => guideProjectAction("run"));
+    interceptClick("toolReportBtn", () => guideProjectAction("report"));
     interceptClick("openGeneratedReportBtn", () => openGeneratedReport());
-    interceptClick("menuExportHtmlBtn", () => exportReport("HTML"));
-    interceptClick("menuExportDocBtn", () => exportReport("Word"));
-    interceptClick("menuExportPdfBtn", () => exportReport("PDF"));
-    interceptClick("menuExportExcelBtn", () => exportReport("Excel"));
-    interceptClick("menuExportWpsBtn", () => exportReport("WPS"));
     interceptClick("exportReportBtn", () => exportReport());
     interceptClick("createRulesetBtn", () => addRuleset());
     interceptClick("saveRulesetBtn", () => saveBackendRuleset());
 
-    E.sourcePreviewBody?.addEventListener("click", event => {
+    const handleSourceToggle = event => {
       if (!BACKEND.connected || !isBackendProject(CP())) return;
       const button = event.target.closest("[data-toggle-source]");
       if (!button) return;
       event.preventDefault();
       event.stopImmediatePropagation();
       toggleSourceSelection(button.dataset.toggleSource, button.dataset.include === "true");
-    }, true);
+    };
+    E.sourcePreviewBody?.addEventListener("click", handleSourceToggle, true);
+    E.resultFilterList?.addEventListener("click", handleSourceToggle, true);
 
     $("searchBtn")?.addEventListener("click", event => {
       if (!BACKEND.connected || !isBackendProject(CP())) return;
@@ -1506,6 +1510,7 @@
       BACKEND.connected = true;
       syncReportFormatAvailability();
       setBackendStatus("online", `后端: 已连接 ${API_BASE.replace(/^https?:\/\//, "")}`);
+      status("后端已连接，正在加载规则集和工程数据...");
       await loadRulesets();
       await loadReportTemplates();
       await loadProjects(force);
@@ -1527,19 +1532,33 @@
       "http://localhost:18080/api",
       ...Array.from({ length: 19 }, (_, index) => `http://localhost:${18081 + index}/api`)
     ].filter(Boolean);
-    const healthy = [];
-    for (const base of [...new Set(candidates)]) {
-      try {
-        const response = await fetch(`${base}/health`);
-        if (!response.ok) continue;
-        healthy.push({ base, health: await response.json() });
-      } catch {
-        // Try the next candidate.
-      }
+    const unique = [...new Set(candidates)];
+    const preferred = unique.slice(0, 3);
+    const checked = new Set();
+    for (const base of preferred) {
+      checked.add(base);
+      const healthy = await fetchHealth(base, 900);
+      if (healthy) return healthy;
     }
+    const rest = unique.filter(base => !checked.has(base));
+    const healthy = (await Promise.all(rest.map(base => fetchHealth(base, 900)))).filter(Boolean);
     if (!healthy.length) throw new Error("未发现可用后端");
     healthy.sort((a, b) => Number(b.health.apiVersion || 1) - Number(a.health.apiVersion || 1));
     return healthy[0];
+  }
+
+  async function fetchHealth(base, timeoutMs) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetch(`${base}/health`, { signal: controller.signal, cache: "no-store" });
+      if (!response.ok) return null;
+      return { base, health: await response.json() };
+    } catch {
+      return null;
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
   window.HDL_BACKEND = { initializeBackend, get apiBase() { return API_BASE; } };

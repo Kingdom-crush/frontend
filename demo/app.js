@@ -134,7 +134,7 @@ const E={
   activeProjectSelect:$("activeProjectSelect"),activeRulesetSelect:$("activeRulesetSelect"),templateSelect:$("templateSelect"),reportFormatSelect:$("reportFormatSelect"),metricCompile:document.querySelector("#metricCompile strong"),metricViolation:document.querySelector("#metricViolation strong"),metricAuditState:$("metricAuditState"),
   metricLoc:document.querySelector("#metricLoc strong"),metricSourceCount:document.querySelector("#metricSourceCount strong"),infoProjectName:$("infoProjectName"),infoAnalyst:$("infoAnalyst"),infoRuleset:$("infoRuleset"),infoRuleCount:$("infoRuleCount"),infoRuntime:$("infoRuntime"),
   infoStartTime:$("infoStartTime"),infoEndTime:$("infoEndTime"),infoAudited:$("infoAudited"),infoEffectiveLoc:$("infoEffectiveLoc"),infoCommentRate:$("infoCommentRate"),infoRulesetTotal:$("infoRulesetTotal"),fileChart:$("fileChart"),ruleChart:$("ruleChart"),hierarchyView:$("hierarchyView"),ipTableBody:$("ipTableBody"),integrationBox:$("integrationBox"),projectNameInput:$("projectNameInput"),analystInput:$("analystInput"),projectPathInput:$("projectPathInput"),
-  importModeSelect:$("importModeSelect"),currentRulesetInput:$("currentRulesetInput"),savedProjects:$("savedProjects"),sourcePreviewBody:$("sourcePreviewBody"),constraintTableBody:$("constraintTableBody"),rulesetList:$("rulesetList"),currentRulesetTag:$("currentRulesetTag"),ruleSearchInput:$("ruleSearchInput"),
+  importModeSelect:$("importModeSelect"),currentRulesetInput:$("currentRulesetInput"),savedProjects:$("savedProjects"),sourcePreviewBody:$("sourcePreviewBody"),resultFilterList:$("resultFilterList"),constraintTableBody:$("constraintTableBody"),rulesetList:$("rulesetList"),currentRulesetTag:$("currentRulesetTag"),ruleSearchInput:$("ruleSearchInput"),
   baseRulesetSelect:$("baseRulesetSelect"),newRulesetName:$("newRulesetName"),ruleTableBody:$("ruleTableBody"),progressProject:$("progressProject"),progressRules:$("progressRules"),progressRun:$("progressRun"),progressResult:$("progressResult"),progressBar:$("progressBar"),progressText:$("progressText"),
   progressLog:$("progressLog"),auditedSummary:$("auditedSummary"),resultSearchInput:$("resultSearchInput"),resultViewSelect:$("resultViewSelect"),detailTableBody:$("detailTableBody"),helpTip:$("helpTip"),helpRuleId:$("helpRuleId"),helpMessage:$("helpMessage"),helpExample:$("helpExample"),sourcePath:$("sourcePath"),sourceMeta:$("sourceMeta"),
   sourceViewer:$("sourceViewer"),statusText:$("statusText"),statusProject:$("statusProject"),statusRuleset:$("statusRuleset"),circuitModal:$("circuitModal"),detailContextMenu:$("detailContextMenu")
@@ -372,13 +372,28 @@ function renderProject(){
   E.importModeSelect.value=project.mode;
   E.currentRulesetInput.value=CR().name;
   E.savedProjects.innerHTML=PROJECTS.map(item=>`<div class="saved-project-item"><strong>${item.name}</strong><span>${item.path}</span><button data-open-project="${item.id}" type="button">切换到该工程</button>${PROJECTS.length>1?` <button class="delete-project" data-delete-project="${item.id}" type="button">删除</button>`:""}</div>`).join("");
-  E.sourcePreviewBody.innerHTML=project.sources.map(item=>`<tr><td class="path-cell"><button class="table-link" data-open-file="${item[0]}" type="button" title="${item[0]}">${item[0]}</button></td><td>${item[1]}</td><td>${item[2]}</td><td>${item[3]}</td><td>${item[4]||""}</td></tr>`).join("");
+  E.sourcePreviewBody.innerHTML=project.sources.map(item=>{
+    const excluded=String(item[3]||"").includes("排除");
+    return `<div class="source-config-row ${excluded?"":"active"}"><button class="table-link" data-open-file="${item[0]}" type="button" title="${fullPath(project,item[0])}">${fullPath(project,item[0])}</button><span class="source-state">${item[3]}</span><span class="source-action">${item[4]||sourceFallbackAction(item[0],excluded)}</span></div>`;
+  }).join("");
+  const excluded=project.sources.filter(item=>String(item[3]||"").includes("排除"));
+  E.resultFilterList.innerHTML=excluded.length
+    ? excluded.map(item=>`<div class="filter-config-row"><span class="path-cell" title="${fullPath(project,item[0])}">${fullPath(project,item[0])}</span><span class="source-state">已排除</span><span class="source-action">${sourceIncludeAction(item[0])}</span></div>`).join("")
+    : `<div class="filter-config-empty">当前没有排除项。需要过滤时，在左侧源文件列表中点击“排除”。</div>`;
   E.constraintTableBody.innerHTML=constraintRows(project).map(item=>`<tr><td>${item[0]}</td><td>${item[1]}</td><td>${item[2]}</td><td>${item[3]}</td></tr>`).join("");
   E.integrationBox.textContent=[
     `hdl-checker.bat create -s ${project.path}\\src -p ${project.path} -l v_vhd`,
     `hdl-checker.bat analyze -r ${CR().name.replace(/规则集$/,"")} -p ${project.path}`,
     `hdl-checker.bat report -p ${project.path} -f html -o ${project.path}\\report`
   ].join("\n");
+}
+
+function sourceFallbackAction(path,excluded){
+  return `<button data-local-toggle-source="${path}" data-include="${excluded?"true":"false"}" type="button">${excluded?"纳入":"排除"}</button>`;
+}
+
+function sourceIncludeAction(path){
+  return `<button data-toggle-source="${path}" data-local-toggle-source="${path}" data-include="true" type="button">纳入</button>`;
 }
 
 function renderRun(run){
@@ -453,6 +468,10 @@ function renderAll(message){
   status(message);
 }
 
+function setHelpCollapsed(collapsed){
+  document.querySelector(".desktop-shell").classList.toggle("help-collapsed",collapsed);
+}
+
 function switchProject(id,message){
   S.pid=id;
   S.openFiles=[];
@@ -481,6 +500,7 @@ function setRuleset(id){
 
 function setViolation(id,message){
   S.vid=id;
+  setHelpCollapsed(false);
   renderBrowser();
   renderDetail();
   renderHelp();
@@ -580,9 +600,40 @@ function removeProject(id){
 function exportReport(kind){S.format=kind||E.reportFormatSelect.value;status(`已准备导出 ${S.format} 报告，模板: ${S.tpl}`);}
 function quickStartHint(){status("快速流程: 新建工程 -> 选择服务器源码目录 -> 选择规则集并运行检查 -> 审查结果 -> 生成 HTML 报告");}
 
+function closeProjectActionModal(){
+  $("projectActionModal")?.classList.add("hidden");
+}
+
+function executeProjectAction(action,projectId){
+  if(projectId&&projectId!==S.pid)switchProject(projectId,`已选择工程 ${PROJECTS.find(item=>item.id===projectId)?.name||projectId}`);
+  closeProjectActionModal();
+  if(action==="run")runCheck();
+  if(action==="report")openProjectReport();
+}
+
+function guideProjectAction(action){
+  if(PROJECTS.length<=1)return executeProjectAction(action,S.pid);
+  const modal=$("projectActionModal");
+  const title=$("projectActionTitle");
+  const hint=$("projectActionHint");
+  const list=$("projectActionList");
+  if(!modal||!list)return executeProjectAction(action,S.pid);
+  const isRun=action==="run";
+  title.textContent=isRun?"选择要运行检查的工程":"选择要查看报告的工程";
+  hint.textContent=isRun?"当前存在多个工程，请先选择本次要执行代码规则检查的工程。":"当前存在多个工程，请先选择要查看或生成报告的工程。";
+  list.innerHTML=PROJECTS.map(project=>`<div class="project-action-item"><div><strong>${project.name}</strong><span>${project.path}</span></div><button data-project-action="${action}" data-project-id="${project.id}" type="button">${isRun?"运行检查":"查看报告"}</button></div>`).join("");
+  modal.classList.remove("hidden");
+}
+
+function openProjectReport(){
+  openReport(`已打开工程 ${CP().name} 的分析报告`);
+}
+
 function runCheck(){
   const run=projectRun();
   const steps=[[16,"执行中","待执行","[16%] 正在生成分析配置与待测文件列表..."],[42,"执行中","待执行","[42%] 正在调用静态分析引擎..."],[78,"执行中","执行中","[78%] 正在归并 XML 结果并更新审计状态..."],[100,"完成","完成",`[100%] 检查完成，共发现 ${CP().stats.vc} 条结果。`]];
+  S.page="report";
+  renderTabs();
   run.x="执行中";run.o="待执行";run.pct=0;run.log=["[start] 已发起新的检查任务。"];renderRun(run);status("正在执行检查...");
   steps.forEach((step,index)=>setTimeout(()=>{run.pct=step[0];run.x=step[1];run.o=step[2];run.log.push(step[3]);renderRun(run);if(step[0]===100){CP().stats.end="2026-04-29 10:28:41.102";renderReport();openReport("执行检查完成，已自动打开分析报告");}},index*540));
 }
@@ -689,14 +740,20 @@ E.detailContextMenu.addEventListener("click",event=>{
 
 document.addEventListener("click",event=>{
   if(!event.target.closest(".context-menu"))closeContextMenu();
-  if(!event.target.closest(".menu-item")){document.querySelectorAll(".menu-popup").forEach(item=>item.classList.remove("open"));document.querySelectorAll(".menu-trigger").forEach(item=>item.classList.remove("active"));}
 });
-document.addEventListener("keydown",event=>{if(event.key==="Escape"){closeContextMenu();if(!E.circuitModal.classList.contains("hidden"))closeModal();}});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"){closeContextMenu();closeProjectActionModal();if(!E.circuitModal.classList.contains("hidden"))closeModal();}});
 
 E.activeProjectSelect.addEventListener("change",event=>switchProject(event.target.value,`已选择工程 ${event.target.options[event.target.selectedIndex].text}`));
 E.activeRulesetSelect.addEventListener("change",event=>setRuleset(event.target.value));
-$("runSelectedProjectBtn").addEventListener("click",()=>runCheck());
-$("reportSelectedProjectBtn").addEventListener("click",()=>openReport(`已打开工程 ${CP().name} 的分析报告`));
+$("projectActionCancelBtn")?.addEventListener("click",closeProjectActionModal);
+$("projectActionCancelTopBtn")?.addEventListener("click",closeProjectActionModal);
+$("projectActionModal")?.addEventListener("click",event=>{if(event.target===$("projectActionModal"))closeProjectActionModal();});
+$("projectActionList")?.addEventListener("click",event=>{
+  const button=event.target.closest("[data-project-action]");
+  if(button)executeProjectAction(button.dataset.projectAction,button.dataset.projectId);
+});
+$("collapseHelpBtn")?.addEventListener("click",()=>setHelpCollapsed(true));
+$("expandHelpBtn")?.addEventListener("click",()=>setHelpCollapsed(false));
 E.savedProjects.addEventListener("click",event=>{
   const deleteButton=event.target.closest("[data-delete-project]");
   if(deleteButton)return removeProject(deleteButton.dataset.deleteProject);
@@ -704,6 +761,18 @@ E.savedProjects.addEventListener("click",event=>{
   if(button)switchProject(button.dataset.openProject,`已切换到工程 ${button.dataset.openProject}`);
 });
 E.sourcePreviewBody.addEventListener("click",event=>{const button=event.target.closest("[data-open-file]");if(button)openFile(button.dataset.openFile);});
+document.addEventListener("click",event=>{
+  const button=event.target.closest("[data-local-toggle-source]");
+  if(!button)return;
+  const project=CP();
+  const row=project.sources.find(item=>item[0]===button.dataset.localToggleSource);
+  if(!row)return;
+  const include=button.dataset.include==="true";
+  row[3]=include?"已纳入":"已排除";
+  row[4]=sourceFallbackAction(row[0],!include);
+  renderProject();
+  status(`${include?"已纳入":"已排除"}源文件 ${row[0]}`);
+});
 E.rulesetList.addEventListener("click",event=>{const item=event.target.closest("[data-ruleset]");if(item){setRuleset(item.dataset.ruleset);switchPage("rules","已切换规则集");}});
 E.ruleSearchInput.addEventListener("input",event=>{S.qsearch=event.target.value;renderRules();status("已按关键字筛选规则");});
 E.ruleTableBody.addEventListener("change",event=>updateRule(event.target));
@@ -715,7 +784,7 @@ E.reportFormatSelect.addEventListener("change",event=>{S.format=event.target.val
 $("saveProjectBtn").addEventListener("click",saveProject);
 $("createRulesetBtn").addEventListener("click",addRuleset);
 $("saveRulesetBtn").addEventListener("click",()=>status(CR().type==="custom"?`已保存自定义规则集 ${CR().name}`:`当前是原厂规则集 ${CR().name}，演示中不直接修改`));
-$("runCheckBtn").addEventListener("click",runCheck);
+$("runCheckBtn").addEventListener("click",()=>guideProjectAction("run"));
 $("searchBtn").addEventListener("click",()=>{S.rsearch=E.resultSearchInput.value;renderDetail();status("已执行结果搜索");});
 $("clearSearchBtn").addEventListener("click",()=>{S.rsearch="";E.resultSearchInput.value="";renderDetail();status("已清除结果搜索条件");});
 $("markViolationBtn").addEventListener("click",()=>setStatus("违反",false));
@@ -729,39 +798,15 @@ $("closeCircuitModalBtn").addEventListener("click",closeModal);
 E.circuitModal.addEventListener("click",event=>{if(event.target===E.circuitModal)closeModal();});
 $("exportReportBtn").addEventListener("click",()=>exportReport());
 
-document.querySelectorAll(".menu-trigger").forEach(button=>button.addEventListener("click",event=>{
-  event.stopPropagation();
-  const popup=button.nextElementSibling;
-  const opened=popup.classList.contains("open");
-  document.querySelectorAll(".menu-popup").forEach(item=>item.classList.remove("open"));
-  document.querySelectorAll(".menu-trigger").forEach(item=>item.classList.remove("active"));
-  if(!opened){popup.classList.add("open");button.classList.add("active");}
-}));
-
-$("menuCreateProjectBtn").addEventListener("click",addProject);
-$("menuLoadProjectBtn").addEventListener("click",loadNextProject);
-$("menuSaveProjectBtn").addEventListener("click",saveProject);
-$("menuProjectPageBtn").addEventListener("click",()=>openProjectPage());
-$("menuSourceListBtn").addEventListener("click",()=>openSourceList());
-$("menuRulesetBtn").addEventListener("click",()=>openRuleset());
-$("menuRunCheckBtn").addEventListener("click",runCheck);
-$("menuResultViewBtn").addEventListener("click",()=>openReport("已打开结果浏览视图"));
-$("menuReportBtn").addEventListener("click",()=>openReport("已打开分析报告"));
-$("menuExportHtmlBtn").addEventListener("click",()=>exportReport("HTML"));
-$("menuExportDocBtn").addEventListener("click",()=>exportReport("Word"));
-$("menuExportPdfBtn").addEventListener("click",()=>exportReport("PDF"));
-$("menuExportExcelBtn").addEventListener("click",()=>exportReport("Excel"));
-$("menuExportWpsBtn").addEventListener("click",()=>exportReport("WPS"));
-$("menuHelpDocBtn").addEventListener("click",()=>status("帮助说明：在结果浏览视图中单击违规项，在详细结果视图审计，并可在分析报告中导出报告"));
-$("menuQuickStartBtn").addEventListener("click",quickStartHint);
 $("toolCreateProjectBtn").addEventListener("click",addProject);
 $("toolLoadProjectBtn").addEventListener("click",loadNextProject);
 $("toolSaveProjectBtn").addEventListener("click",saveProject);
 $("toolSourceListBtn").addEventListener("click",()=>openSourceList());
-$("toolRunCheckBtn").addEventListener("click",runCheck);
-$("toolReportBtn").addEventListener("click",()=>openReport("已打开分析报告"));
+$("toolRunCheckBtn").addEventListener("click",()=>guideProjectAction("run"));
+$("toolReportBtn").addEventListener("click",()=>guideProjectAction("report"));
 
 initSplitters();
 ensureTreeState();
 ensureResultState();
+setHelpCollapsed(true);
 renderAll("已补齐树结构、布局分隔和源码标签页交互");

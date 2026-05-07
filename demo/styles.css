@@ -60,126 +60,26 @@ button {
   overflow: hidden;
 }
 
-.window-bar,
-.menu-bar,
 .tool-bar,
 .status-bar {
   flex: 0 0 auto;
 }
 
-.window-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 34px;
-  padding: 0 10px;
-  background: #ffffff;
-  border-bottom: 1px solid #d9e2f0;
-}
-
-.window-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-}
-
-.window-mark {
-  width: 16px;
-  height: 16px;
-  background: linear-gradient(180deg, #2476d0, #8a4fe9);
-  border: 1px solid #5a6ea2;
-}
-
-.window-buttons {
-  display: flex;
-  gap: 2px;
-}
-
-.window-buttons button {
-  width: 40px;
-  height: 28px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: #55667f;
-}
-
-.window-buttons button:hover {
-  border-color: #c9d6e8;
-  background: #eef4fb;
-}
-
-.menu-bar {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  min-height: 30px;
-  padding: 0 8px;
-  background: #ffffff;
-  position: relative;
-  z-index: 20;
-}
-
-.menu-bar button,
 .tool-bar button,
 .workspace-tabs button,
 .project-tabs button,
-.help-tabs button,
-.help-icons button {
+.help-title button {
   border: 1px solid transparent;
   background: transparent;
   color: var(--text);
 }
 
-.menu-bar > .menu-item > button {
-  padding: 4px 8px;
-}
-
-.menu-bar > .menu-item > button:hover,
 .workspace-tabs button:hover,
 .project-tabs button:hover,
-.help-tabs button:hover,
 .panel-actions button:hover,
-.help-icons button:hover {
+.help-title button:hover {
   border-color: #a9bad5;
   background: #edf4fd;
-}
-
-.menu-item {
-  position: relative;
-}
-
-.menu-trigger.active {
-  border-color: #a9bad5;
-  background: #edf4fd;
-}
-
-.menu-popup {
-  position: absolute;
-  top: calc(100% + 1px);
-  left: 0;
-  min-width: 168px;
-  padding: 4px 0;
-  border: 1px solid #9db2cf;
-  background: #ffffff;
-  box-shadow: 0 8px 18px rgba(45, 69, 101, 0.18);
-  display: none;
-}
-
-.menu-popup.open {
-  display: grid;
-}
-
-.menu-popup button {
-  border: 0;
-  padding: 6px 10px;
-  text-align: left;
-  background: transparent;
-  font-size: 12px;
-}
-
-.menu-popup button:hover {
-  background: #eaf2fd;
 }
 
 .tool-bar {
@@ -263,8 +163,7 @@ button {
   min-height: 22px;
 }
 
-.panel-actions button,
-.help-icons button {
+.panel-actions button {
   width: 22px;
   height: 22px;
   padding: 0;
@@ -414,6 +313,7 @@ button {
 }
 
 .workbench {
+  position: relative;
   flex: 1;
   display: grid;
   grid-template-columns: var(--left-pane-width) var(--splitter-size) minmax(760px, 1fr) var(--splitter-size) var(--right-pane-width);
@@ -422,6 +322,15 @@ button {
   background: #dbe3f1;
   min-height: 0;
   overflow: hidden;
+}
+
+.desktop-shell.help-collapsed .workbench {
+  grid-template-columns: var(--left-pane-width) var(--splitter-size) minmax(760px, 1fr) 0 0;
+}
+
+.desktop-shell.help-collapsed #rightSplitter,
+.desktop-shell.help-collapsed .right-column {
+  display: none;
 }
 
 .left-column,
@@ -511,11 +420,11 @@ button {
 
 .tree-node-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 5px;
   min-width: 0;
   padding: 2px 4px;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .tree-node-row:hover {
@@ -570,9 +479,8 @@ button {
 .tree-file-button,
 .result-link {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .tree-label {
@@ -607,6 +515,7 @@ button {
 
 .result-meta {
   margin-left: auto;
+  flex: 0 0 auto;
   color: #8a5e2c;
   font-size: 11px;
 }
@@ -1116,6 +1025,98 @@ button {
   grid-column: 1 / -1;
 }
 
+.analysis-config-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.analysis-config-panel {
+  min-width: 0;
+}
+
+.analysis-config-title {
+  padding: 4px 6px;
+  border: 1px solid #d5dfeb;
+  background: linear-gradient(180deg, #f8fbff 0%, #eef5fc 100%);
+  color: #1f67b5;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.analysis-config-panel p {
+  margin: 6px 0;
+  color: #445b78;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.source-config-list,
+.filter-config-list {
+  height: 165px;
+  overflow: auto;
+  border: 1px solid #aebed5;
+  background: #ffffff;
+}
+
+.source-config-row,
+.filter-config-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 70px 76px;
+  gap: 6px;
+  align-items: center;
+  min-height: 24px;
+  padding: 2px 5px;
+  font-size: 12px;
+}
+
+.source-config-row:nth-child(even),
+.filter-config-row:nth-child(even) {
+  background: #f6f9fd;
+}
+
+.source-config-row.active {
+  background: #cfe3ff;
+}
+
+.source-config-row .table-link {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.source-config-row .source-state,
+.filter-config-row .source-state {
+  color: #3d5978;
+  white-space: nowrap;
+}
+
+.source-config-row button:not(.table-link),
+.filter-config-row button {
+  border: 1px solid #9db2cf;
+  background: var(--button-bg);
+  padding: 2px 6px;
+}
+
+.source-action {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.source-action button {
+  min-width: 46px;
+}
+
+.filter-config-empty {
+  padding: 10px;
+  color: #687f99;
+  font-size: 12px;
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1281,8 +1282,18 @@ button {
 }
 
 .progress-panel {
-  margin-top: 12px;
-  border-top: 1px solid #d4dfed;
+  padding: 10px;
+}
+
+.report-progress-box {
+  margin-top: 0;
+}
+
+.report-progress-panel {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(90px, 1fr));
+  gap: 8px 12px;
+  border-top: 0;
   padding-top: 10px;
 }
 
@@ -1314,6 +1325,7 @@ button {
   align-items: center;
   margin-top: 10px;
   font-size: 12px;
+  grid-column: 1 / -1;
 }
 
 .progress-track {
@@ -1330,7 +1342,7 @@ button {
 }
 
 .progress-log {
-  height: 130px;
+  height: 82px;
   overflow: auto;
   margin-top: 10px;
   border: 1px solid #d4dfed;
@@ -1339,6 +1351,7 @@ button {
   font-size: 12px;
   line-height: 1.55;
   white-space: pre-wrap;
+  grid-column: 1 / -1;
 }
 
 .current-ruleset-tag {
@@ -1533,34 +1546,45 @@ button {
 
 .help-panel {
   display: grid;
-  grid-template-rows: 58px minmax(0, 1fr);
+  grid-template-rows: 30px minmax(0, 1fr);
 }
 
-.help-toolbar {
+.help-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   border-bottom: 1px solid #d6dfeb;
   background: linear-gradient(180deg, #f9fbff 0%, #eef4fb 100%);
-  padding: 4px 6px;
+  padding: 4px 8px;
+  color: #2f517f;
+  font-size: 13px;
 }
 
-.help-icons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 4px;
-  margin-bottom: 4px;
+.help-title button {
+  border: 1px solid #a3b3ca;
+  background: var(--button-bg);
+  padding: 2px 8px;
+  font-size: 12px;
 }
 
-.help-tabs {
-  display: flex;
-  gap: 6px;
+.help-restore-button {
+  position: absolute;
+  top: 44px;
+  right: 8px;
+  z-index: 30;
+  display: none;
+  writing-mode: vertical-rl;
+  letter-spacing: 2px;
+  border: 1px solid #9db2cf;
+  background: var(--button-bg);
+  color: #2f517f;
+  padding: 8px 4px;
+  box-shadow: var(--shadow);
 }
 
-.help-tabs button {
-  padding: 2px 4px;
-  color: #3d79c9;
-}
-
-.help-tabs button.active {
-  font-weight: 700;
+.desktop-shell.help-collapsed .help-restore-button {
+  display: block;
 }
 
 .help-content {
@@ -1672,6 +1696,10 @@ button {
   width: min(980px, 94vw);
 }
 
+.project-action-window {
+  width: min(560px, 92vw);
+}
+
 .modal-title {
   display: flex;
   align-items: center;
@@ -1772,6 +1800,53 @@ button {
 
 .backend-form-error.hidden {
   display: none;
+}
+
+.project-action-body {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+}
+
+.project-action-body p {
+  margin: 0;
+  color: #405a78;
+  font-size: 12px;
+}
+
+.project-action-list {
+  display: grid;
+  gap: 8px;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.project-action-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid #cbd9ea;
+  background: #f9fbff;
+  font-size: 12px;
+}
+
+.project-action-item strong,
+.project-action-item span {
+  display: block;
+}
+
+.project-action-item span {
+  margin-top: 2px;
+  color: #647993;
+  word-break: break-all;
+}
+
+.project-action-item button {
+  border: 1px solid #8ea9cc;
+  background: var(--button-bg);
+  padding: 4px 12px;
 }
 
 .server-browser {

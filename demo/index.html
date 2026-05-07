@@ -8,62 +8,6 @@
 </head>
 <body>
   <div class="desktop-shell">
-    <header class="window-bar">
-      <div class="window-title">
-        <span class="window-mark"></span>
-        <span>结果审查 - test/out/test.xml - SunwiseHDLChecker</span>
-      </div>
-      <div class="window-buttons">
-        <button type="button">_</button>
-        <button type="button">□</button>
-        <button type="button">×</button>
-      </div>
-    </header>
-
-    <nav class="menu-bar" aria-label="菜单栏">
-      <div class="menu-item">
-        <button class="menu-trigger" data-menu="project" type="button">工程(E)</button>
-        <div class="menu-popup" id="projectMenu">
-          <button id="menuCreateProjectBtn" type="button">新建工程</button>
-          <button id="menuLoadProjectBtn" type="button">加载项目</button>
-          <button id="menuSaveProjectBtn" type="button">保存项目</button>
-        </div>
-      </div>
-      <div class="menu-item">
-        <button class="menu-trigger" data-menu="config" type="button">配置(C)</button>
-        <div class="menu-popup" id="configMenu">
-          <button id="menuProjectPageBtn" type="button">打开项目管理</button>
-          <button id="menuSourceListBtn" type="button">源文件列表管理</button>
-        </div>
-      </div>
-      <div class="menu-item">
-        <button class="menu-trigger" data-menu="check" type="button">规则检查(S)</button>
-        <div class="menu-popup" id="checkMenu">
-          <button id="menuRulesetBtn" type="button">选择规则集</button>
-          <button id="menuRunCheckBtn" type="button">运行代码规则检查</button>
-          <button id="menuResultViewBtn" type="button">打开结果浏览视图</button>
-        </div>
-      </div>
-      <div class="menu-item">
-        <button class="menu-trigger" data-menu="result" type="button">分析结果(R)</button>
-        <div class="menu-popup" id="resultMenu">
-          <button id="menuReportBtn" type="button">查看分析报告</button>
-          <button id="menuExportHtmlBtn" type="button">导出 HTML 报告</button>
-          <button id="menuExportDocBtn" type="button">导出 Word 报告</button>
-          <button id="menuExportPdfBtn" type="button">导出 PDF 报告</button>
-          <button id="menuExportExcelBtn" type="button">导出 Excel 报告</button>
-          <button id="menuExportWpsBtn" type="button">导出 WPS 报告</button>
-        </div>
-      </div>
-      <div class="menu-item">
-        <button class="menu-trigger" data-menu="help" type="button">帮助(H)</button>
-        <div class="menu-popup" id="helpMenu">
-          <button id="menuHelpDocBtn" type="button">打开帮助说明</button>
-          <button id="menuQuickStartBtn" type="button">查看快速入门流程</button>
-        </div>
-      </div>
-    </nav>
-
     <div class="tool-bar">
       <div class="tool-actions">
         <button class="tool-action" id="toolCreateProjectBtn" type="button">
@@ -72,11 +16,11 @@
         </button>
         <button class="tool-action" id="toolLoadProjectBtn" type="button">
           <span class="tool-glyph open"></span>
-          <span>加载项目</span>
+          <span>刷新工程</span>
         </button>
         <button class="tool-action" id="toolSaveProjectBtn" type="button">
           <span class="tool-glyph save"></span>
-          <span>保存项目</span>
+          <span>保存工程属性</span>
         </button>
         <button class="tool-action" id="toolSourceListBtn" type="button">
           <span class="tool-glyph list"></span>
@@ -101,8 +45,6 @@
           <span>规则集</span>
           <select id="activeRulesetSelect"></select>
         </label>
-        <button class="audit-button" id="runSelectedProjectBtn" type="button">运行检查</button>
-        <button class="audit-button" id="reportSelectedProjectBtn" type="button">查看报告</button>
       </div>
     </div>
 
@@ -221,6 +163,25 @@
               </div>
             </section>
 
+            <section class="section-box report-progress-box">
+              <div class="section-head">
+                <span class="section-arrow">▾</span>
+                <strong>检查执行进度</strong>
+              </div>
+              <div class="progress-panel report-progress-panel">
+                <div class="progress-row"><span>解析项目</span><b id="progressProject">完成</b></div>
+                <div class="progress-row"><span>加载规则集</span><b id="progressRules">完成</b></div>
+                <div class="progress-row"><span>执行检查</span><b id="progressRun">待执行</b></div>
+                <div class="progress-row"><span>写入结果</span><b id="progressResult">待执行</b></div>
+                <div class="progress-line">
+                  <span>执行进度</span>
+                  <div class="progress-track"><i id="progressBar"></i></div>
+                  <strong id="progressText">0%</strong>
+                </div>
+                <div class="progress-log" id="progressLog"></div>
+              </div>
+            </section>
+
             <section class="section-box hotspot-box">
               <div class="section-head">
                 <span class="section-arrow">▾</span>
@@ -308,19 +269,19 @@
                 </article>
 
                 <article class="manager-card full-width">
-                  <h3>源文件列表管理</h3>
-                  <table class="flat-table">
-                    <thead>
-                      <tr>
-                        <th>路径</th>
-                        <th>语言</th>
-                        <th>来源</th>
-                        <th>状态</th>
-                        <th>操作</th>
-                      </tr>
-                    </thead>
-                    <tbody id="sourcePreviewBody"></tbody>
-                  </table>
+                  <h3>分析配置</h3>
+                  <div class="analysis-config-grid">
+                    <section class="analysis-config-panel">
+                      <div class="analysis-config-title">源文件列表管理</div>
+                      <p>指定需分析的源代码文件，支持多目录结构。点击路径可打开源码，使用右侧操作控制纳入或排除。</p>
+                      <div class="source-config-list" id="sourcePreviewBody"></div>
+                    </section>
+                    <section class="analysis-config-panel">
+                      <div class="analysis-config-title">排除/过滤配置</div>
+                      <p>已排除的文件不会进入下一次后端分析输入；如需恢复，点击左侧列表中的“纳入”。</p>
+                      <div class="filter-config-list" id="resultFilterList"></div>
+                    </section>
+                  </div>
                 </article>
 
                 <article class="manager-card full-width">
@@ -401,19 +362,7 @@
                     <p>原厂规则集默认只读，不直接修改。</p>
                     <p>新建规则集可从已有规则集中勾选若干规则组成。</p>
                     <p>自定义规则集保存到单独的用户规则目录。</p>
-                    <p>执行进度按快速入门里的流程放在当前页右侧，便于在配规则后直接发起检查。</p>
-                  </div>
-                  <div class="progress-panel">
-                    <div class="progress-row"><span>解析项目</span><b id="progressProject">完成</b></div>
-                    <div class="progress-row"><span>加载规则集</span><b id="progressRules">完成</b></div>
-                    <div class="progress-row"><span>执行检查</span><b id="progressRun">待执行</b></div>
-                    <div class="progress-row"><span>写入结果</span><b id="progressResult">待执行</b></div>
-                    <div class="progress-line">
-                      <span>执行进度</span>
-                      <div class="progress-track"><i id="progressBar"></i></div>
-                      <strong id="progressText">0%</strong>
-                    </div>
-                    <div class="progress-log" id="progressLog"></div>
+                    <p>检查执行进度统一显示在“分析报告”页，避免和规则集编辑混在一起。</p>
                   </div>
                 </article>
               </div>
@@ -528,19 +477,9 @@
 
       <aside class="right-column">
         <section class="dock-panel help-panel">
-          <div class="help-toolbar">
-            <div class="help-icons">
-              <button type="button">⌂</button>
-              <button type="button">◎</button>
-              <button type="button">?</button>
-              <button type="button">↩</button>
-            </div>
-            <div class="help-tabs">
-              <button class="active" type="button">内容</button>
-              <button type="button">搜索</button>
-              <button type="button">相关主题</button>
-              <button type="button">索引</button>
-            </div>
+          <div class="help-title">
+            <strong>规则说明</strong>
+            <button id="collapseHelpBtn" type="button">折叠</button>
           </div>
           <div class="help-content">
             <div class="help-tip" id="helpTip"></div>
@@ -551,6 +490,7 @@
           </div>
         </section>
       </aside>
+      <button class="help-restore-button" id="expandHelpBtn" type="button">规则说明</button>
     </main>
 
     <footer class="status-bar">
@@ -590,6 +530,22 @@
       </div>
       <div class="modal-actions">
         <button id="backendTaskCloseBtn" type="button">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="projectActionModal">
+    <div class="modal-window project-action-window">
+      <div class="modal-title">
+        <strong id="projectActionTitle">选择工程</strong>
+        <button id="projectActionCancelTopBtn" type="button">关闭</button>
+      </div>
+      <div class="project-action-body">
+        <p id="projectActionHint">请选择要操作的工程。</p>
+        <div class="project-action-list" id="projectActionList"></div>
+      </div>
+      <div class="modal-actions">
+        <button id="projectActionCancelBtn" type="button">取消</button>
       </div>
     </div>
   </div>

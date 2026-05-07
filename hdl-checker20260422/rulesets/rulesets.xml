@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <rulesets>
-                                                                                                                               
+                                                                                                                                                       
+    
+    
+    
+    
+    
+    
     
     
     
@@ -32,7 +38,13 @@
     
     
     <ruleset name="CAST规则集" refFile="user/CAST规则集.xml"/>
-                                                                                                                               
+                                                                                                                                                       
+    
+    
+    
+    
+    
+    
     
     
     
@@ -64,7 +76,13 @@
     
     
     <ruleset name="CAST_VHDL规则集" refFile="user/CAST_VHDL规则集.xml"/>
-                                                                                                                               
+                                                                                                                                                       
+    
+    
+    
+    
+    
+    
     
     
     
@@ -96,7 +114,13 @@
     
     
     <ruleset name="CAST_Verilog规则集" refFile="user/CAST_Verilog规则集.xml"/>
-                                                                                                                               
+                                                                                                                                                       
+    
+    
+    
+    
+    
+    
     
     
     
@@ -128,7 +152,13 @@
     
     
     <ruleset name="GJB规则集" refFile="user/GJB规则集.xml"/>
-                                                                                                                               
+                                                                                                                                                       
+    
+    
+    
+    
+    
+    
     
     
     
@@ -160,7 +190,13 @@
     
     
     <ruleset name="GJB_Verilog规则集" refFile="user/GJB_Verilog规则集.xml"/>
-                                                                                                                               
+                                                                                                                                                       
+    
+    
+    
+    
+    
+    
     
     
     
@@ -192,7 +228,13 @@
     
     
     <ruleset name="GJB_VHDL规则集" refFile="user/GJB_VHDL规则集.xml"/>
-                                                                                                                               
+                                                                                                                                                       
+    
+    
+    
+    
+    
+    
     
     
     
@@ -224,7 +266,13 @@
     
     
     <ruleset name="GB_VHDL规则集" refFile="user/GB_VHDL规则集.xml"/>
-                                                                                                                               
+                                                                                                                                                       
+    
+    
+    
+    
+    
+    
     
     
     
@@ -256,7 +304,13 @@
     
     
     <ruleset name="new_CAST_Verilog规则集" refFile="user/new_CAST_Verilog规则集.xml"/>
-                                                                                                                               
+                                                                                                                                                       
+    
+    
+    
+    
+    
+    
     
     
     
@@ -288,7 +342,13 @@
     
     
     <ruleset name="new_CAST_VHDL规则集" refFile="user/new_CAST_VHDL规则集.xml"/>
-                                                                                                                               
+                                                                                                                                                       
+    
+    
+    
+    
+    
+    
     
     
     
@@ -320,7 +380,13 @@
     
     
     <ruleset name="new_GJB_VHDL规则集" refFile="user/new_GJB_VHDL规则集.xml"/>
-                                                                                                                               
+                                                                                                                                                       
+    
+    
+    
+    
+    
+    
     
     
     
@@ -352,7 +418,13 @@
     
     
     <ruleset name="new_CAST规则集" refFile="user/new_CAST规则集.xml"/>
-                                                                                                                               
+                                                                                                                                                       
+    
+    
+    
+    
+    
+    
     
     
     
@@ -384,9 +456,18 @@
     
     
     <ruleset name="debug" refFile="user/debug.xml"/>
-                                                                                                                            
+                                                                                                                                                    
     
     
+    
+
+
+    
+
+
+    
+
+
     
 
 
