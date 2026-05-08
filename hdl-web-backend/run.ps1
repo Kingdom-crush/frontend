@@ -5,6 +5,43 @@ $Out = Join-Path $Root "out"
 $LastPortFile = Join-Path $Root "last-port.txt"
 $PortWasProvided = -not [string]::IsNullOrWhiteSpace($env:HDL_BACKEND_PORT)
 
+function Get-JavaFeatureVersion {
+    # Use cmd to merge stderr into stdout at the OS level, otherwise PowerShell 5.1
+    # wraps each stderr line from java.exe as a NativeCommandError ErrorRecord and
+    # the script-level $ErrorActionPreference="Stop" aborts before we can parse it.
+    $versionOutput = & cmd /c "java -version 2>&1"
+    if ($LASTEXITCODE -ne 0) {
+        throw "java -version failed. Ensure Java is installed and available on PATH."
+    }
+
+    foreach ($line in $versionOutput) {
+        if ($line -match 'version "(?<version>[^"]+)"') {
+            $rawVersion = $Matches.version
+            if ($rawVersion.StartsWith("1.")) {
+                return [int]($rawVersion.Split('.')[1])
+            }
+            return [int]($rawVersion.Split('.')[0])
+        }
+    }
+
+    throw "Unable to determine Java feature version from java -version output."
+}
+
+function Get-ClassFileMajorVersion {
+    param([string]$Path)
+
+    if (-not (Test-Path $Path)) {
+        return $null
+    }
+
+    $bytes = [System.IO.File]::ReadAllBytes($Path)
+    if ($bytes.Length -lt 8) {
+        throw "Class file is too short: $Path"
+    }
+
+    return ($bytes[6] -shl 8) -bor $bytes[7]
+}
+
 function Test-BackendPort {
     param([int]$Port)
     $client = New-Object System.Net.Sockets.TcpClient
@@ -22,7 +59,33 @@ function Test-BackendPort {
     }
 }
 
-if (-not (Test-Path (Join-Path $Out "com\sunwise\hdlweb\Main.class"))) {
+function Test-NeedsBuild {
+    $mainClass = Join-Path $Out "com\sunwise\hdlweb\Main.class"
+    if (-not (Test-Path $mainClass)) {
+        return $true
+    }
+
+    $runtimeFeature = Get-JavaFeatureVersion
+    $maxSupportedClassMajor = $runtimeFeature + 44
+    $compiledClassMajor = Get-ClassFileMajorVersion -Path $mainClass
+    if ($compiledClassMajor -gt $maxSupportedClassMajor) {
+        Write-Host "Existing classes target Java $($compiledClassMajor - 44), but current runtime is Java $runtimeFeature. Rebuilding..."
+        return $true
+    }
+
+    $mainClassWriteTime = (Get-Item $mainClass).LastWriteTimeUtc
+    $newestSource = Get-ChildItem -Path (Join-Path $Root "src") -Recurse -Filter *.java |
+        Sort-Object LastWriteTimeUtc -Descending |
+        Select-Object -First 1
+    if ($newestSource -and $newestSource.LastWriteTimeUtc -gt $mainClassWriteTime) {
+        Write-Host "Java sources are newer than compiled output. Rebuilding..."
+        return $true
+    }
+
+    return $false
+}
+
+if (Test-NeedsBuild) {
     & (Join-Path $Root "build.ps1")
 }
 
