@@ -14,9 +14,9 @@
           <span class="tool-glyph plus"></span>
           <span>新建工程</span>
         </button>
-        <button class="tool-action" id="toolLoadProjectBtn" type="button">
+        <button class="tool-action" id="toolLoadProjectBtn" type="button" title="切换到下一工程；连接后端时刷新工程列表">
           <span class="tool-glyph open"></span>
-          <span>刷新工程</span>
+          <span>切换工程</span>
         </button>
         <button class="tool-action" id="toolSaveProjectBtn" type="button">
           <span class="tool-glyph save"></span>
@@ -26,13 +26,13 @@
           <span class="tool-glyph list"></span>
           <span>源文件列表</span>
         </button>
-        <button class="tool-action" id="toolRunCheckBtn" type="button">
+        <button class="tool-action primary" id="toolRunCheckBtn" type="button">
           <span class="tool-glyph run"></span>
           <span>运行检查</span>
         </button>
         <button class="tool-action" id="toolReportBtn" type="button">
           <span class="tool-glyph report"></span>
-          <span>查看报告</span>
+          <span>查看摘要</span>
         </button>
       </div>
 
@@ -54,8 +54,8 @@
           <div class="panel-title">
             <strong>项目资源管理器</strong>
             <div class="panel-actions">
-              <button type="button">+</button>
-              <button type="button">▾</button>
+              <button id="projectTreeNewBtn" type="button" title="新建工程">+</button>
+              <button id="projectTreeRefreshBtn" type="button" title="刷新工程">⟳</button>
             </div>
           </div>
           <div class="tree-view" id="projectTree"></div>
@@ -67,11 +67,21 @@
           <div class="panel-title">
             <strong>检查结果浏览视图</strong>
             <div class="panel-actions">
-              <button type="button">⟳</button>
-              <button type="button">▾</button>
+              <button id="resultTreeRefreshBtn" type="button" title="刷新结果">⟳</button>
             </div>
           </div>
-          <div class="tree-summary" id="browserSummary"></div>
+          <div class="tree-summary">
+            <div id="browserSummary"></div>
+            <div class="browser-controls">
+              <span>分组方式</span>
+              <select id="resultViewSelect">
+                <option value="rule">按违反规则条目</option>
+                <option value="file">按文件</option>
+                <option value="status">按问题级别</option>
+                <option value="category">按规则类别</option>
+              </select>
+            </div>
+          </div>
           <div class="tree-view result-tree" id="resultTree"></div>
         </section>
       </aside>
@@ -111,7 +121,7 @@
                 <div class="metric-box purple" id="metricViolation">
                   <span>规则违反数</span>
                   <strong>0</strong>
-                  <em id="metricAuditState">未确认/其他</em>
+                  <em id="metricAuditState">—</em>
                 </div>
                 <div class="metric-box violet" id="metricLoc">
                   <span>代码行数</span>
@@ -125,17 +135,22 @@
                 <div class="overview-card info-card">
                   <h3>概要信息</h3>
                   <dl class="info-grid">
-                    <div><dt>工程名:</dt><dd id="infoProjectName"></dd></div>
-                    <div><dt>分析人:</dt><dd id="infoAnalyst"></dd></div>
-                    <div><dt>规则集:</dt><dd id="infoRuleset"></dd></div>
-                    <div><dt>规则数:</dt><dd id="infoRuleCount"></dd></div>
-                    <div><dt>有效行数:</dt><dd id="infoEffectiveLoc"></dd></div>
-                    <div><dt>注释率:</dt><dd id="infoCommentRate"></dd></div>
-                    <div><dt>规则总数:</dt><dd id="infoRulesetTotal"></dd></div>
-                    <div><dt>分析时间:</dt><dd id="infoRuntime"></dd></div>
-                    <div><dt>开始时间:</dt><dd id="infoStartTime"></dd></div>
-                    <div><dt>结束时间:</dt><dd id="infoEndTime"></dd></div>
-                    <div><dt>已审计:</dt><dd id="infoAudited"></dd></div>
+                    <div class="info-section"><dt>基本</dt></div>
+                    <div><dt>工程名</dt><dd id="infoProjectName"></dd></div>
+                    <div><dt>分析人</dt><dd id="infoAnalyst"></dd></div>
+                    <div><dt>规则集</dt><dd id="infoRuleset"></dd></div>
+                    <div><dt>规则数</dt><dd id="infoRuleCount"></dd></div>
+
+                    <div class="info-section"><dt>代码</dt></div>
+                    <div><dt>有效行数</dt><dd id="infoEffectiveLoc"></dd></div>
+                    <div><dt>注释率</dt><dd id="infoCommentRate"></dd></div>
+
+                    <div class="info-section"><dt>检查</dt></div>
+                    <div><dt>规则总数</dt><dd id="infoRulesetTotal"></dd></div>
+                    <div><dt>分析时间</dt><dd id="infoRuntime"></dd></div>
+                    <div><dt>开始时间</dt><dd id="infoStartTime"></dd></div>
+                    <div><dt>结束时间</dt><dd id="infoEndTime"></dd></div>
+                    <div><dt>已审计</dt><dd id="infoAudited"></dd></div>
                   </dl>
                 </div>
 
@@ -157,7 +172,7 @@
                   </div>
                   <div class="report-actions stacked">
                     <button id="openGeneratedReportBtn" type="button">打开 HTML 报告</button>
-                    <button id="exportReportBtn" type="button">导出报告</button>
+                    <button class="primary" id="exportReportBtn" type="button">导出报告</button>
                   </div>
                 </div>
               </div>
@@ -269,19 +284,14 @@
                 </article>
 
                 <article class="manager-card full-width">
-                  <h3>分析配置</h3>
-                  <div class="analysis-config-grid">
-                    <section class="analysis-config-panel">
-                      <div class="analysis-config-title">源文件列表管理</div>
-                      <p>指定需分析的源代码文件，支持多目录结构。点击路径可打开源码，使用右侧操作控制纳入或排除。</p>
-                      <div class="source-config-list" id="sourcePreviewBody"></div>
-                    </section>
-                    <section class="analysis-config-panel">
-                      <div class="analysis-config-title">排除/过滤配置</div>
-                      <p>已排除的文件不会进入下一次后端分析输入；如需恢复，点击左侧列表中的“纳入”。</p>
-                      <div class="filter-config-list" id="resultFilterList"></div>
-                    </section>
+                  <h3>源文件列表管理</h3>
+                  <p class="analysis-config-help">指定需分析的源代码文件，支持多目录结构。点击路径可打开源码，使用操作列控制纳入或排除；排除的文件不会进入下一次分析输入。</p>
+                  <div class="source-list-tabs" role="tablist">
+                    <button class="active" data-source-filter="all" type="button">全部</button>
+                    <button data-source-filter="included" type="button">已纳入</button>
+                    <button data-source-filter="excluded" type="button">已排除</button>
                   </div>
+                  <div class="source-config-list" id="sourcePreviewBody"></div>
                 </article>
 
                 <article class="manager-card full-width">
@@ -315,8 +325,7 @@
               </div>
               <div class="management-toolbar">
                 <button id="createRulesetBtn" type="button">新建规则集</button>
-                <button id="saveRulesetBtn" type="button">保存自定义规则集</button>
-                <button id="runCheckBtn" type="button">执行检查</button>
+                <button class="primary" id="saveRulesetBtn" type="button">保存自定义规则集</button>
                 <span class="current-ruleset-tag" id="currentRulesetTag"></span>
               </div>
               <div class="rules-layout">
@@ -335,7 +344,7 @@
                   <div class="new-ruleset-box">
                     <label>
                       <span>新规则集名称</span>
-                      <input id="newRulesetName" type="text" value="五院VHDL规则集_审计版">
+                      <input id="newRulesetName" type="text" placeholder="留空则自动命名为“基于规则集_副本N”">
                     </label>
                     <label>
                       <span>基于规则集</span>
@@ -422,20 +431,12 @@
           </div>
           <div class="detail-toolbar">
             <input id="resultSearchInput" type="search" placeholder="请输入搜索关键词">
-            <select id="resultViewSelect">
-              <option value="rule">按违反规则条目</option>
-              <option value="file">按文件</option>
-              <option value="status">按问题级别</option>
-              <option value="category">按规则类别</option>
-            </select>
             <button id="searchBtn" type="button">搜索</button>
             <button id="clearSearchBtn" type="button">清除</button>
-            <button id="markViolationBtn" type="button">违反</button>
-            <button id="markPassBtn" type="button">不违反</button>
-            <button id="markPendingBtn" type="button">未确认</button>
-            <button id="markAllViolationBtn" type="button">全部违反</button>
-            <button id="markAllPassBtn" type="button">全部不违反</button>
-            <button id="markAllPendingBtn" type="button">全部未确认</button>
+            <span class="audit-divider"></span>
+            <button class="menu-button" id="markSelectedMenuBtn" type="button" aria-haspopup="true">标记选中</button>
+            <button class="menu-button" id="markAllMenuBtn" type="button" aria-haspopup="true">批量标记</button>
+            <span class="audit-divider"></span>
             <button id="openCircuitBtn" type="button">查看电路图</button>
           </div>
           <div class="result-pager hidden" id="backendResultPager">
@@ -455,6 +456,16 @@
           </div>
           <div class="table-wrap">
             <table class="detail-table">
+              <colgroup>
+                <col style="width:80px">
+                <col style="width:140px">
+                <col style="width:84px">
+                <col style="width:30%">
+                <col style="width:60px">
+                <col style="width:64px">
+                <col>
+                <col style="width:140px">
+              </colgroup>
               <thead>
                 <tr>
                   <th>违反情况</th>
@@ -479,7 +490,6 @@
         <section class="dock-panel help-panel">
           <div class="help-title">
             <strong>规则说明</strong>
-            <button id="collapseHelpBtn" type="button">折叠</button>
           </div>
           <div class="help-content">
             <div class="help-tip" id="helpTip"></div>
@@ -490,15 +500,23 @@
           </div>
         </section>
       </aside>
-      <button class="help-restore-button" id="expandHelpBtn" type="button">规则说明</button>
+      <button class="help-toggle" id="helpToggleBtn" type="button" title="折叠/展开规则说明" aria-label="折叠/展开规则说明">›</button>
     </main>
 
     <footer class="status-bar">
-      <span id="statusText">状态信息</span>
-      <span id="statusProject"></span>
-      <span id="statusRuleset"></span>
+      <span id="statusText">就绪</span>
+      <span class="status-bar-spacer"></span>
+      <span class="status-bar-meta">
+        <span id="statusBackendSlot"></span>
+        <span id="statusProject"></span>
+        <span id="statusRuleset"></span>
+      </span>
     </footer>
   </div>
+
+  <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="false"></div>
+
+  <div class="popover-menu hidden" id="auditMenu" role="menu"></div>
 
   <div class="context-menu hidden" id="detailContextMenu">
     <button data-action="focus" type="button">定位当前结果</button>
@@ -513,7 +531,7 @@
     <div class="modal-window task-modal-window">
       <div class="modal-title">
         <strong>后端任务中心</strong>
-        <button id="backendTaskCloseTopBtn" type="button">关闭</button>
+        <button class="modal-close-x" id="backendTaskCloseTopBtn" type="button" aria-label="关闭">×</button>
       </div>
       <div class="task-center-body">
         <div class="task-center-head">
@@ -538,7 +556,7 @@
     <div class="modal-window project-action-window">
       <div class="modal-title">
         <strong id="projectActionTitle">选择工程</strong>
-        <button id="projectActionCancelTopBtn" type="button">关闭</button>
+        <button class="modal-close-x" id="projectActionCancelTopBtn" type="button" aria-label="关闭">×</button>
       </div>
       <div class="project-action-body">
         <p id="projectActionHint">请选择要操作的工程。</p>
@@ -554,7 +572,7 @@
     <div class="modal-window project-modal-window">
       <div class="modal-title">
         <strong>新建后端工程</strong>
-        <button id="backendProjectCancelTopBtn" type="button">关闭</button>
+        <button class="modal-close-x" id="backendProjectCancelTopBtn" type="button" aria-label="关闭">×</button>
       </div>
       <div class="backend-form-body">
         <div class="backend-form-intro">
@@ -622,7 +640,7 @@
     <div class="modal-window">
       <div class="modal-title">
         <strong>RTL 电路图预览</strong>
-        <button id="closeCircuitModalBtn" type="button">关闭</button>
+        <button class="modal-close-x" id="closeCircuitModalBtn" type="button" aria-label="关闭">×</button>
       </div>
       <div class="modal-body">
         <svg class="circuit-svg" viewBox="0 0 760 320" role="img" aria-label="RTL 电路图">
@@ -647,6 +665,23 @@
         <div class="modal-note">
           <p>后端模式下会优先读取同名电路图 JSON；没有生成文件时显示当前静态预览。</p>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="confirmModal">
+    <div class="modal-window confirm-modal-window">
+      <div class="modal-title">
+        <strong id="confirmModalTitle">确认操作</strong>
+        <button class="modal-close-x" id="confirmModalCloseBtn" type="button" aria-label="关闭">×</button>
+      </div>
+      <div class="confirm-body">
+        <span class="confirm-title" id="confirmModalHeading"></span>
+        <span id="confirmModalMessage"></span>
+      </div>
+      <div class="modal-actions">
+        <button id="confirmModalCancelBtn" type="button">取消</button>
+        <button class="primary" id="confirmModalOkBtn" type="button">确定</button>
       </div>
     </div>
   </div>

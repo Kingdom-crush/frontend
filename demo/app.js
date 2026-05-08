@@ -1,10 +1,16 @@
 const PAGES=[["report","分析报告"],["project","项目管理"],["rules","规则集管理"],["state","状态机图"]];
 const fill=(lines,total=30)=>{const rows=[...lines];while(rows.length<total)rows.push("");return rows.join("\n");};
-const fullPath=(project,relative)=>`${project.path}\\${relative.replace(/\//g,"\\")}`;
+const toDisplayPath=value=>(value||"").replace(/\\/g,"/");
+const fullPath=(project,relative)=>{
+  const root=toDisplayPath(project.path||"").replace(/\/+$/,"");
+  const rel=toDisplayPath(relative||"").replace(/^\/+/,"");
+  return root?`${root}/${rel}`:rel;
+};
 const normalize=value=>(value||"").replace(/\\/g,"/").toLowerCase();
 const baseName=value=>value.split(/[\\/]/).pop();
 const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
 const clone=value=>JSON.parse(JSON.stringify(value));
+const escAttr=value=>String(value==null?"":value).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
 const RULESETS=[
   {id:"wyl",name:"五院VHDL规则集",type:"builtin",rules:[
@@ -127,7 +133,7 @@ const PROJECTS=[
   }
 ];
 
-const S={pid:"test",page:"report",vid:"v5",rsearch:"",qsearch:"",tpl:"",format:"HTML",seed:2,pseed:3,openFiles:[],fileFocus:{},treeOpen:{},resultOpen:{},contextRow:null,resultView:"rule",sortKey:"file",sortDir:"asc",selectedRows:[],lastSelected:null};
+const S={pid:"test",page:"report",vid:"v5",rsearch:"",qsearch:"",tpl:"",format:"HTML",seed:2,pseed:3,openFiles:[],fileFocus:{},treeOpen:{},resultOpen:{},contextRow:null,resultView:"rule",sortKey:"file",sortDir:"asc",selectedRows:[],lastSelected:null,sourceFilter:"all",helpCollapsed:true,toastSeq:0};
 const $=id=>document.getElementById(id);
 const E={
   projectTabs:$("projectTabs"),workspaceTabs:$("workspaceTabs"),projectTree:$("projectTree"),browserSummary:$("browserSummary"),resultTree:$("resultTree"),
@@ -137,7 +143,7 @@ const E={
   importModeSelect:$("importModeSelect"),currentRulesetInput:$("currentRulesetInput"),savedProjects:$("savedProjects"),sourcePreviewBody:$("sourcePreviewBody"),resultFilterList:$("resultFilterList"),constraintTableBody:$("constraintTableBody"),rulesetList:$("rulesetList"),currentRulesetTag:$("currentRulesetTag"),ruleSearchInput:$("ruleSearchInput"),
   baseRulesetSelect:$("baseRulesetSelect"),newRulesetName:$("newRulesetName"),ruleTableBody:$("ruleTableBody"),progressProject:$("progressProject"),progressRules:$("progressRules"),progressRun:$("progressRun"),progressResult:$("progressResult"),progressBar:$("progressBar"),progressText:$("progressText"),
   progressLog:$("progressLog"),auditedSummary:$("auditedSummary"),resultSearchInput:$("resultSearchInput"),resultViewSelect:$("resultViewSelect"),detailTableBody:$("detailTableBody"),helpTip:$("helpTip"),helpRuleId:$("helpRuleId"),helpMessage:$("helpMessage"),helpExample:$("helpExample"),sourcePath:$("sourcePath"),sourceMeta:$("sourceMeta"),
-  sourceViewer:$("sourceViewer"),statusText:$("statusText"),statusProject:$("statusProject"),statusRuleset:$("statusRuleset"),circuitModal:$("circuitModal"),detailContextMenu:$("detailContextMenu")
+  sourceViewer:$("sourceViewer"),statusText:$("statusText"),statusProject:$("statusProject"),statusRuleset:$("statusRuleset"),circuitModal:$("circuitModal"),detailContextMenu:$("detailContextMenu"),toastStack:$("toastStack"),auditMenu:$("auditMenu")
 };
 
 const CP=()=>PROJECTS.find(project=>project.id===S.pid);
@@ -206,10 +212,27 @@ function filteredRules(ruleset){
   return ruleset.rules.filter(rule=>[rule.code,rule.name,rule.cat].join(" ").toLowerCase().includes(keyword));
 }
 
-function status(message){
-  E.statusText.textContent=message||"状态信息";
-  E.statusProject.textContent=`当前工程: ${CP().name}`;
-  E.statusRuleset.textContent=`当前规则集: ${CR().name}`;
+function pushToast(message,kind="info"){
+  if(!E.toastStack||!message)return;
+  S.toastSeq+=1;
+  const node=document.createElement("div");
+  node.className=`toast-item toast-${kind}`;
+  node.dataset.toastId=String(S.toastSeq);
+  const time=new Date();
+  const stamp=`${String(time.getHours()).padStart(2,"0")}:${String(time.getMinutes()).padStart(2,"0")}:${String(time.getSeconds()).padStart(2,"0")}`;
+  node.innerHTML=`<span class="toast-time">${stamp}</span><span class="toast-text">${escAttr(message)}</span>`;
+  E.toastStack.appendChild(node);
+  while(E.toastStack.children.length>4)E.toastStack.firstElementChild.remove();
+  requestAnimationFrame(()=>node.classList.add("show"));
+  setTimeout(()=>{node.classList.remove("show");setTimeout(()=>node.remove(),220);},5000);
+}
+
+function status(message,kind){
+  const project=CP();
+  E.statusText.textContent=message||"就绪";
+  E.statusProject.textContent=project?`当前工程: ${project.name}`:"";
+  E.statusRuleset.textContent=project?`当前规则集: ${CR().name}`:"";
+  if(message)pushToast(message,kind||"info");
 }
 
 function renderHeaderControls(){
@@ -286,9 +309,10 @@ function closeFile(key){
 
 function renderTabs(){
   E.projectTabs.innerHTML=PROJECTS.map(project=>`<button class="project-tab ${project.id===S.pid?"active":""}" data-project="${project.id}" type="button"><span class="tab-label">${project.name}</span>${PROJECTS.length>1?`<span class="tab-close" data-close-project="${project.id}">×</span>`:""}</button>`).join("");
-  const fileTabs=S.openFiles.map(file=>`<button class="workspace-file-tab ${currentFileKey()===file?"active":""}" data-file="${file}" type="button" title="${file}"><span class="tab-label">${baseName(file)}</span><span class="tab-close" data-close-file="${file}">×</span></button>`);
+  const fileTabs=S.openFiles.map(file=>`<button class="workspace-file-tab ${currentFileKey()===file?"active":""}" data-file="${file}" type="button" title="${file}"><span class="tab-icon"></span><span class="tab-label">${baseName(file)}</span><span class="tab-close" data-close-file="${file}">×</span></button>`);
   const pageTabs=PAGES.map(([id,label])=>`<button class="workspace-page-tab ${S.page===id?"active":""}" data-page="${id}" type="button">${label}</button>`);
-  E.workspaceTabs.innerHTML=[...pageTabs,...fileTabs].join("");
+  const divider=fileTabs.length?[`<span class="tab-divider" aria-hidden="true"></span>`]:[];
+  E.workspaceTabs.innerHTML=[...pageTabs,...divider,...fileTabs].join("");
   document.querySelectorAll(".workspace-page").forEach(page=>page.classList.remove("active"));
   $(currentFileKey()?"page-source":`page-${S.page}`).classList.add("active");
 }
@@ -367,24 +391,34 @@ function renderProject(){
   const project=CP();
   E.projectNameInput.value=project.name;
   E.analystInput.value=project.analyst;
-  E.projectPathInput.value=project.path;
+  E.projectPathInput.value=toDisplayPath(project.path);
   E.importModeSelect.innerHTML=["RTL文件夹 + 工程文件","源码目录","仅工程文件","上传代码包"].map(item=>`<option value="${item}">${item}</option>`).join("");
   E.importModeSelect.value=project.mode;
   E.currentRulesetInput.value=CR().name;
-  E.savedProjects.innerHTML=PROJECTS.map(item=>`<div class="saved-project-item"><strong>${item.name}</strong><span>${item.path}</span><button data-open-project="${item.id}" type="button">切换到该工程</button>${PROJECTS.length>1?` <button class="delete-project" data-delete-project="${item.id}" type="button">删除</button>`:""}</div>`).join("");
-  E.sourcePreviewBody.innerHTML=project.sources.map(item=>{
+  E.savedProjects.innerHTML=PROJECTS.map(item=>`<div class="saved-project-item"><strong>${item.name}</strong><span>${toDisplayPath(item.path)}</span><button data-open-project="${item.id}" type="button">切换到该工程</button>${PROJECTS.length>1?` <button class="delete-project" data-delete-project="${item.id}" type="button">删除</button>`:""}</div>`).join("");
+  document.querySelectorAll("[data-source-filter]").forEach(button=>{
+    button.classList.toggle("active",button.dataset.sourceFilter===S.sourceFilter);
+  });
+  const filtered=project.sources.filter(item=>{
     const excluded=String(item[3]||"").includes("排除");
-    return `<div class="source-config-row ${excluded?"":"active"}"><button class="table-link" data-open-file="${item[0]}" type="button" title="${fullPath(project,item[0])}">${fullPath(project,item[0])}</button><span class="source-state">${item[3]}</span><span class="source-action">${item[4]||sourceFallbackAction(item[0],excluded)}</span></div>`;
-  }).join("");
-  const excluded=project.sources.filter(item=>String(item[3]||"").includes("排除"));
-  E.resultFilterList.innerHTML=excluded.length
-    ? excluded.map(item=>`<div class="filter-config-row"><span class="path-cell" title="${fullPath(project,item[0])}">${fullPath(project,item[0])}</span><span class="source-state">已排除</span><span class="source-action">${sourceIncludeAction(item[0])}</span></div>`).join("")
-    : `<div class="filter-config-empty">当前没有排除项。需要过滤时，在左侧源文件列表中点击“排除”。</div>`;
+    if(S.sourceFilter==="included")return !excluded;
+    if(S.sourceFilter==="excluded")return excluded;
+    return true;
+  });
+  if(!filtered.length){
+    E.sourcePreviewBody.innerHTML=`<div class="filter-config-empty">${S.sourceFilter==="excluded"?"当前没有排除项。":S.sourceFilter==="included"?"当前没有纳入的源文件。":"当前工程未发现源文件。"}</div>`;
+  }else{
+    E.sourcePreviewBody.innerHTML=filtered.map(item=>{
+      const excluded=String(item[3]||"").includes("排除");
+      return `<div class="source-config-row ${excluded?"":"active"}"><button class="table-link" data-open-file="${item[0]}" type="button" title="${fullPath(project,item[0])}">${fullPath(project,item[0])}</button><span class="source-state">${item[3]}</span><span class="source-action">${item[4]||sourceFallbackAction(item[0],excluded)}</span></div>`;
+    }).join("");
+  }
   E.constraintTableBody.innerHTML=constraintRows(project).map(item=>`<tr><td>${item[0]}</td><td>${item[1]}</td><td>${item[2]}</td><td>${item[3]}</td></tr>`).join("");
+  const root=toDisplayPath(project.path);
   E.integrationBox.textContent=[
-    `hdl-checker.bat create -s ${project.path}\\src -p ${project.path} -l v_vhd`,
-    `hdl-checker.bat analyze -r ${CR().name.replace(/规则集$/,"")} -p ${project.path}`,
-    `hdl-checker.bat report -p ${project.path} -f html -o ${project.path}\\report`
+    `hdl-checker.bat create -s ${root}/src -p ${root} -l v_vhd`,
+    `hdl-checker.bat analyze -r ${CR().name.replace(/规则集$/,"")} -p ${root}`,
+    `hdl-checker.bat report -p ${root} -f html -o ${root}/report`
   ].join("\n");
 }
 
@@ -433,6 +467,10 @@ function renderDetail(){
   });
   E.auditedSummary.textContent=`已审计 ${auditedCount(project)} 条 / 共 ${project.stats.vc} 条`;
   E.detailTableBody.innerHTML=rows.map(item=>`<tr class="${item.id===S.vid?"active":""} ${S.selectedRows.includes(item.id)?"selected":""}" data-row="${item.id}"><td><span class="status-pill ${statusClass(item.st)}">${item.st}</span></td><td>${item.rid}</td><td>${levelLabel(item)}</td><td class="path-cell"><button class="table-link" data-open-violation-file="${item.id}" type="button" title="${fullPath(project,item.file)}">${fullPath(project,item.file)}</button></td><td>${item.line}</td><td>${item.conf}</td><td>${item.info}</td><td>${item.note||"-"}</td></tr>`).join("");
+  document.querySelectorAll(".detail-table thead th[data-sort]").forEach(th=>{
+    th.classList.remove("sort-asc","sort-desc");
+    if(th.dataset.sort===S.sortKey)th.classList.add(S.sortDir==="desc"?"sort-desc":"sort-asc");
+  });
 }
 
 function renderHelp(){
@@ -443,14 +481,64 @@ function renderHelp(){
   E.helpExample.textContent=violation.ex;
 }
 
+const HDL_KW_VHDL=new Set(["library","use","entity","architecture","of","is","begin","end","port","signal","variable","constant","process","if","then","else","elsif","loop","for","while","function","return","package","body","procedure","when","case","others","downto","to","range","array","integer","std_logic","std_logic_vector","boolean","true","false","not","and","or","xor","nand","nor","null","map","generic","component","wait","assert","report","severity","note","warning","error","failure"]);
+const HDL_KW_VLOG=new Set(["module","endmodule","input","output","inout","wire","reg","logic","always","posedge","negedge","begin","end","if","else","case","endcase","default","initial","assign","parameter","localparam","function","endfunction","task","endtask","for","while","repeat","forever","return","integer","real","time","genvar","generate","endgenerate","or","and","not","xor"]);
+
+function highlightCode(line,language){
+  const escape=text=>text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  if(!line)return " ";
+  const isVhdl=language==="VHDL";
+  const isVerilog=language==="Verilog";
+  if(!isVhdl&&!isVerilog)return escape(line);
+  const commentMatch=isVhdl?line.match(/^([^"]*?)(--.*)$/):line.match(/^([^"]*?)(\/\/.*)$/);
+  if(commentMatch){
+    return `${highlightCode(commentMatch[1],language)}<span class="tok-cmt">${escape(commentMatch[2])}</span>`;
+  }
+  const kwSet=isVhdl?HDL_KW_VHDL:HDL_KW_VLOG;
+  let html="";
+  let i=0;
+  while(i<line.length){
+    const ch=line[i];
+    if(ch==='"'){
+      let j=i+1;
+      while(j<line.length&&line[j]!=='"')j+=1;
+      html+=`<span class="tok-str">${escape(line.slice(i,Math.min(j+1,line.length)))}</span>`;
+      i=j+1;
+      continue;
+    }
+    if(ch==="'"&&isVhdl){
+      const next=line.indexOf("'",i+1);
+      if(next>0&&next-i<=4){html+=`<span class="tok-str">${escape(line.slice(i,next+1))}</span>`;i=next+1;continue;}
+    }
+    if(/[0-9]/.test(ch)){
+      let j=i;
+      while(j<line.length&&/[0-9a-fA-FxXzZ_'.]/.test(line[j]))j+=1;
+      html+=`<span class="tok-num">${escape(line.slice(i,j))}</span>`;
+      i=j;continue;
+    }
+    if(/[A-Za-z_]/.test(ch)){
+      let j=i;
+      while(j<line.length&&/[A-Za-z0-9_]/.test(line[j]))j+=1;
+      const word=line.slice(i,j);
+      const lower=word.toLowerCase();
+      if(kwSet.has(lower))html+=`<span class="tok-kw">${escape(word)}</span>`;
+      else html+=escape(word);
+      i=j;continue;
+    }
+    html+=escape(ch);
+    i+=1;
+  }
+  return html;
+}
+
 function renderSource(){
   if(!currentFileKey())return;
   const file=resolveFile(currentFileKey());
   if(!file)return;
   const line=S.fileFocus[file.key]||0;
   E.sourcePath.textContent=fullPath(CP(),file.path);
-  E.sourceMeta.textContent=`${file.language} · ${line?`定位到第 ${line} 行`:"未指定定位行"}`;
-  E.sourceViewer.innerHTML=file.content.split("\n").map((row,index)=>`<div class="code-line ${index+1===line?"highlight":""}"><span class="line-no">${index+1}</span><span class="line-text">${(row||" ").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</span></div>`).join("");
+  E.sourceMeta.innerHTML=`${file.language} · ${line?`定位到第 ${line} 行`:"未指定定位行"}<span class="source-readonly-tag">只读</span>`;
+  E.sourceViewer.innerHTML=file.content.split("\n").map((row,index)=>`<div class="code-line ${index+1===line?"highlight":""}"><span class="line-no">${index+1}</span><span class="line-text">${highlightCode(row,file.language)}</span></div>`).join("");
   requestAnimationFrame(()=>{const active=E.sourceViewer.querySelector(".code-line.highlight");if(active)active.scrollIntoView({block:"center"});});
 }
 
@@ -469,7 +557,13 @@ function renderAll(message){
 }
 
 function setHelpCollapsed(collapsed){
-  document.querySelector(".desktop-shell").classList.toggle("help-collapsed",collapsed);
+  S.helpCollapsed=Boolean(collapsed);
+  document.querySelector(".desktop-shell").classList.toggle("help-collapsed",S.helpCollapsed);
+  const toggle=$("helpToggleBtn");
+  if(toggle){
+    toggle.textContent=S.helpCollapsed?"‹":"›";
+    toggle.title=S.helpCollapsed?"展开规则说明":"折叠规则说明";
+  }
 }
 
 function switchProject(id,message){
@@ -525,6 +619,42 @@ function openModal(){E.circuitModal.classList.remove("hidden");status(`已打开
 function closeModal(){E.circuitModal.classList.add("hidden");status("已关闭电路图弹窗");}
 function closeContextMenu(){E.detailContextMenu.classList.add("hidden");S.contextRow=null;}
 
+let confirmResolver=null;
+function openConfirmDialog(options){
+  const modal=$("confirmModal");
+  if(!modal)return Promise.resolve(window.confirm(options.message||"确认操作？"));
+  $("confirmModalTitle").textContent=options.title||"确认操作";
+  $("confirmModalHeading").textContent=options.heading||"";
+  $("confirmModalMessage").textContent=options.message||"";
+  const ok=$("confirmModalOkBtn");
+  ok.textContent=options.okText||"确定";
+  ok.classList.toggle("danger",Boolean(options.danger));
+  ok.classList.toggle("primary",!options.danger);
+  $("confirmModalCancelBtn").textContent=options.cancelText||"取消";
+  modal.classList.remove("hidden");
+  setTimeout(()=>ok.focus(),0);
+  return new Promise(resolve=>{confirmResolver=resolve;});
+}
+function closeConfirmDialog(result){
+  $("confirmModal")?.classList.add("hidden");
+  if(confirmResolver){const fn=confirmResolver;confirmResolver=null;fn(Boolean(result));}
+}
+
+function closeAuditMenu(){E.auditMenu?.classList.add("hidden");}
+function openAuditMenu(button,scope){
+  if(!E.auditMenu)return;
+  const items=scope==="all"
+    ?[{label:"全部标记为违反",value:"违反",className:"danger"},{label:"全部标记为不违反",value:"不违反"},{label:"全部标记为未确认",value:"未确认"}]
+    :[{label:"标记为违反",value:"违反",className:"danger"},{label:"标记为不违反",value:"不违反"},{label:"标记为未确认",value:"未确认"}];
+  E.auditMenu.innerHTML=`<div class="menu-section">${scope==="all"?"应用到当前筛选的全部结果":"应用到当前选中"}</div>`+items.map(item=>`<button data-audit-value="${item.value}" data-audit-scope="${scope}" type="button" class="${item.className||""}">${item.label}</button>`).join("");
+  E.auditMenu.classList.remove("hidden");
+  const rect=button.getBoundingClientRect();
+  const menuWidth=E.auditMenu.offsetWidth||180;
+  const left=Math.min(rect.left,window.innerWidth-menuWidth-8);
+  E.auditMenu.style.left=`${Math.max(8,left)}px`;
+  E.auditMenu.style.top=`${rect.bottom+4}px`;
+}
+
 function openContextMenu(x,y,violationId){
   setViolation(violationId,`已选中 ${SV().rid}，可继续右键处理`);
   S.contextRow=violationId;
@@ -576,13 +706,24 @@ function openRuleset(message){switchPage("rules",message||"请选择规则集后
 function openReport(message){switchPage("report",message||"已打开分析报告");}
 
 function loadNextProject(){
+  if(PROJECTS.length<=1){status("当前只有一个工程","warn");return;}
   const index=(PROJECTS.findIndex(item=>item.id===S.pid)+1)%PROJECTS.length;
   S.page="project";
-  switchProject(PROJECTS[index].id,`已加载项目 ${PROJECTS[index].name}`);
+  switchProject(PROJECTS[index].id,`已切换到工程 ${PROJECTS[index].name}`);
 }
 
-function removeProject(id){
-  if(PROJECTS.length<=1){status("至少保留一个工程");return;}
+async function removeProject(id){
+  if(PROJECTS.length<=1){status("至少保留一个工程","warn");return;}
+  const target=PROJECTS.find(item=>item.id===id);
+  if(!target)return;
+  const ok=await openConfirmDialog({
+    title:"删除工程",
+    heading:`确认删除工程 ${target.name}？`,
+    message:"该工程的本地状态会从演示列表移除，您可以稍后重新创建。",
+    okText:"删除",
+    danger:true
+  });
+  if(!ok)return;
   const index=PROJECTS.findIndex(item=>item.id===id);
   if(index<0)return;
   const removed=PROJECTS[index].name;
@@ -651,9 +792,15 @@ function initSplitter(handle,onStart){
     event.preventDefault();
     closeContextMenu();
     document.body.classList.add("is-resizing");
+    handle.classList.add("is-dragging");
     const state=onStart(event);
     const move=next=>state.move(next);
-    const stop=()=>{document.body.classList.remove("is-resizing");document.removeEventListener("mousemove",move);document.removeEventListener("mouseup",stop);};
+    const stop=()=>{
+      document.body.classList.remove("is-resizing");
+      handle.classList.remove("is-dragging");
+      document.removeEventListener("mousemove",move);
+      document.removeEventListener("mouseup",stop);
+    };
     document.addEventListener("mousemove",move);
     document.addEventListener("mouseup",stop);
   });
@@ -740,8 +887,16 @@ E.detailContextMenu.addEventListener("click",event=>{
 
 document.addEventListener("click",event=>{
   if(!event.target.closest(".context-menu"))closeContextMenu();
+  if(!event.target.closest(".popover-menu")&&!event.target.closest("[data-audit-menu]"))closeAuditMenu();
 });
-document.addEventListener("keydown",event=>{if(event.key==="Escape"){closeContextMenu();closeProjectActionModal();if(!E.circuitModal.classList.contains("hidden"))closeModal();}});
+document.addEventListener("keydown",event=>{
+  if(event.key!=="Escape")return;
+  closeContextMenu();
+  closeAuditMenu();
+  closeProjectActionModal();
+  if(!$("confirmModal")?.classList.contains("hidden"))closeConfirmDialog(false);
+  if(!E.circuitModal.classList.contains("hidden"))closeModal();
+});
 
 E.activeProjectSelect.addEventListener("change",event=>switchProject(event.target.value,`已选择工程 ${event.target.options[event.target.selectedIndex].text}`));
 E.activeRulesetSelect.addEventListener("change",event=>setRuleset(event.target.value));
@@ -752,8 +907,16 @@ $("projectActionList")?.addEventListener("click",event=>{
   const button=event.target.closest("[data-project-action]");
   if(button)executeProjectAction(button.dataset.projectAction,button.dataset.projectId);
 });
-$("collapseHelpBtn")?.addEventListener("click",()=>setHelpCollapsed(true));
-$("expandHelpBtn")?.addEventListener("click",()=>setHelpCollapsed(false));
+$("helpToggleBtn")?.addEventListener("click",()=>setHelpCollapsed(!S.helpCollapsed));
+$("projectTreeNewBtn")?.addEventListener("click",()=>addProject());
+$("projectTreeRefreshBtn")?.addEventListener("click",()=>{renderProjectTree();status("已刷新工程资源");});
+$("resultTreeRefreshBtn")?.addEventListener("click",()=>{renderBrowser();status("已刷新检查结果浏览");});
+document.querySelectorAll("[data-source-filter]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    S.sourceFilter=button.dataset.sourceFilter;
+    renderProject();
+  });
+});
 E.savedProjects.addEventListener("click",event=>{
   const deleteButton=event.target.closest("[data-delete-project]");
   if(deleteButton)return removeProject(deleteButton.dataset.deleteProject);
@@ -784,19 +947,30 @@ E.reportFormatSelect.addEventListener("change",event=>{S.format=event.target.val
 $("saveProjectBtn").addEventListener("click",saveProject);
 $("createRulesetBtn").addEventListener("click",addRuleset);
 $("saveRulesetBtn").addEventListener("click",()=>status(CR().type==="custom"?`已保存自定义规则集 ${CR().name}`:`当前是原厂规则集 ${CR().name}，演示中不直接修改`));
-$("runCheckBtn").addEventListener("click",()=>guideProjectAction("run"));
 $("searchBtn").addEventListener("click",()=>{S.rsearch=E.resultSearchInput.value;renderDetail();status("已执行结果搜索");});
 $("clearSearchBtn").addEventListener("click",()=>{S.rsearch="";E.resultSearchInput.value="";renderDetail();status("已清除结果搜索条件");});
-$("markViolationBtn").addEventListener("click",()=>setStatus("违反",false));
-$("markPassBtn").addEventListener("click",()=>setStatus("不违反",false));
-$("markPendingBtn").addEventListener("click",()=>setStatus("未确认",false));
-$("markAllViolationBtn").addEventListener("click",()=>setStatus("违反",true));
-$("markAllPassBtn").addEventListener("click",()=>setStatus("不违反",true));
-$("markAllPendingBtn").addEventListener("click",()=>setStatus("未确认",true));
+$("markSelectedMenuBtn")?.addEventListener("click",event=>{
+  event.stopPropagation();
+  openAuditMenu(event.currentTarget,"selected");
+});
+$("markAllMenuBtn")?.addEventListener("click",event=>{
+  event.stopPropagation();
+  openAuditMenu(event.currentTarget,"all");
+});
+E.auditMenu?.addEventListener("click",event=>{
+  const button=event.target.closest("[data-audit-value]");
+  if(!button)return;
+  setStatus(button.dataset.auditValue,button.dataset.auditScope==="all");
+  closeAuditMenu();
+});
 $("openCircuitBtn").addEventListener("click",openModal);
 $("closeCircuitModalBtn").addEventListener("click",closeModal);
 E.circuitModal.addEventListener("click",event=>{if(event.target===E.circuitModal)closeModal();});
 $("exportReportBtn").addEventListener("click",()=>exportReport());
+$("confirmModalOkBtn")?.addEventListener("click",()=>closeConfirmDialog(true));
+$("confirmModalCancelBtn")?.addEventListener("click",()=>closeConfirmDialog(false));
+$("confirmModalCloseBtn")?.addEventListener("click",()=>closeConfirmDialog(false));
+$("confirmModal")?.addEventListener("click",event=>{if(event.target===$("confirmModal"))closeConfirmDialog(false);});
 
 $("toolCreateProjectBtn").addEventListener("click",addProject);
 $("toolLoadProjectBtn").addEventListener("click",loadNextProject);

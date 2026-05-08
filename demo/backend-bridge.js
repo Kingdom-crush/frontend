@@ -64,7 +64,8 @@
 
   function ensureBackendControls() {
     if ($("backendStatus")) return;
-    const host = document.querySelector(".toolbar-meta");
+    const slot = $("statusBackendSlot") || document.querySelector(".toolbar-meta");
+    if (!slot) return;
     const statusNode = document.createElement("span");
     statusNode.id = "backendStatus";
     statusNode.className = "backend-pill probing";
@@ -81,9 +82,9 @@
     taskButton.type = "button";
     taskButton.textContent = "任务中心";
     taskButton.addEventListener("click", () => openTaskCenter());
-    host.prepend(taskButton);
-    host.prepend(refreshButton);
-    host.prepend(statusNode);
+    slot.appendChild(statusNode);
+    slot.appendChild(refreshButton);
+    slot.appendChild(taskButton);
   }
 
   function setBackendStatus(kind, text) {
@@ -1219,7 +1220,14 @@
   removeProject = async function removeBackendProject(id) {
     const project = PROJECTS.find(item => item.id === id);
     if (!project || !project.backendId) return originals.removeProject(id);
-    if (!confirm(`确认删除后端工程 ${project.name}？`)) return;
+    const ok = await openConfirmDialog({
+      title: "删除后端工程",
+      heading: `确认删除工程 ${project.name}？`,
+      message: "此操作会调用后端 DELETE 接口，删除后端工程目录与状态文件，无法恢复。",
+      okText: "删除",
+      danger: true
+    });
+    if (!ok) return;
     try {
       await api(`/projects/${encodeURIComponent(project.backendId)}`, { method: "DELETE" });
       await loadProjects(true);
