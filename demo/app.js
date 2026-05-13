@@ -196,8 +196,15 @@ const designInfo=project=>project.id==="servo"?{
   hierarchy:project.designSummary.hierarchy?.length?project.designSummary.hierarchy:["未识别到层次化实例"],
   ips:project.designSummary.ips?.length?project.designSummary.ips.map(item=>[item.name,item.type,item.status,item.source]):[["未识别","-","无黑盒/IP","后端源码扫描"]]
 }:{
-  hierarchy:["test_top","  check_core","    merrval_reg","  ctrl_sync","  array_index","  math_pkg"],
-  ips:[["clk_gen","Clock IP","黑盒","src/test_top.vhd"],["axi_bridge","Interface IP","已识别","工程文件"]]
+  hierarchy:["test_top","  xilinx_fifo_generator_0","  altera_pll_sys","  actel_corepll","  synplify_ram_model","  lattice_pll_block","  pango_serdes","  checker_core"],
+  ips:[
+    ["fifo_generator_0","Xilinx IP","黑盒化","project.xpr"],
+    ["altsyncram_inst","Altera/Intel IP","已识别","system.qsf"],
+    ["actel_corepll","Actel/Microchip IP","黑盒化","design.pds"],
+    ["synplify_ram","Synopsys IP","已识别","design.prj"],
+    ["lattice_pll","Lattice IP","已识别","top.ldf"],
+    ["pango_serdes","紫光同创 IP","黑盒化","chip.prjx"]
+  ]
 };
 
 function filteredViolations(project){
@@ -236,9 +243,9 @@ function status(message,kind){
 }
 
 function renderHeaderControls(){
-  E.activeProjectSelect.innerHTML=PROJECTS.map(project=>`<option value="${project.id}">${project.name}</option>`).join("");
+  E.activeProjectSelect.innerHTML=PROJECTS.map(project=>`<option value="${escAttr(project.id)}">${escAttr(project.name)}</option>`).join("");
   E.activeProjectSelect.value=S.pid;
-  E.activeRulesetSelect.innerHTML=RULESETS.map(ruleset=>`<option value="${ruleset.id}">${ruleset.name}</option>`).join("");
+  E.activeRulesetSelect.innerHTML=RULESETS.map(ruleset=>`<option value="${escAttr(ruleset.id)}">${escAttr(ruleset.name)}</option>`).join("");
   E.activeRulesetSelect.value=CP().ruleset;
 }
 
@@ -308,9 +315,9 @@ function closeFile(key){
 }
 
 function renderTabs(){
-  E.projectTabs.innerHTML=PROJECTS.map(project=>`<button class="project-tab ${project.id===S.pid?"active":""}" data-project="${project.id}" type="button"><span class="tab-label">${project.name}</span>${PROJECTS.length>1?`<span class="tab-close" data-close-project="${project.id}">×</span>`:""}</button>`).join("");
-  const fileTabs=S.openFiles.map(file=>`<button class="workspace-file-tab ${currentFileKey()===file?"active":""}" data-file="${file}" type="button" title="${file}"><span class="tab-icon"></span><span class="tab-label">${baseName(file)}</span><span class="tab-close" data-close-file="${file}">×</span></button>`);
-  const pageTabs=PAGES.map(([id,label])=>`<button class="workspace-page-tab ${S.page===id?"active":""}" data-page="${id}" type="button">${label}</button>`);
+  E.projectTabs.innerHTML=PROJECTS.map(project=>`<button class="project-tab ${project.id===S.pid?"active":""}" data-project="${escAttr(project.id)}" type="button"><span class="tab-label">${escAttr(project.name)}</span>${PROJECTS.length>1?`<span class="tab-close" data-close-project="${escAttr(project.id)}">×</span>`:""}</button>`).join("");
+  const fileTabs=S.openFiles.map(file=>`<button class="workspace-file-tab ${currentFileKey()===file?"active":""}" data-file="${escAttr(file)}" type="button" title="${escAttr(file)}"><span class="tab-icon"></span><span class="tab-label">${escAttr(baseName(file))}</span><span class="tab-close" data-close-file="${escAttr(file)}">×</span></button>`);
+  const pageTabs=PAGES.map(([id,label])=>`<button class="workspace-page-tab ${S.page===id?"active":""}" data-page="${escAttr(id)}" type="button">${escAttr(label)}</button>`);
   const divider=fileTabs.length?[`<span class="tab-divider" aria-hidden="true"></span>`]:[];
   E.workspaceTabs.innerHTML=[...pageTabs,...divider,...fileTabs].join("");
   document.querySelectorAll(".workspace-page").forEach(page=>page.classList.remove("active"));
@@ -321,7 +328,7 @@ function renderProjectNode(node,depth=0){
   const hasChildren=node.children&&node.children.length;
   const opened=hasChildren?S.treeOpen[treeKey(node.id)]!==false:false;
   const activeFile=node.fileKey&&currentFileKey()===node.fileKey;
-  return `<div class="tree-node"><div class="tree-node-row ${activeFile?"active":""}" style="padding-left:${depth*16}px">${hasChildren?`<button class="tree-toggle" data-toggle-tree="${node.id}" type="button">${opened?"▾":"▸"}</button>`:'<span class="tree-spacer"></span>'}<span class="tree-icon ${node.type}"></span>${node.fileKey?`<button class="tree-file-button" data-open-file="${node.fileKey}" type="button" title="${node.fileKey}">${node.label}</button>`:`<span class="tree-label">${node.label}</span>`}</div>${hasChildren&&opened?`<div class="tree-node-children">${node.children.map(child=>renderProjectNode(child,depth+1)).join("")}</div>`:""}</div>`;
+  return `<div class="tree-node"><div class="tree-node-row ${activeFile?"active":""}" style="padding-left:${depth*16}px">${hasChildren?`<button class="tree-toggle" data-toggle-tree="${escAttr(node.id)}" type="button">${opened?"▾":"▸"}</button>`:'<span class="tree-spacer"></span>'}<span class="tree-icon ${escAttr(node.type)}"></span>${node.fileKey?`<button class="tree-file-button" data-open-file="${escAttr(node.fileKey)}" type="button" title="${escAttr(node.fileKey)}">${escAttr(node.label)}</button>`:`<span class="tree-label">${escAttr(node.label)}</span>`}</div>${hasChildren&&opened?`<div class="tree-node-children">${node.children.map(child=>renderProjectNode(child,depth+1)).join("")}</div>`:""}</div>`;
 }
 
 function renderProjectTree(){
@@ -349,12 +356,12 @@ function renderBrowser(){
     CP().vs.forEach(item=>{const key=categoryLabel(item);if(!map.has(key))map.set(key,[]);map.get(key).push({id:item.id,text:`${item.rid} ${item.tip}`});});
     groups=[...map].map(([label,items],index)=>({id:`category-${index}`,label:`${label}（${items.length}项）`,items}));
   }
-  E.resultTree.innerHTML=groups.map(group=>`<div class="tree-node"><div class="tree-node-row"><button class="tree-toggle" data-toggle-result="${group.id}" type="button">${S.resultOpen[treeKey(group.id)]!==false?"▾":"▸"}</button><span class="tree-icon folder"></span><span class="tree-label">${group.label}</span><span class="result-meta">${group.items.length}项</span></div>${S.resultOpen[treeKey(group.id)]!==false?`<div class="tree-node-children">${group.items.map(item=>`<div class="tree-node-row ${item.id===S.vid?"active":""}" style="padding-left:22px"><span class="tree-spacer"></span><span class="tree-icon file"></span><button class="result-link" data-violation="${item.id}" type="button" title="${item.text}">${item.text}</button></div>`).join("")}</div>`:""}</div>`).join("");
+  E.resultTree.innerHTML=groups.map(group=>`<div class="tree-node"><div class="tree-node-row"><button class="tree-toggle" data-toggle-result="${escAttr(group.id)}" type="button">${S.resultOpen[treeKey(group.id)]!==false?"▾":"▸"}</button><span class="tree-icon folder"></span><span class="tree-label">${escAttr(group.label)}</span><span class="result-meta">${group.items.length}项</span></div>${S.resultOpen[treeKey(group.id)]!==false?`<div class="tree-node-children">${group.items.map(item=>`<div class="tree-node-row ${item.id===S.vid?"active":""}" style="padding-left:22px"><span class="tree-spacer"></span><span class="tree-icon file"></span><button class="result-link" data-violation="${escAttr(item.id)}" type="button" title="${escAttr(item.text)}">${escAttr(item.text)}</button></div>`).join("")}</div>`:""}</div>`).join("");
 }
 
 function renderBars(target,items){
-  const max=Math.max(...items.map(item=>item[1]));
-  target.innerHTML=items.map(([label,count,tone])=>`<div class="chart-row"><span class="chart-label" title="${label}">${label}</span><div class="chart-track"><div class="chart-bar ${tone}" style="width:${Math.max(14,Math.round(count/max*100))}%"><span>${count}</span></div></div><span class="chart-value">${count}</span></div>`).join("");
+  const max=Math.max(1,...items.map(item=>Number(item[1])||0));
+  target.innerHTML=items.map(([label,count,tone])=>`<div class="chart-row"><span class="chart-label" title="${escAttr(label)}">${escAttr(label)}</span><div class="chart-track"><div class="chart-bar ${escAttr(tone)}" style="width:${Math.max(14,Math.round(count/max*100))}%"><span>${Number(count)||0}</span></div></div><span class="chart-value">${Number(count)||0}</span></div>`).join("");
 }
 
 function renderReport(){
@@ -378,13 +385,13 @@ function renderReport(){
   E.infoEndTime.textContent=project.stats.end;
   E.infoAudited.textContent=`${audited} 条`;
   if(!S.tpl||!project.templates.includes(S.tpl))S.tpl=project.templates[0];
-  E.templateSelect.innerHTML=project.templates.map(item=>`<option value="${item}">${item}</option>`).join("");
+  E.templateSelect.innerHTML=project.templates.map(item=>`<option value="${escAttr(item)}">${escAttr(item)}</option>`).join("");
   E.templateSelect.value=S.tpl;
   E.reportFormatSelect.value=S.format;
   renderBars(E.fileChart,project.files);
   renderBars(E.ruleChart,project.rules);
-  E.hierarchyView.innerHTML=design.hierarchy.map(item=>`<div class="hierarchy-line" style="padding-left:${(item.length-item.trimStart().length)*10}px"><strong>${item.trim()}</strong></div>`).join("");
-  E.ipTableBody.innerHTML=design.ips.map(item=>`<tr><td>${item[0]}</td><td>${item[1]}</td><td>${item[2]}</td><td>${item[3]}</td></tr>`).join("");
+  E.hierarchyView.innerHTML=design.hierarchy.map(item=>`<div class="hierarchy-line" style="padding-left:${(item.length-item.trimStart().length)*10}px"><strong>${escAttr(item.trim())}</strong></div>`).join("");
+  E.ipTableBody.innerHTML=design.ips.map(item=>`<tr><td>${escAttr(item[0])}</td><td>${escAttr(item[1])}</td><td>${escAttr(item[2])}</td><td>${escAttr(item[3])}</td></tr>`).join("");
 }
 
 function renderProject(){
@@ -392,10 +399,10 @@ function renderProject(){
   E.projectNameInput.value=project.name;
   E.analystInput.value=project.analyst;
   E.projectPathInput.value=toDisplayPath(project.path);
-  E.importModeSelect.innerHTML=["RTL文件夹 + 工程文件","源码目录","仅工程文件","上传代码包"].map(item=>`<option value="${item}">${item}</option>`).join("");
+  E.importModeSelect.innerHTML=["RTL文件夹 + 工程文件","源码目录","仅工程文件","上传代码包"].map(item=>`<option value="${escAttr(item)}">${escAttr(item)}</option>`).join("");
   E.importModeSelect.value=project.mode;
   E.currentRulesetInput.value=CR().name;
-  E.savedProjects.innerHTML=PROJECTS.map(item=>`<div class="saved-project-item"><strong>${item.name}</strong><span>${toDisplayPath(item.path)}</span><button data-open-project="${item.id}" type="button">切换到该工程</button>${PROJECTS.length>1?` <button class="delete-project" data-delete-project="${item.id}" type="button">删除</button>`:""}</div>`).join("");
+  E.savedProjects.innerHTML=PROJECTS.map(item=>`<div class="saved-project-item"><strong>${escAttr(item.name)}</strong><span>${escAttr(toDisplayPath(item.path))}</span><button data-open-project="${escAttr(item.id)}" type="button">切换到该工程</button>${PROJECTS.length>1?` <button class="delete-project" data-delete-project="${escAttr(item.id)}" type="button">删除</button>`:""}</div>`).join("");
   document.querySelectorAll("[data-source-filter]").forEach(button=>{
     button.classList.toggle("active",button.dataset.sourceFilter===S.sourceFilter);
   });
@@ -410,10 +417,11 @@ function renderProject(){
   }else{
     E.sourcePreviewBody.innerHTML=filtered.map(item=>{
       const excluded=String(item[3]||"").includes("排除");
-      return `<div class="source-config-row ${excluded?"":"active"}"><button class="table-link" data-open-file="${item[0]}" type="button" title="${fullPath(project,item[0])}">${fullPath(project,item[0])}</button><span class="source-state">${item[3]}</span><span class="source-action">${item[4]||sourceFallbackAction(item[0],excluded)}</span></div>`;
+      const path=fullPath(project,item[0]);
+      return `<div class="source-config-row ${excluded?"":"active"}"><button class="table-link" data-open-file="${escAttr(item[0])}" type="button" title="${escAttr(path)}">${escAttr(path)}</button><span class="source-state">${escAttr(item[3])}</span><span class="source-action">${item[4]||sourceFallbackAction(item[0],excluded)}</span></div>`;
     }).join("");
   }
-  E.constraintTableBody.innerHTML=constraintRows(project).map(item=>`<tr><td>${item[0]}</td><td>${item[1]}</td><td>${item[2]}</td><td>${item[3]}</td></tr>`).join("");
+  E.constraintTableBody.innerHTML=constraintRows(project).map(item=>`<tr><td>${escAttr(item[0])}</td><td>${escAttr(item[1])}</td><td>${escAttr(item[2])}</td><td>${escAttr(item[3])}</td></tr>`).join("");
   const root=toDisplayPath(project.path);
   E.integrationBox.textContent=[
     `hdl-checker.bat create -s ${root}/src -p ${root} -l v_vhd`,
@@ -423,11 +431,11 @@ function renderProject(){
 }
 
 function sourceFallbackAction(path,excluded){
-  return `<button data-local-toggle-source="${path}" data-include="${excluded?"true":"false"}" type="button">${excluded?"纳入":"排除"}</button>`;
+  return `<button data-local-toggle-source="${escAttr(path)}" data-include="${excluded?"true":"false"}" type="button">${excluded?"纳入":"排除"}</button>`;
 }
 
 function sourceIncludeAction(path){
-  return `<button data-toggle-source="${path}" data-local-toggle-source="${path}" data-include="true" type="button">纳入</button>`;
+  return `<button data-toggle-source="${escAttr(path)}" data-local-toggle-source="${escAttr(path)}" data-include="true" type="button">纳入</button>`;
 }
 
 function renderRun(run){
@@ -447,13 +455,13 @@ function renderRun(run){
 function renderRules(){
   const ruleset=CR();
   E.currentRulesetTag.textContent=`当前规则集: ${ruleset.name}`;
-  E.rulesetList.innerHTML=RULESETS.map(item=>`<div class="ruleset-item ${item.id===ruleset.id?"active":""}" data-ruleset="${item.id}"><strong>${item.name}</strong><span>${rulesetTypeLabel(item)}规则集</span></div>`).join("");
-  E.baseRulesetSelect.innerHTML=RULESETS.map(item=>`<option value="${item.id}">${item.name}</option>`).join("");
+  E.rulesetList.innerHTML=RULESETS.map(item=>`<div class="ruleset-item ${item.id===ruleset.id?"active":""}" data-ruleset="${escAttr(item.id)}"><strong>${escAttr(item.name)}</strong><span>${escAttr(rulesetTypeLabel(item))}规则集</span></div>`).join("");
+  E.baseRulesetSelect.innerHTML=RULESETS.map(item=>`<option value="${escAttr(item.id)}">${escAttr(item.name)}</option>`).join("");
   E.baseRulesetSelect.value=ruleset.id;
   const editable=ruleset.type==="custom";
   const keyword=S.qsearch.trim().toLowerCase();
   const rows=ruleset.rules.map((rule,index)=>({rule,index})).filter(({rule})=>!keyword||[rule.code,rule.name,rule.cat].join(" ").toLowerCase().includes(keyword));
-  E.ruleTableBody.innerHTML=rows.map(({rule,index})=>`<tr><td><input type="checkbox" data-rule-toggle="${index}" ${rule.on?"checked":""} ${editable?"":"disabled"}></td><td>${rule.code}</td><td>${rule.name}</td><td>${rule.cat}</td><td><select data-rule-severity="${index}" ${editable?"":"disabled"}><option value="严重违规" ${rule.sev==="严重违规"?"selected":""}>严重违规</option><option value="一般违规" ${rule.sev==="一般违规"?"selected":""}>一般违规</option></select></td></tr>`).join("");
+  E.ruleTableBody.innerHTML=rows.map(({rule,index})=>`<tr><td><input type="checkbox" data-rule-toggle="${index}" ${rule.on?"checked":""} ${editable?"":"disabled"}></td><td>${escAttr(rule.code)}</td><td>${escAttr(rule.name)}</td><td>${escAttr(rule.cat)}</td><td><select data-rule-severity="${index}" ${editable?"":"disabled"}><option value="严重违规" ${rule.sev==="严重违规"?"selected":""}>严重违规</option><option value="一般违规" ${rule.sev==="一般违规"?"selected":""}>一般违规</option></select></td></tr>`).join("");
   renderRun(projectRun());
 }
 
@@ -466,7 +474,10 @@ function renderDetail(){
     return S.sortDir==="asc"?result:-result;
   });
   E.auditedSummary.textContent=`已审计 ${auditedCount(project)} 条 / 共 ${project.stats.vc} 条`;
-  E.detailTableBody.innerHTML=rows.map(item=>`<tr class="${item.id===S.vid?"active":""} ${S.selectedRows.includes(item.id)?"selected":""}" data-row="${item.id}"><td><span class="status-pill ${statusClass(item.st)}">${item.st}</span></td><td>${item.rid}</td><td>${levelLabel(item)}</td><td class="path-cell"><button class="table-link" data-open-violation-file="${item.id}" type="button" title="${fullPath(project,item.file)}">${fullPath(project,item.file)}</button></td><td>${item.line}</td><td>${item.conf}</td><td>${item.info}</td><td>${item.note||"-"}</td></tr>`).join("");
+  E.detailTableBody.innerHTML=rows.map(item=>{
+    const path=fullPath(project,item.file);
+    return `<tr class="${item.id===S.vid?"active":""} ${S.selectedRows.includes(item.id)?"selected":""}" data-row="${escAttr(item.id)}"><td><span class="status-pill ${statusClass(item.st)}">${escAttr(item.st)}</span></td><td>${escAttr(item.rid)}</td><td>${escAttr(levelLabel(item))}</td><td class="path-cell"><button class="table-link" data-open-violation-file="${escAttr(item.id)}" type="button" title="${escAttr(path)}">${escAttr(path)}</button></td><td>${escAttr(item.line)}</td><td>${escAttr(item.conf)}</td><td>${escAttr(item.info)}</td><td>${escAttr(item.note||"-")}</td></tr>`;
+  }).join("");
   document.querySelectorAll(".detail-table thead th[data-sort]").forEach(th=>{
     th.classList.remove("sort-asc","sort-desc");
     if(th.dataset.sort===S.sortKey)th.classList.add(S.sortDir==="desc"?"sort-desc":"sort-asc");
@@ -537,7 +548,7 @@ function renderSource(){
   if(!file)return;
   const line=S.fileFocus[file.key]||0;
   E.sourcePath.textContent=fullPath(CP(),file.path);
-  E.sourceMeta.innerHTML=`${file.language} · ${line?`定位到第 ${line} 行`:"未指定定位行"}<span class="source-readonly-tag">只读</span>`;
+  E.sourceMeta.innerHTML=`${escAttr(file.language)} · ${line?`定位到第 ${line} 行`:"未指定定位行"}<span class="source-readonly-tag">只读</span>`;
   E.sourceViewer.innerHTML=file.content.split("\n").map((row,index)=>`<div class="code-line ${index+1===line?"highlight":""}"><span class="line-no">${index+1}</span><span class="line-text">${highlightCode(row,file.language)}</span></div>`).join("");
   requestAnimationFrame(()=>{const active=E.sourceViewer.querySelector(".code-line.highlight");if(active)active.scrollIntoView({block:"center"});});
 }
@@ -646,7 +657,7 @@ function openAuditMenu(button,scope){
   const items=scope==="all"
     ?[{label:"全部标记为违反",value:"违反",className:"danger"},{label:"全部标记为不违反",value:"不违反"},{label:"全部标记为未确认",value:"未确认"}]
     :[{label:"标记为违反",value:"违反",className:"danger"},{label:"标记为不违反",value:"不违反"},{label:"标记为未确认",value:"未确认"}];
-  E.auditMenu.innerHTML=`<div class="menu-section">${scope==="all"?"应用到当前筛选的全部结果":"应用到当前选中"}</div>`+items.map(item=>`<button data-audit-value="${item.value}" data-audit-scope="${scope}" type="button" class="${item.className||""}">${item.label}</button>`).join("");
+  E.auditMenu.innerHTML=`<div class="menu-section">${scope==="all"?"应用到当前筛选的全部结果":"应用到当前选中"}</div>`+items.map(item=>`<button data-audit-value="${escAttr(item.value)}" data-audit-scope="${escAttr(scope)}" type="button" class="${escAttr(item.className||"")}">${escAttr(item.label)}</button>`).join("");
   E.auditMenu.classList.remove("hidden");
   const rect=button.getBoundingClientRect();
   const menuWidth=E.auditMenu.offsetWidth||180;
@@ -745,6 +756,36 @@ function closeProjectActionModal(){
   $("projectActionModal")?.classList.add("hidden");
 }
 
+function openTechCapabilityModal(){
+  $("techCapabilityModal")?.classList.remove("hidden");
+}
+
+function closeTechCapabilityModal(){
+  $("techCapabilityModal")?.classList.add("hidden");
+}
+
+function openCdcAnalysisModal(){
+  $("cdcAnalysisModal")?.classList.remove("hidden");
+}
+
+function closeCdcAnalysisModal(){
+  $("cdcAnalysisModal")?.classList.add("hidden");
+}
+
+function openCdcEnvModal(){
+  $("cdcEnvModal")?.classList.remove("hidden");
+}
+
+function closeCdcEnvModal(){
+  $("cdcEnvModal")?.classList.add("hidden");
+}
+
+function saveCdcEnvParams(){
+  const note=$("cdcEnvNote");
+  if(note)note.textContent="参数已保存：后续可靠性计算将使用当前工作温度、电压、翻转率和裕量。";
+  status("已保存 FPGA 工作环境参数");
+}
+
 function executeProjectAction(action,projectId){
   if(projectId&&projectId!==S.pid)switchProject(projectId,`已选择工程 ${PROJECTS.find(item=>item.id===projectId)?.name||projectId}`);
   closeProjectActionModal();
@@ -762,7 +803,7 @@ function guideProjectAction(action){
   const isRun=action==="run";
   title.textContent=isRun?"选择要运行检查的工程":"选择要查看报告的工程";
   hint.textContent=isRun?"当前存在多个工程，请先选择本次要执行代码规则检查的工程。":"当前存在多个工程，请先选择要查看或生成报告的工程。";
-  list.innerHTML=PROJECTS.map(project=>`<div class="project-action-item"><div><strong>${project.name}</strong><span>${project.path}</span></div><button data-project-action="${action}" data-project-id="${project.id}" type="button">${isRun?"运行检查":"查看报告"}</button></div>`).join("");
+  list.innerHTML=PROJECTS.map(project=>`<div class="project-action-item"><div><strong>${escAttr(project.name)}</strong><span>${escAttr(project.path)}</span></div><button data-project-action="${escAttr(action)}" data-project-id="${escAttr(project.id)}" type="button">${isRun?"运行检查":"查看报告"}</button></div>`).join("");
   modal.classList.remove("hidden");
 }
 
@@ -894,6 +935,8 @@ document.addEventListener("keydown",event=>{
   closeContextMenu();
   closeAuditMenu();
   closeProjectActionModal();
+  closeCdcAnalysisModal();
+  closeCdcEnvModal();
   if(!$("confirmModal")?.classList.contains("hidden"))closeConfirmDialog(false);
   if(!E.circuitModal.classList.contains("hidden"))closeModal();
 });
@@ -908,6 +951,19 @@ $("projectActionList")?.addEventListener("click",event=>{
   if(button)executeProjectAction(button.dataset.projectAction,button.dataset.projectId);
 });
 $("helpToggleBtn")?.addEventListener("click",()=>setHelpCollapsed(!S.helpCollapsed));
+$("openTechCapabilityBtn")?.addEventListener("click",openTechCapabilityModal);
+$("techCapabilityCloseBtn")?.addEventListener("click",closeTechCapabilityModal);
+$("techCapabilityCloseTopBtn")?.addEventListener("click",closeTechCapabilityModal);
+$("techCapabilityModal")?.addEventListener("click",event=>{if(event.target===$("techCapabilityModal"))closeTechCapabilityModal();});
+$("toolCdcBtn")?.addEventListener("click",openCdcAnalysisModal);
+$("cdcAnalysisCloseBtn")?.addEventListener("click",closeCdcAnalysisModal);
+$("cdcAnalysisCloseTopBtn")?.addEventListener("click",closeCdcAnalysisModal);
+$("cdcAnalysisModal")?.addEventListener("click",event=>{if(event.target===$("cdcAnalysisModal"))closeCdcAnalysisModal();});
+$("openEnvParamBtn")?.addEventListener("click",openCdcEnvModal);
+$("cdcEnvCloseBtn")?.addEventListener("click",closeCdcEnvModal);
+$("cdcEnvCloseTopBtn")?.addEventListener("click",closeCdcEnvModal);
+$("cdcEnvSaveBtn")?.addEventListener("click",saveCdcEnvParams);
+$("cdcEnvModal")?.addEventListener("click",event=>{if(event.target===$("cdcEnvModal"))closeCdcEnvModal();});
 $("projectTreeNewBtn")?.addEventListener("click",()=>addProject());
 $("projectTreeRefreshBtn")?.addEventListener("click",()=>{renderProjectTree();status("已刷新工程资源");});
 $("resultTreeRefreshBtn")?.addEventListener("click",()=>{renderBrowser();status("已刷新检查结果浏览");});
@@ -983,4 +1039,4 @@ initSplitters();
 ensureTreeState();
 ensureResultState();
 setHelpCollapsed(true);
-renderAll("已补齐树结构、布局分隔和源码标签页交互");
+renderAll("就绪");

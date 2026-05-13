@@ -769,6 +769,8 @@ button {
   border: 1px solid #d6dfeb;
   background: #ffffff;
   padding: 8px 10px;
+  min-width: 0;
+  min-height: 0;
 }
 
 .info-card {
@@ -797,19 +799,24 @@ button {
 .info-grid {
   margin: 0;
   display: grid;
-  gap: 3px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 18px;
+  row-gap: 3px;
+  align-content: start;
 }
 
 .info-grid div {
   display: grid;
-  grid-template-columns: 78px 1fr;
-  gap: 8px;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 6px;
   font-size: 12px;
+  min-width: 0;
 }
 
 .info-grid .info-section {
+  grid-column: 1 / -1;
   grid-template-columns: 1fr;
-  margin-top: 6px;
+  margin-top: 4px;
   padding-bottom: 2px;
   border-bottom: 1px dashed #d6dfeb;
 }
@@ -874,6 +881,36 @@ button {
   white-space: pre-wrap;
 }
 
+.capability-card {
+  background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+}
+
+.capability-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.capability-grid > div {
+  min-width: 0;
+  border: 1px solid #d6dfeb;
+  background: #fbfdff;
+  padding: 8px;
+}
+
+.capability-grid strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #1f67b5;
+}
+
+.capability-grid p {
+  margin: 0;
+  color: #344c69;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .info-grid dt {
   color: #22344b;
   font-weight: 700;
@@ -881,6 +918,10 @@ button {
 
 .info-grid dd {
   margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .template-box {
@@ -1901,6 +1942,266 @@ button {
   padding: 4px 12px;
 }
 
+.capability-modal-window {
+  width: min(980px, 92vw);
+}
+
+.capability-modal-body {
+  display: grid;
+  gap: 10px;
+  max-height: 72vh;
+  overflow: auto;
+  padding: 14px;
+  background: #f6f9ff;
+}
+
+.capability-section {
+  border: 1px solid #cbd9ea;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.capability-section h3 {
+  margin: 0 0 6px;
+  color: #1f67b5;
+  font-size: 15px;
+}
+
+.capability-section p {
+  margin: 0 0 8px;
+  color: #2d415c;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.vendor-strip,
+.extension-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.vendor-strip span,
+.extension-grid span {
+  border: 1px solid #9fb9dc;
+  background: linear-gradient(180deg, #fdfefe 0%, #e8f0fb 100%);
+  color: #244a78;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.extension-grid span {
+  min-width: 64px;
+  text-align: center;
+  font-family: Consolas, "Courier New", monospace;
+}
+
+.capability-table th,
+.capability-table td {
+  font-size: 12px;
+}
+
+.cdc-modal-window {
+  width: min(1180px, 94vw);
+}
+
+.cdc-env-window {
+  width: min(760px, 88vw);
+}
+
+.cdc-modal-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  max-height: 76vh;
+  overflow: auto;
+  padding: 12px;
+  background: #f6f9ff;
+}
+
+.cdc-section {
+  min-width: 0;
+  border: 1px solid #cbd9ea;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.cdc-span-2 {
+  grid-column: 1 / -1;
+}
+
+.cdc-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cdc-section h3,
+.cdc-section-head h3 {
+  margin: 0 0 8px;
+  color: #1f67b5;
+  font-size: 14px;
+}
+
+.cdc-section-head h3 {
+  margin-bottom: 0;
+}
+
+.cdc-section-head button,
+.cdc-debug-grid button,
+.cdc-env-body input {
+  border: 1px solid #9db2cf;
+}
+
+.cdc-section-head button,
+.cdc-debug-grid button {
+  background: var(--button-bg);
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+.cdc-vendor-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.cdc-vendor-grid span {
+  border: 1px solid #9fb9dc;
+  background: linear-gradient(180deg, #fdfefe 0%, #e8f0fb 100%);
+  color: #244a78;
+  padding: 5px 8px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.clock-domain-map {
+  display: grid;
+  grid-template-columns: 1fr 54px 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.clock-node {
+  min-height: 58px;
+  border: 1px solid #9fb9dc;
+  background: linear-gradient(180deg, #ffffff 0%, #eaf2fc 100%);
+  color: #244a78;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-weight: 700;
+}
+
+.clock-node.primary {
+  background: linear-gradient(180deg, #e2f0ff 0%, #c7ddf8 100%);
+}
+
+.clock-node small {
+  display: block;
+  margin-top: 2px;
+  color: #5f748f;
+  font-weight: 400;
+}
+
+.clock-link {
+  color: #7a4a00;
+  text-align: center;
+  font-size: 12px;
+}
+
+.cdc-table {
+  width: 100%;
+}
+
+.cdc-table th,
+.cdc-table td {
+  font-size: 12px;
+}
+
+.cdc-table select,
+.cdc-env-body input {
+  width: 100%;
+  min-height: 24px;
+  background: #ffffff;
+  padding: 2px 5px;
+}
+
+.cdc-ok,
+.cdc-warn,
+.cdc-risk {
+  display: inline-block;
+  min-width: 52px;
+  padding: 1px 6px;
+  text-align: center;
+  border: 1px solid;
+}
+
+.cdc-ok {
+  color: #2d6b34;
+  background: #e5f3e3;
+  border-color: #a7c8a2;
+}
+
+.cdc-warn {
+  color: #8a5b00;
+  background: #fff4ce;
+  border-color: #d7bd70;
+}
+
+.cdc-risk {
+  color: #9a2f2f;
+  background: #ffe5e5;
+  border-color: #d8a1a1;
+}
+
+.cdc-debug-grid {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.cdc-circuit-svg {
+  width: 100%;
+  min-height: 220px;
+  border: 1px solid #d7e0eb;
+  background: #fbfdff;
+}
+
+.cdc-circuit-svg rect {
+  fill: #f7fbff;
+  stroke: #6d8db6;
+}
+
+.cdc-circuit-svg path {
+  fill: none;
+  stroke: #54759e;
+  stroke-width: 2;
+}
+
+.cdc-circuit-svg text {
+  fill: #243d5d;
+  font-size: 16px;
+}
+
+.cdc-env-body {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  background: #f6f9ff;
+}
+
+.cdc-env-note {
+  border: 1px solid #d7e0eb;
+  background: #fff8df;
+  color: #5b4b1b;
+  padding: 8px;
+  font-size: 12px;
+}
+
 .server-browser {
   border: 1px solid #cbd9ea;
   background: #ffffff;
@@ -2528,6 +2829,23 @@ button {
 @media (max-width: 1280px) {
   body {
     min-width: 1080px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .capability-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cdc-modal-body,
+  .cdc-debug-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cdc-vendor-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .rules-layout {

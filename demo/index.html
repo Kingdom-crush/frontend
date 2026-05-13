@@ -26,6 +26,10 @@
           <span class="tool-glyph list"></span>
           <span>源文件列表</span>
         </button>
+        <button class="tool-action" id="toolCdcBtn" type="button">
+          <span class="tool-glyph list"></span>
+          <span>CDC分析</span>
+        </button>
         <button class="tool-action primary" id="toolRunCheckBtn" type="button">
           <span class="tool-glyph run"></span>
           <span>运行检查</span>
@@ -250,6 +254,7 @@
               </div>
               <div class="management-toolbar">
                 <button id="saveProjectBtn" type="button">保存工程</button>
+                <button id="openTechCapabilityBtn" type="button">工程文件/IP能力说明</button>
               </div>
               <div class="management-grid">
                 <article class="manager-card">
@@ -281,6 +286,28 @@
                 <article class="manager-card">
                   <h3>已保存项目</h3>
                   <div class="saved-projects" id="savedProjects"></div>
+                </article>
+
+                <article class="manager-card full-width capability-card">
+                  <h3>工程文件自动导入能力</h3>
+                  <div class="capability-grid">
+                    <div>
+                      <strong>支持开发环境</strong>
+                      <p>ISE、Vivado、Quartus、Libero、易灵思等 FPGA 开发环境。</p>
+                    </div>
+                    <div>
+                      <strong>支持厂家项目</strong>
+                      <p>Xilinx、Altera/Intel、Actel/Microchip、Lattice、易灵思等厂家项目。</p>
+                    </div>
+                    <div>
+                      <strong>工程文件类型</strong>
+                      <p>.xise、.xpr、.qsf、.prj、.prjx、.qip、.pds、.ldf。</p>
+                    </div>
+                    <div>
+                      <strong>导入结果</strong>
+                      <p>自动解析工程文件中的 Verilog/VHDL 源文件，减少人工选择遗漏或误选。</p>
+                    </div>
+                  </div>
                 </article>
 
                 <article class="manager-card full-width">
@@ -564,6 +591,199 @@
       </div>
       <div class="modal-actions">
         <button id="projectActionCancelBtn" type="button">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="techCapabilityModal">
+    <div class="modal-window capability-modal-window">
+      <div class="modal-title">
+        <strong>工程导入与第三方 IP 识别能力</strong>
+        <button class="modal-close-x" id="techCapabilityCloseTopBtn" type="button" aria-label="关闭">×</button>
+      </div>
+      <div class="capability-modal-body">
+        <section class="capability-section">
+          <h3>1. 工程项目测试支持</h3>
+          <p>支持 ISE、Vivado、Quartus、Libero、易灵思等开发环境的项目测试，覆盖 Xilinx、Altera/Intel、Actel/Microchip、Lattice、易灵思等厂家项目。</p>
+          <div class="vendor-strip">
+            <span>Xilinx / Vivado / ISE</span>
+            <span>Altera / Intel Quartus</span>
+            <span>Actel / Microchip Libero</span>
+            <span>Lattice Diamond</span>
+            <span>易灵思</span>
+          </div>
+        </section>
+        <section class="capability-section">
+          <h3>2. 工程文件自动解析</h3>
+          <p>通过加载设计工程文件自动导入全部 Verilog、VHDL 源文件，避免人工选择被测文件导致的遗漏或误选。</p>
+          <div class="extension-grid">
+            <span>.xise</span><span>.xpr</span><span>.qsf</span><span>.prj</span>
+            <span>.prjx</span><span>.qip</span><span>.pds</span><span>.ldf</span>
+          </div>
+        </section>
+        <section class="capability-section">
+          <h3>3. 第三方 IP 黑盒化与厂商识别</h3>
+          <p>对设计中没有 HDL 源码形式的第三方 IP 模块进行黑盒化处理，并自动识别 Altera、Xilinx、Actel、Synopsys、Lattice、紫光同创等厂商 IP。</p>
+          <table class="flat-table capability-table">
+            <thead>
+              <tr><th>IP 名称</th><th>识别厂商</th><th>处理方式</th><th>来源</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>fifo_generator_0</td><td>Xilinx</td><td>黑盒化</td><td>project.xpr</td></tr>
+              <tr><td>altsyncram_inst</td><td>Altera/Intel</td><td>厂商 IP 识别</td><td>system.qsf</td></tr>
+              <tr><td>synplify_ram</td><td>Synopsys</td><td>黑盒化</td><td>design.prj</td></tr>
+              <tr><td>lattice_pll</td><td>Lattice</td><td>厂商 IP 识别</td><td>top.ldf</td></tr>
+              <tr><td>pango_serdes</td><td>紫光同创</td><td>黑盒化</td><td>chip.prjx</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+      <div class="modal-actions">
+        <button id="techCapabilityCloseBtn" type="button">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="cdcAnalysisModal">
+    <div class="modal-window cdc-modal-window">
+      <div class="modal-title">
+        <strong>CDC 多时钟域分析与同步电路可靠性评估</strong>
+        <button class="modal-close-x" id="cdcAnalysisCloseTopBtn" type="button" aria-label="关闭">×</button>
+      </div>
+      <div class="cdc-modal-body">
+        <section class="cdc-section cdc-span-2">
+          <div class="cdc-section-head">
+            <h3>多时钟域检查对象</h3>
+            <button id="openEnvParamBtn" type="button">工作环境参数...</button>
+          </div>
+          <div class="cdc-vendor-grid">
+            <span>Xilinx / Vivado / ISE</span>
+            <span>Altera / Intel Quartus</span>
+            <span>Actel / Microchip Libero</span>
+            <span>Lattice Diamond</span>
+            <span>易灵思</span>
+          </div>
+        </section>
+
+        <section class="cdc-section">
+          <h3>图形化时钟域设置</h3>
+          <div class="clock-domain-map">
+            <div class="clock-node primary">clk_sys<br><small>100 MHz / PLL</small></div>
+            <div class="clock-link">CDC</div>
+            <div class="clock-node">clk_cfg<br><small>50 MHz / MMCM</small></div>
+            <div class="clock-node">clk_ddr<br><small>200 MHz / DCM</small></div>
+            <div class="clock-link">同步器</div>
+            <div class="clock-node">clk_eth<br><small>125 MHz / 外部输入</small></div>
+          </div>
+        </section>
+
+        <section class="cdc-section">
+          <h3>PLL / DCM / MMCM 时钟识别</h3>
+          <table class="flat-table cdc-table">
+            <thead><tr><th>组件</th><th>厂商</th><th>输出时钟</th><th>状态</th></tr></thead>
+            <tbody>
+              <tr><td>MMCME2_ADV</td><td>Xilinx</td><td>clk_sys / clk_cfg</td><td>已识别</td></tr>
+              <tr><td>ALTPLL</td><td>Altera/Intel</td><td>clk_ddr</td><td>已识别</td></tr>
+              <tr><td>CLKINT / COREPLL</td><td>Actel</td><td>clk_aux</td><td>已识别</td></tr>
+              <tr><td>EHXPLLL</td><td>Lattice</td><td>clk_eth</td><td>已识别</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="cdc-section">
+          <h3>第三方同步电路 IP 验证</h3>
+          <table class="flat-table cdc-table">
+            <thead><tr><th>同步 IP</th><th>厂商</th><th>用途</th><th>验证结论</th></tr></thead>
+            <tbody>
+              <tr><td>xpm_cdc_array_single</td><td>Xilinx</td><td>单比特同步</td><td>可靠</td></tr>
+              <tr><td>altera_std_synchronizer</td><td>Altera</td><td>复位同步</td><td>可靠</td></tr>
+              <tr><td>synopsys_async_fifo</td><td>Synopsys</td><td>异步 FIFO</td><td>需检查约束</td></tr>
+              <tr><td>lattice_cdc_bridge</td><td>Lattice</td><td>总线跨域</td><td>可靠</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="cdc-section">
+          <h3>黑盒 IP 接口时钟域绑定</h3>
+          <table class="flat-table cdc-table">
+            <thead><tr><th>黑盒模块</th><th>接口</th><th>方向</th><th>绑定时钟域</th></tr></thead>
+            <tbody>
+              <tr><td>pango_serdes</td><td>rx_data[31:0]</td><td>输出</td><td><select><option>clk_eth</option><option>clk_sys</option></select></td></tr>
+              <tr><td>fifo_generator_0</td><td>wr_en</td><td>输入</td><td><select><option>clk_sys</option><option>clk_cfg</option></select></td></tr>
+              <tr><td>fifo_generator_0</td><td>rd_en</td><td>输入</td><td><select><option>clk_ddr</option><option>clk_sys</option></select></td></tr>
+              <tr><td>actel_corepll</td><td>lock</td><td>输出</td><td><select><option>clk_aux</option><option>clk_cfg</option></select></td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="cdc-section">
+          <h3>同步电路可靠性计算</h3>
+          <table class="flat-table cdc-table">
+            <thead><tr><th>CDC 路径</th><th>同步级数</th><th>MTBF</th><th>可靠性</th></tr></thead>
+            <tbody>
+              <tr><td>clk_sys → clk_cfg / cfg_valid</td><td>2</td><td>3.2E+09 h</td><td><span class="cdc-ok">高</span></td></tr>
+              <tr><td>clk_ddr → clk_sys / ddr_ready</td><td>2</td><td>8.5E+07 h</td><td><span class="cdc-warn">中</span></td></tr>
+              <tr><td>clk_eth → clk_sys / rx_flag</td><td>1</td><td>1.9E+04 h</td><td><span class="cdc-risk">需整改</span></td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="cdc-section cdc-span-2">
+          <h3>CDC 路径电路图调试</h3>
+          <div class="cdc-debug-grid">
+            <table class="flat-table cdc-table">
+              <thead><tr><th>路径</th><th>源时钟</th><th>目标时钟</th><th>检查结论</th><th>操作</th></tr></thead>
+              <tbody>
+                <tr><td>cfg_valid_sync</td><td>clk_sys</td><td>clk_cfg</td><td>双触发同步</td><td><button type="button">查看电路</button></td></tr>
+                <tr><td>rx_flag_cross</td><td>clk_eth</td><td>clk_sys</td><td>同步级数不足</td><td><button type="button">查看电路</button></td></tr>
+                <tr><td>fifo_async_path</td><td>clk_ddr</td><td>clk_sys</td><td>异步 FIFO</td><td><button type="button">查看电路</button></td></tr>
+              </tbody>
+            </table>
+            <svg class="cdc-circuit-svg" viewBox="0 0 520 220" role="img" aria-label="CDC路径电路">
+              <rect x="20" y="74" width="120" height="60" rx="5"></rect>
+              <rect x="210" y="42" width="110" height="50" rx="5"></rect>
+              <rect x="210" y="126" width="110" height="50" rx="5"></rect>
+              <rect x="390" y="74" width="110" height="60" rx="5"></rect>
+              <path d="M140 104 C174 104 176 67 210 67"></path>
+              <path d="M320 67 C354 67 356 104 390 104"></path>
+              <path d="M140 104 C174 104 176 151 210 151"></path>
+              <path d="M320 151 C354 151 356 104 390 104"></path>
+              <text x="44" y="109">clk_eth</text>
+              <text x="229" y="72">sync_ff1</text>
+              <text x="229" y="156">sync_ff2</text>
+              <text x="413" y="109">clk_sys</text>
+            </svg>
+          </div>
+        </section>
+      </div>
+      <div class="modal-actions">
+        <button id="cdcAnalysisCloseBtn" type="button">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="cdcEnvModal">
+    <div class="modal-window cdc-env-window">
+      <div class="modal-title">
+        <strong>FPGA 工作环境参数设置</strong>
+        <button class="modal-close-x" id="cdcEnvCloseTopBtn" type="button" aria-label="关闭">×</button>
+      </div>
+      <div class="cdc-env-body">
+        <table class="flat-table cdc-table">
+          <thead><tr><th>参数</th><th>当前值</th><th>单位</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>工作温度</td><td><input value="85"></td><td>℃</td><td>用于亚稳态可靠性修正</td></tr>
+            <tr><td>核心电压</td><td><input value="1.0"></td><td>V</td><td>器件工艺相关参数</td></tr>
+            <tr><td>目标失效率</td><td><input value="1 FIT"></td><td>-</td><td>可靠性判据</td></tr>
+            <tr><td>数据翻转率</td><td><input value="12.5"></td><td>%</td><td>CDC 输入活动因子</td></tr>
+            <tr><td>同步器建立时间裕量</td><td><input value="0.35"></td><td>ns</td><td>MTBF 计算参数</td></tr>
+          </tbody>
+        </table>
+        <div class="cdc-env-note" id="cdcEnvNote">参数保存后用于同步电路可靠性计算。</div>
+      </div>
+      <div class="modal-actions">
+        <button id="cdcEnvSaveBtn" class="primary" type="button">保存参数</button>
+        <button id="cdcEnvCloseBtn" type="button">关闭</button>
       </div>
     </div>
   </div>
